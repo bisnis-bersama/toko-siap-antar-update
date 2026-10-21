@@ -17,7 +17,7 @@ header{position:sticky;top:0;z-index:20;background:linear-gradient(100deg,#009b4
 .head-actions button{border:1px solid #ffffff80;background:#ffffff20;color:#fff;border-radius:12px;padding:8px 11px;font-size:20px}
 .promo{margin:8px 0 0;border-block:2px solid var(--yellow);background:linear-gradient(90deg,#00a85a,#00c8d7,#d8e500);padding:4px 0}
 .promo-window{overflow:hidden;background:#fff;border-radius:10px;min-height:135px}
-.promo-track{display:flex;width:max-content;animation:promoGeser 24s linear infinite;will-change:transform}
+.promo-track{display:flex;align-items:center;width:max-content;animation:promoGeser 24s linear infinite;will-change:transform}
 .promo-track:hover{animation-play-state:paused}
 .promo-track img{display:block;flex:0 0 clamp(250px,42vw,520px);width:clamp(250px,42vw,520px);height:clamp(135px,22vw,220px);object-fit:contain;background:#fff;margin-right:8px}
 @media(max-width:600px){.promo-track img{flex-basis:78vw;width:78vw;height:clamp(145px,35vw,190px);margin-right:6px}}
@@ -54,6 +54,7 @@ footer h3{margin:0 0 16px;color:#009c54}
 .bottom-nav .ico{font-size:22px;line-height:1.2}
 .bottom-nav button:first-child{color:#009c54}
 @media(max-width:520px){.products{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.product-photo{height:125px}.product-name{font-size:12px}.product-desc{font-size:10px}.price{font-size:13px}.quick-wrap{top:58px}.promo-track img{height:125px}}
+@media(max-width:600px){.promo-window{min-height:145px;padding:6px 0}.promo-track img{height:133px;margin-top:0;margin-bottom:0}}
 @media(max-width:360px){.products{grid-template-columns:repeat(2,minmax(0,1fr))}.product-photo{height:105px}.cat{padding:9px 11px;font-size:13px}}
 </style>
 </head>
