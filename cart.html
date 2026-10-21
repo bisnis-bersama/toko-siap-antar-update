@@ -1,0 +1,569 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Keranjang Belanja</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<style>
+
+body{
+font-family:Arial;
+margin:0;
+background:#f2f2f2;
+padding-bottom:170px;
+}
+
+header{
+background:#15803d;
+color:white;
+padding:15px;
+text-align:center;
+font-weight:bold;
+}
+
+.card{
+background:white;
+margin:10px;
+padding:12px;
+border-radius:10px;
+box-shadow:0 2px 6px rgba(0,0,0,0.1);
+}
+
+.harga{
+color:#15803d;
+font-weight:bold;
+}
+
+button{
+padding:6px 12px;
+border:none;
+border-radius:6px;
+margin:3px;
+cursor:pointer;
+}
+
+.green{
+background:#15803d;
+color:white;
+}
+
+.gray{
+background:#9ca3af;
+color:white;
+}
+
+#map{
+height:260px;
+margin:10px;
+border-radius:10px;
+}
+
+input{
+width:95%;
+margin:10px;
+padding:10px;
+border-radius:8px;
+border:1px solid #ccc;
+}
+
+.checkout{
+display:block;
+width:95%;
+margin:10px;
+background:linear-gradient(90deg,#16a34a,#f97316);
+color:white;
+padding:14px;
+border-radius:10px;
+border:none;
+font-weight:bold;
+font-size:16px;
+text-align:center;
+box-shadow:0 4px 10px rgba(0,0,0,0.2);
+}
+
+.clearBtn{
+display:block;
+width:95%;
+margin:10px;
+background:#f97316;
+color:white;
+padding:14px;
+border-radius:10px;
+border:none;
+font-weight:bold;
+font-size:16px;
+text-align:center;
+box-shadow:0 4px 10px rgba(0,0,0,0.2);
+}
+
+</style>
+</head>
+
+<body>
+
+<header>🛒 Keranjang Belanja</header>
+
+<div id="cartList"></div>
+
+<h3 style="margin-left:10px;">📍 Pilih Lokasi Pengiriman</h3>
+
+<div id="map"></div>
+
+<button class="green" onclick="gunakanLokasi()" style="margin-left:10px;">
+📡 Gunakan Lokasi Saya
+</button>
+
+<div id="infoZona" class="card">
+Belum memilih lokasi
+</div>
+
+<input type="text" id="namaPembeli" placeholder="Nama Pembeli">
+<input type="tel" id="waPembeli" placeholder="Nomor WhatsApp Aktif">
+<input type="text" id="manualLokasi" 
+placeholder="Alamat lengkap / Link Google Maps (jika lokasi tidak akurat)"
+style="display:none;">.
+
+<button class="checkout" onclick="lanjutBayar()">
+Checkout
+</button>
+
+<button class="clearBtn" onclick="kosongkan()">
+Kosongkan Keranjang
+</button>
+<script>
+
+/* ================= DATA ================= */
+
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+const tokoLat = -6.883831;
+const tokoLng = 108.302788;
+
+let tujuanLat = null;
+let tujuanLng = null;
+let ongkir = 0;
+let jarakFix = 0;
+let minimalBelanja = 0;
+
+let namaDesa="-";
+let namaKecamatan="-";
+
+let markerUser=null;
+let markerMotor=null;
+
+/* ================= FORMAT RUPIAH ================= */
+
+function rupiah(a){
+return Math.round(a).toLocaleString("id-ID");
+}
+
+/* ================= RENDER CART ================= */
+
+function renderCart(){
+
+let list=document.getElementById("cartList");
+list.innerHTML="";
+
+let total=0;
+
+cart.forEach((p,i)=>{
+
+let sub=p.harga*p.qty;
+total+=sub;
+
+list.innerHTML+=`
+<div class="card">
+
+<b>${p.nama}</b><br>
+
+<span class="harga">Rp ${rupiah(p.harga)}</span><br>
+
+<button onclick="kurang(${i})">-</button>
+
+${p.qty}
+
+<button onclick="tambah(${i})">+</button>
+
+<button onclick="hapus(${i})">Hapus</button>
+
+<br>
+
+Subtotal : Rp ${rupiah(sub)}
+
+</div>
+`;
+
+});
+
+let totalBayar=total+ongkir;
+
+list.innerHTML+=`
+
+<div class="card">
+
+<b>Total Barang : Rp ${rupiah(total)}</b><br>
+
+<b>Ongkir : Rp ${rupiah(ongkir)}</b>
+
+<hr>
+
+<b style="color:#15803d;font-size:18px">
+
+TOTAL BAYAR : Rp ${rupiah(totalBayar)}
+
+</b>
+
+</div>
+`;
+
+}
+
+/* ================= CART CONTROL ================= */
+
+function tambah(i){
+cart[i].qty++;
+simpan();
+}
+
+function kurang(i){
+cart[i].qty--;
+if(cart[i].qty<=0) cart.splice(i,1);
+simpan();
+}
+
+function hapus(i){
+cart.splice(i,1);
+simpan();
+}
+
+function simpan(){
+localStorage.setItem("cart",JSON.stringify(cart));
+renderCart();
+}
+
+function kosongkan(){
+localStorage.removeItem("cart");
+location.reload();
+}
+
+/* ================= CHECKOUT ================= */
+function lanjutBayar(){
+if(cart.length == 0){
+popup("Keranjang masih kosong");
+return;
+}
+let totalBarang = 0;
+
+cart.forEach(p=>{
+totalBarang += p.harga * p.qty;
+});
+
+if(minimalBelanja > 0 && totalBarang < minimalBelanja){
+
+popup(
+"Minimal belanja Rp " + rupiah(minimalBelanja) +
+"<br>Tambah belanja Rp " +
+rupiah(minimalBelanja-totalBarang) + " lagi"
+);
+
+return;
+
+}
+
+let manual = document.getElementById("manualLokasi").value.trim();
+
+if(!tujuanLat && !manual){
+popup("Pilih lokasi atau isi alamat manual");
+return;
+}
+
+let namaPembeli = document.getElementById("namaPembeli").value.trim();
+let noWa = document.getElementById("waPembeli").value.trim();
+
+if(!namaPembeli){
+popup("Isi nama pembeli dulu");
+return;
+}
+
+if(!noWa){
+popup("Isi nomor WhatsApp dulu");
+return;
+}
+
+localStorage.setItem("checkoutData", JSON.stringify({
+lat: tujuanLat,
+lng: tujuanLng,
+alamatManual: manual,
+desa: namaDesa,
+kecamatan: namaKecamatan,
+ongkir: ongkir,
+minimalBelanja: minimalBelanja,
+noWa: noWa,
+namaPembeli: namaPembeli
+}));
+
+window.location.href = "bayar.html";
+
+}
+
+/* ================= MAP ================= */
+
+var map = L.map('map').setView([tokoLat,tokoLng],15);
+
+// PETA NORMAL
+var normalLayer = L.tileLayer(
+'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+{maxZoom:19}
+).addTo(map);
+
+// SATELIT
+var satelliteLayer = L.tileLayer(
+'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+{maxZoom:19}
+);
+
+// SATELIT + NAMA TEMPAT
+var labelLayer = L.tileLayer(
+'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+{opacity:0.5}
+);
+
+var satelliteWithLabel = L.layerGroup([
+satelliteLayer,
+labelLayer
+]);
+
+// CONTROL PILIHAN PETA
+L.control.layers({
+"Peta Normal": normalLayer,
+"Satelit": satelliteLayer,
+"Satelit + Nama": satelliteWithLabel
+}).addTo(map);
+
+map.on('click',function(e){
+
+setLokasi(e.latlng.lat,e.latlng.lng);
+
+});
+
+/* ================= GPS ================= */
+
+function gunakanLokasi(){
+
+popup("📡 Mencari lokasi Anda...");
+
+if(!navigator.geolocation){
+popup("HP tidak mendukung GPS");
+return;
+}
+
+navigator.geolocation.getCurrentPosition(
+
+function(pos){
+
+let lat = pos.coords.latitude;
+let lng = pos.coords.longitude;
+let akurasi = pos.coords.accuracy;
+
+// hapus popup loading
+document.querySelectorAll("body > div").forEach(el=>{
+if(el.style.zIndex=="9999") el.remove();
+});
+
+// 🔥 CEK AKURASI GPS
+if(akurasi > 100){
+
+document.getElementById("manualLokasi").style.display = "block";
+
+popup(
+"⚠️ Lokasi kurang akurat ("+Math.round(akurasi)+" meter)<br><br>" +
+"Silakan isi alamat manual atau klik peta"
+);
+
+}
+
+// tetap tampilkan titik biar user lihat posisi
+setLokasi(lat, lng);
+
+},
+
+function(error){
+
+// hapus popup loading
+document.querySelectorAll("body > div").forEach(el=>{
+if(el.style.zIndex=="9999") el.remove();
+});
+
+popup("❌ Tidak bisa mendapatkan lokasi. Aktifkan GPS.");
+
+},
+
+{
+enableHighAccuracy:true,
+timeout:10000,
+maximumAge:0
+}
+
+);
+
+}
+
+/* ================= SET LOKASI ================= */
+
+function setLokasi(lat,lng){
+
+tujuanLat=lat;
+tujuanLng=lng;
+
+if(markerUser) map.removeLayer(markerUser);
+
+markerUser=L.marker([lat,lng]).addTo(map);
+
+map.setView([lat,lng],17);
+
+fetch(
+`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`
+)
+.then(res=>res.json())
+.then(data=>{
+
+namaDesa = data.address?.village || "-";
+
+namaKecamatan =
+data.address?.subdistrict ||
+data.address?.city_district ||
+data.address?.town ||
+"-";
+hitungOngkir();
+
+});
+
+}
+
+/* ================= HITUNG ONGKIR BARU ================= */
+
+function hitungOngkir(){
+
+jarakFix = map.distance([tokoLat,tokoLng],[tujuanLat,tujuanLng]) / 1000;
+
+/* ONGKIR MAX 20RB */
+
+if(jarakFix <= 10){
+
+ongkir = 5000;
+minimalBelanja = 150000;
+
+}
+
+else if(jarakFix <= 20){
+
+ongkir = 10000;
+minimalBelanja = 200000;
+
+}
+
+else if(jarakFix <= 30){
+
+ongkir = 15000;
+minimalBelanja = 300000;
+
+}
+
+else{
+
+ongkir = 20000;
+minimalBelanja = 400000;
+
+}
+
+let totalBarang=0;
+
+cart.forEach(p=>{
+
+totalBarang += p.harga * p.qty;
+
+});
+
+let kurang = minimalBelanja - totalBarang;
+
+let infoTambah="";
+
+if(minimalBelanja>0 && totalBarang<minimalBelanja){
+
+infoTambah =
+"<br><b style='color:red'>Tambah belanja Rp "+
+rupiah(kurang)+" lagi</b>";
+
+}
+
+let estimasi=Math.ceil(jarakFix*3);
+
+document.getElementById("infoZona").innerHTML=
+
+"Jarak : "+jarakFix.toFixed(1)+" km<br>"+
+"Ongkir : Rp "+rupiah(ongkir)+"<br>"+
+"Minimal Belanja : Rp "+rupiah(minimalBelanja)+
+infoTambah+
+"<br>Estimasi Antar : ±"+estimasi+" menit<br>"+
+"Desa : "+namaDesa+"<br>"+
+"Kecamatan : "+namaKecamatan;
+
+renderCart();
+
+}
+
+/* ================= POPUP ================= */
+
+function popup(pesan){
+
+let box=document.createElement("div");
+box.id="popupBox";
+
+box.style.position="fixed";
+box.style.top="0";
+box.style.left="0";
+box.style.width="100%";
+box.style.height="100%";
+box.style.background="rgba(0,0,0,0.5)";
+box.style.display="flex";
+box.style.alignItems="center";
+box.style.justifyContent="center";
+box.style.zIndex="9999";
+
+box.innerHTML=
+
+`<div style="background:white;padding:20px;border-radius:12px;width:80%;max-width:300px;text-align:center">
+
+<h3 style="color:#15803d;margin-top:0">
+TOKO SIAP ANTAR
+</h3>
+
+<p>${pesan}</p>
+
+<button onclick="this.parentElement.parentElement.remove()"
+style="background:#15803d;color:white;border:none;padding:10px 20px;border-radius:6px">
+OK
+</button>
+
+</div>`;
+
+document.body.appendChild(box);
+
+}
+
+renderCart();
+
+window.onload = function(){
+gunakanLokasi();
+setTimeout(()=>{
+popup("📍 Jika titik tidak tepat, klik peta untuk memilih lokasi manual");
+},2000);
+};
+</script>
+
+</body>
+</html>
