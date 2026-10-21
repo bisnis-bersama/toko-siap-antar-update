@@ -190,7 +190,7 @@ function updateCart() {
 }
 function openWhatsApp(p, intro='Halo, saya ingin pesan: ') {
   const message = intro + p.name + ' — ' + formatPrice(p.price);
-  window.open('https://wa.me/?text=' + encodeURIComponent(message), '_blank');
+  window.open('https://wa.me/6282319264646?text=' + encodeURIComponent(message), '_blank');
 }
 productsEl.addEventListener('click', e => {
   const btn = e.target.closest('button[data-action]');
@@ -198,7 +198,14 @@ productsEl.addEventListener('click', e => {
   const p = allProducts.find(item => item.id === btn.dataset.id);
   if (!p) return;
   if (btn.dataset.action === 'wa') openWhatsApp(p, 'Halo, saya mau tanya produk: ');
-  if (btn.dataset.action === 'buy') openWhatsApp(p);
+  if (btn.dataset.action === 'buy') {
+    const existing = cart.find(item => item.id === p.id);
+    if (existing) existing.qty++;
+    else cart.push({id:p.id,name:p.name,price:p.price,qty:1});
+    updateCart();
+    window.location.href = 'keranjang.html';
+    return;
+  }
   if (btn.dataset.action === 'cart') {
     const existing = cart.find(item=>item.id===p.id);
     if (existing) existing.qty++;
@@ -218,16 +225,12 @@ document.getElementById('categories').addEventListener('click',e=>{
 });
 document.getElementById('refresh').onclick=()=>location.reload();
 document.getElementById('homeBtn').onclick=()=>window.scrollTo({top:0,behavior:'smooth'});
-document.getElementById('cartBtn').onclick=()=>{
-  if(!cart.length){alert('Keranjang masih kosong.');return;}
-  const msg='Pesanan Toko Siap Antar:\n'+cart.map((x,i)=>`${i+1}. ${x.name} — ${x.qty} pcs`).join('\n');
-  window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
-};
-document.getElementById('historyBtn').onclick=()=>alert('Riwayat pesanan akan tersedia melalui akun Anda.');
-document.getElementById('profileBtn').onclick=()=>alert('Silakan hubungi admin untuk akses profil/member.');
+document.getElementById('cartBtn').onclick=()=>{ window.location.href = 'keranjang.html'; };
+document.getElementById('historyBtn').onclick=()=>{ window.location.href = 'riwayat.html'; };
+document.getElementById('profileBtn').onclick=()=>{ window.location.href = 'profil.html'; };
 document.getElementById('facebook').onclick=e=>{e.preventDefault();alert('Tambahkan tautan Facebook toko pada HTML.');};
 document.getElementById('instagram').onclick=e=>{e.preventDefault();alert('Tambahkan tautan Instagram toko pada HTML.');};
-document.getElementById('whatsapp').onclick=e=>{e.preventDefault();window.open('https://wa.me/','_blank');};
+document.getElementById('whatsapp').onclick=e=>{e.preventDefault();window.open('https://wa.me/6282319264646','_blank');};
 document.getElementById('theme').onclick=()=>{
   const dark=document.body.dataset.theme!=='dark';
   document.body.dataset.theme=dark?'dark':'light';
