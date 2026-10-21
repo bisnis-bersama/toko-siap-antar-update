@@ -19,7 +19,9 @@ header{position:sticky;top:0;z-index:20;background:linear-gradient(100deg,#009b4
 .promo-window{overflow:hidden;background:#fff;border-radius:10px;min-height:135px}
 .promo-track{display:flex;width:max-content;animation:promoGeser 24s linear infinite;will-change:transform}
 .promo-track:hover{animation-play-state:paused}
-.promo-track img{display:block;flex:0 0 min(72vw,680px);width:min(72vw,680px);height:135px;object-fit:contain;background:#fff;margin-right:6px}
+.promo-track img{display:block;flex:0 0 clamp(250px,42vw,520px);width:clamp(250px,42vw,520px);height:clamp(135px,22vw,220px);object-fit:contain;background:#fff;margin-right:8px}
+@media(max-width:600px){.promo-track img{flex-basis:78vw;width:78vw;height:clamp(145px,35vw,190px);margin-right:6px}}
+@media(min-width:1000px){.promo-track img{flex-basis:38vw;width:38vw;height:220px;margin-right:10px}}
 @keyframes promoGeser{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 @media(prefers-reduced-motion:reduce){.promo-track{animation:none;overflow-x:auto;max-width:100%}}
 .quick-wrap{position:sticky;top:58px;z-index:15;background:#fffef0;padding:10px 12px 8px;border-bottom:1px solid var(--line)}
