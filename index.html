@@ -13,6 +13,11 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:Arial,Helveti
 header{position:sticky;top:0;z-index:20;background:linear-gradient(100deg,#009b4b,#00c9c9,#a9d900);padding:10px 14px;min-height:58px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:2px solid var(--yellow)}
 .brand{display:flex;align-items:center;gap:8px;color:white;font-weight:800;text-shadow:0 1px 3px #246a40}
 .brand img{display:block;width:64px;height:52px;object-fit:contain;flex:0 0 auto}
+.welcome-text{display:flex;flex-direction:column;gap:3px;min-width:0;max-width:560px}
+.welcome-text strong{font-size:clamp(12px,2vw,17px);line-height:1.25;color:#fff}
+.welcome-text span{font-size:clamp(9px,1.35vw,12px);line-height:1.35;color:#f2fff8;text-shadow:none}
+@media(max-width:520px){header{padding:8px 10px;gap:6px}.brand{gap:7px}.brand img{width:48px;height:46px}.welcome-text{max-width:calc(100vw - 160px)}.welcome-text strong{font-size:11px}.welcome-text span{font-size:9px}.head-actions{gap:5px}.head-actions button{padding:7px 8px;font-size:17px}}
+
 .head-actions{display:flex;gap:8px}
 .head-actions button{border:1px solid #ffffff80;background:#ffffff20;color:#fff;border-radius:12px;padding:8px 11px;font-size:20px}
 .promo{margin:8px 0 0;border-block:2px solid var(--yellow);background:linear-gradient(90deg,#00a85a,#00c8d7,#d8e500);padding:4px 0}
@@ -60,7 +65,13 @@ footer h3{margin:0 0 16px;color:#009c54}
 </head>
 <body>
 <header>
-  <div class="brand"><img class="brand-logo-left" src="logo3.png" alt="Logo Toko Siap Antar"></div>
+  <div class="brand">
+    <img class="brand-logo-left" src="logo3.png" alt="Logo Toko Siap Antar">
+    <div class="welcome-text">
+      <strong>Selamat Datang di Toko Siap Antar!</strong>
+      <span>Belanja sparepart dan aksesori HP lebih mudah. Pesanan kami antar setelah pembayaran dikonfirmasi.</span>
+    </div>
+  </div>
   <div class="head-actions"><button id="refresh" aria-label="Muat ulang">↻</button><button id="theme" aria-label="Ganti tema">☾</button></div>
 </header>
 <section class="promo" aria-label="Promo">
