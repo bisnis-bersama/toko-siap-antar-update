@@ -135,21 +135,35 @@ const searchInput = document.getElementById('searchInput');
 let allProducts = [];
 let activeCategory = 'Semua';
 function readCart(){
-  let raw=[];
-  try{
-    // Halaman keranjang memakai key 'cart', jadi key itu harus menjadi sumber utama.
-    const cartData=localStorage.getItem('cart');
-    const savedData=cartData !== null ? cartData : (localStorage.getItem('tsa_cart') || '[]');
-    raw=JSON.parse(savedData);
-  }catch(_){raw=[]}
-  if(!Array.isArray(raw))raw=[];
-  return raw.map((p,i)=>{
-    const nama=String(p.nama ?? p.name ?? '').trim();
-    const hargaRaw=p.harga ?? p.price ?? 0;
-    const harga=typeof hargaRaw==='number'?hargaRaw:Number(String(hargaRaw).replace(/[^0-9,-]/g,'').replace(/\./g,'').replace(',','.'))||0;
-    const qty=Math.max(1,parseInt(p.qty,10)||1);
-    return {id:String(p.id ?? i),nama,harga,foto:p.foto ?? p.image ?? '',qty,name:nama,price:harga};
-  }).filter(p=>p.nama);
+  let raw = [];
+  try {
+    // Halaman keranjang memakai key "cart". Jika key tidak ada,
+    // keranjang dianggap kosong; jangan mengambil data lama dari tsa_cart.
+    const data = localStorage.getItem('cart');
+    raw = data === null ? [] : JSON.parse(data);
+  } catch (_) {
+    raw = [];
+  }
+
+  if (!Array.isArray(raw)) raw = [];
+  return raw.map((p, i) => {
+    const nama = String(p.nama ?? p.name ?? '').trim();
+    const hargaRaw = p.harga ?? p.price ?? 0;
+    const harga = typeof hargaRaw === 'number'
+      ? hargaRaw
+      : Number(String(hargaRaw).replace(/[^0-9,-]/g, '').replace(/\./g, '').replace(',', '.')) || 0;
+    const qty = Math.max(1, parseInt(p.qty, 10) || 1);
+    return {
+      id: String(p.id ?? i),
+      nama,
+      harga,
+      foto: p.foto ?? p.image ?? '',
+      qty,
+      name: nama,
+      price: harga,
+      image: p.foto ?? p.image ?? ''
+    };
+  }).filter(p => p.nama);
 }
 let cart = readCart();
 const formatPrice = value => {
@@ -219,7 +233,12 @@ function updateCart() {
 }
 function refreshCartBadgeFromStorage(){
   cart = readCart();
-  document.getElementById('cartCount').textContent = cart.reduce((sum,item)=>sum+item.qty,0);
+  const serialized = JSON.stringify(cart);
+  // Samakan kedua key supaya data lama tidak muncul kembali.
+  localStorage.setItem('cart', serialized);
+  localStorage.setItem('tsa_cart', serialized);
+  document.getElementById('cartCount').textContent =
+    cart.reduce((sum, item) => sum + item.qty, 0);
 }
 // Sinkronkan angka ketika kembali dari halaman keranjang atau tab mendapat fokus.
 window.addEventListener('pageshow', refreshCartBadgeFromStorage);
