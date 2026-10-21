@@ -13,11 +13,6 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:Arial,Helveti
 header{position:sticky;top:0;z-index:20;background:linear-gradient(100deg,#009b4b,#00c9c9,#a9d900);padding:10px 14px;min-height:58px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:2px solid var(--yellow)}
 .brand{display:flex;align-items:center;gap:8px;color:white;font-weight:800;text-shadow:0 1px 3px #246a40}
 .brand img{display:block;width:64px;height:52px;object-fit:contain;flex:0 0 auto}
-.welcome-text{display:flex;flex-direction:column;gap:3px;min-width:0;max-width:560px}
-.welcome-text strong{font-size:clamp(12px,2vw,17px);line-height:1.25;color:#fff}
-.welcome-text span{font-size:clamp(9px,1.35vw,12px);line-height:1.35;color:#f2fff8;text-shadow:none}
-@media(max-width:520px){header{padding:8px 10px;gap:6px}.brand{gap:7px}.brand img{width:48px;height:46px}.welcome-text{max-width:calc(100vw - 160px)}.welcome-text strong{font-size:11px}.welcome-text span{font-size:9px}.head-actions{gap:5px}.head-actions button{padding:7px 8px;font-size:17px}}
-
 .head-actions{display:flex;gap:8px}
 .head-actions button{border:1px solid #ffffff80;background:#ffffff20;color:#fff;border-radius:12px;padding:8px 11px;font-size:20px}
 .promo{margin:8px 0 0;border-block:2px solid var(--yellow);background:linear-gradient(90deg,#00a85a,#00c8d7,#d8e500);padding:4px 0}
@@ -62,53 +57,22 @@ footer h3{margin:0 0 16px;color:#009c54}
 @media(max-width:600px){.promo-window{min-height:145px;padding:6px 0}.promo-track img{height:133px;margin-top:0;margin-bottom:0}}
 @media(max-width:360px){.products{grid-template-columns:repeat(2,minmax(0,1fr))}.product-photo{height:105px}.cat{padding:9px 11px;font-size:13px}}
 
-/* Perbaikan terarah: header putih dengan garis pelangi tipis; warna halaman tetap hijau-krem */
+/* Penyesuaian header dan logo dari kode indeks yang dikirim */
 body{background:#f4fff7;color:var(--ink)}
-header{
-  position:sticky;top:0;z-index:20;
-  background:#fff;
-  border:0;
-  box-shadow:0 2px 7px rgba(0,80,40,.08);
-  isolation:isolate;
-}
-header::before,header::after{
-  content:"";position:absolute;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,#ffd400 0%,#00a85a 28%,#00c8d7 52%,#a9d900 76%,#ffd400 100%);
-  pointer-events:none;z-index:1;
-}
+header{position:sticky;top:0;z-index:20;background:#fff;border:0;box-shadow:0 2px 7px rgba(0,80,40,.08);isolation:isolate}
+header::before,header::after{content:"";position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,#ffd400 0%,#00a85a 28%,#00c8d7 52%,#a9d900 76%,#ffd400 100%);pointer-events:none;z-index:1}
 header::before{top:0}header::after{bottom:0}
 .brand{color:#18312b;text-shadow:none;min-width:0}
-/* Bingkai logo header: sudut membulat, latar putih, garis pelangi tipis */
-.brand img{
-  background:#fff;
-  object-fit:contain;
-  border:1.5px solid transparent;
-  border-radius:12px;
-  padding:3px;
-  background:
-    linear-gradient(#fff,#fff) padding-box,
-    linear-gradient(135deg,#ffd400 0%,#00a85a 30%,#00c8d7 58%,#a9d900 80%,#ffd400 100%) border-box;
-  box-shadow:0 1px 4px rgba(0,120,65,.10);
-}
-.welcome-text strong{color:#008b4c;text-shadow:none}
-.welcome-text span{color:#52635b;text-shadow:none}
+.brand img{background:#fff;object-fit:contain;border:1.5px solid transparent;border-radius:12px;padding:3px;background:linear-gradient(#fff,#fff) padding-box,linear-gradient(135deg,#ffd400 0%,#00a85a 30%,#00c8d7 58%,#a9d900 80%,#ffd400 100%) border-box;box-shadow:0 1px 4px rgba(0,120,65,.10)}
+.welcome-text strong{color:#008b4c;text-shadow:none}.welcome-text span{color:#52635b;text-shadow:none}
 .head-actions button{color:#008b4c;background:#f3fff7;border:1px solid #b9e5ce}
-.quick-wrap{background:#fffef0}
-.product{background:#fff}
-.product-photo{background:linear-gradient(135deg,#d9ffed,#f4ffe2)}
+.quick-wrap{background:#fffef0}.product{background:#fff}.product-photo{background:linear-gradient(135deg,#d9ffed,#f4ffe2)}
 @media(max-width:520px){header{padding:8px 10px}.brand img{width:48px;height:46px}.welcome-text{max-width:calc(100vw - 160px)}}
-
 </style>
 </head>
 <body>
 <header>
-  <div class="brand">
-    <img class="brand-logo-left" src="logo3.png" alt="Logo Toko Siap Antar">
-    <div class="welcome-text">
-      <strong>Selamat Datang di Toko Siap Antar!</strong>
-      <span>Belanja sparepart dan aksesori HP lebih mudah. Pesanan kami antar setelah pembayaran dikonfirmasi.</span>
-    </div>
-  </div>
+  <div class="brand"><img class="brand-logo-left" src="logo3.png" alt="Logo Toko Siap Antar"></div>
   <div class="head-actions"><button id="refresh" aria-label="Muat ulang">↻</button><button id="theme" aria-label="Ganti tema">☾</button></div>
 </header>
 <section class="promo" aria-label="Promo">
@@ -142,11 +106,36 @@ const productsEl = document.getElementById('products');
 const searchInput = document.getElementById('searchInput');
 let allProducts = [];
 let activeCategory = 'Semua';
-let cart = JSON.parse(localStorage.getItem('tsa_cart') || '[]');
+function readCart(){
+  let raw=[];
+  try{raw=JSON.parse(localStorage.getItem('tsa_cart') || localStorage.getItem('cart') || '[]')}catch(_){raw=[]}
+  if(!Array.isArray(raw))raw=[];
+  return raw.map((p,i)=>{
+    const nama=String(p.nama ?? p.name ?? '').trim();
+    const hargaRaw=p.harga ?? p.price ?? 0;
+    const harga=typeof hargaRaw==='number'?hargaRaw:Number(String(hargaRaw).replace(/[^0-9,-]/g,'').replace(/\./g,'').replace(',','.'))||0;
+    const qty=Math.max(1,parseInt(p.qty,10)||1);
+    return {id:String(p.id ?? i),nama,harga,foto:p.foto ?? p.image ?? '',qty,name:nama,price:harga};
+  }).filter(p=>p.nama);
+}
+let cart = readCart();
 const formatPrice = value => {
   const n = Number(String(value ?? '').replace(/[^\d,-]/g,'').replace(/\./g,'').replace(',','.'));
   return Number.isFinite(n) && n ? 'Rp ' + n.toLocaleString('id-ID') : (value ? String(value) : 'Hubungi kami');
 };
+function toNumberPrice(value){
+  if(typeof value==='number')return Number.isFinite(value)?value:0;
+  let s=String(value ?? '').trim().replace(/[^0-9,.-]/g,'');
+  if(!s)return 0;
+  if(s.includes(',') && s.includes('.')){
+    if(s.lastIndexOf(',')>s.lastIndexOf('.'))s=s.replace(/\./g,'').replace(',','.');
+    else s=s.replace(/,/g,'');
+  }else if(s.includes(',')){
+    const parts=s.split(',');
+    s=parts.length===2 && parts[1].length<=2 ? s.replace(',','.') : s.replace(/,/g,'');
+  }else if((s.match(/\./g)||[]).length>1 || /\.\d{3}$/.test(s))s=s.replace(/\./g,'');
+  const n=Number(s);return Number.isFinite(n)?n:0;
+}
 function convertImage(url) {
   if (!url) return '';
   const s = String(url).trim();
@@ -185,8 +174,15 @@ function escapeHtml(value) {
   return String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 function updateCart() {
+  cart=cart.map(p=>{
+    const nama=String(p.nama ?? p.name ?? '').trim();
+    const harga=Number(p.harga ?? p.price ?? 0)||0;
+    return {id:String(p.id ?? ''),nama,harga,foto:p.foto ?? p.image ?? '',qty:Math.max(1,parseInt(p.qty,10)||1),name:nama,price:harga,image:p.foto ?? p.image ?? ''};
+  }).filter(p=>p.nama);
+  const serialized=JSON.stringify(cart);
+  localStorage.setItem('tsa_cart',serialized);
+  localStorage.setItem('cart',serialized);
   document.getElementById('cartCount').textContent = cart.reduce((sum,item)=>sum+item.qty,0);
-  localStorage.setItem('tsa_cart', JSON.stringify(cart));
 }
 function openWhatsApp(p, intro='Halo, saya ingin pesan: ') {
   const message = intro + p.name + ' — ' + formatPrice(p.price);
@@ -199,17 +195,17 @@ productsEl.addEventListener('click', e => {
   if (!p) return;
   if (btn.dataset.action === 'wa') openWhatsApp(p, 'Halo, saya mau tanya produk: ');
   if (btn.dataset.action === 'buy') {
-    const existing = cart.find(item => item.id === p.id);
-    if (existing) existing.qty++;
-    else cart.push({id:p.id,name:p.name,price:p.price,qty:1});
+    const existing=cart.find(item=>String(item.id)===String(p.id) || item.nama.toLowerCase()===p.name.toLowerCase());
+    if(existing) existing.qty++;
+    else cart.push({id:p.id,nama:p.name,harga:toNumberPrice(p.price),foto:p.image,qty:1,name:p.name,price:toNumberPrice(p.price),image:p.image});
     updateCart();
-    window.location.href = 'keranjang.html';
+    window.location.href='keranjang.html';
     return;
   }
   if (btn.dataset.action === 'cart') {
-    const existing = cart.find(item=>item.id===p.id);
+    const existing = cart.find(item=>String(item.id)===String(p.id) || item.nama.toLowerCase()===p.name.toLowerCase());
     if (existing) existing.qty++;
-    else cart.push({id:p.id,name:p.name,price:p.price,qty:1});
+    else cart.push({id:p.id,nama:p.name,harga:toNumberPrice(p.price),foto:p.image,qty:1,name:p.name,price:toNumberPrice(p.price),image:p.image});
     updateCart();
     btn.textContent = '✓';
     setTimeout(()=>{if(btn.isConnected)btn.textContent='🛒'},700);
@@ -225,9 +221,9 @@ document.getElementById('categories').addEventListener('click',e=>{
 });
 document.getElementById('refresh').onclick=()=>location.reload();
 document.getElementById('homeBtn').onclick=()=>window.scrollTo({top:0,behavior:'smooth'});
-document.getElementById('cartBtn').onclick=()=>{ window.location.href = 'keranjang.html'; };
-document.getElementById('historyBtn').onclick=()=>{ window.location.href = 'riwayat.html'; };
-document.getElementById('profileBtn').onclick=()=>{ window.location.href = 'profil.html'; };
+document.getElementById('cartBtn').onclick=()=>{window.location.href='keranjang.html';};
+document.getElementById('historyBtn').onclick=()=>{window.location.href='riwayat.html';};
+document.getElementById('profileBtn').onclick=()=>{window.location.href='profil.html';};
 document.getElementById('facebook').onclick=e=>{e.preventDefault();alert('Tambahkan tautan Facebook toko pada HTML.');};
 document.getElementById('instagram').onclick=e=>{e.preventDefault();alert('Tambahkan tautan Instagram toko pada HTML.');};
 document.getElementById('whatsapp').onclick=e=>{e.preventDefault();window.open('https://wa.me/6282319264646','_blank');};
@@ -257,7 +253,7 @@ fetch(SHEET_URL, {cache:'no-store'})
     const description=c[2]?.v ?? '';
     const price=c[3]?.v ?? '';
     const image=convertImage(c[4]?.v ?? '');
-    return {id:String(index),name:String(name).trim(),description:String(description).trim(),price,image,searchText:(String(name)+' '+String(description)).toLowerCase()};
+    return {id:String(index),name:String(name).trim(),description:String(description).trim(),price:toNumberPrice(price),image,searchText:(String(name)+' '+String(description)).toLowerCase()};
   }).filter(p=>p.name);
   if(!allProducts.length)throw new Error('Tidak ada produk pada tab spreadsheet yang dipilih.');
   renderProducts();
