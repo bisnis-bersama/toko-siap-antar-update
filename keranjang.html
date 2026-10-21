@@ -5,36 +5,41 @@
 <title>Keranjang Belanja</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
 <style>
 
+ :root{--green:#00a85a;--cyan:#00c8d7;--yellow:#ffd400;--ink:#18312b;--paper:#fffef0;--line:#dceee5}
+*{box-sizing:border-box}
 body{
-font-family:Arial;
+font-family:Arial,Helvetica,sans-serif;
 margin:0;
-background:#f2f2f2;
-padding-bottom:170px;
+background:var(--paper);
+color:var(--ink);
+padding-bottom:30px;
 }
-
 header{
-background:#15803d;
-color:white;
-padding:15px;
+background:#fff;
+color:#008b4c;
+padding:16px 12px;
 text-align:center;
-font-weight:bold;
+font-weight:800;
+font-size:20px;
+border-top:3px solid transparent;
+border-bottom:3px solid transparent;
+border-image:linear-gradient(90deg,#ffd400,#00a85a,#00c8d7,#a9d900,#ffd400) 1;
 }
 
 .card{
-background:white;
-margin:10px;
-padding:12px;
-border-radius:10px;
-box-shadow:0 2px 6px rgba(0,0,0,0.1);
+background:#fff;
+margin:12px;
+padding:14px;
+border:1px solid var(--line);
+border-radius:15px;
+box-shadow:0 2px 7px #18312b12;
 }
 
 .harga{
-color:#15803d;
+color:#008b4c;
 font-weight:bold;
 }
 
@@ -47,7 +52,7 @@ cursor:pointer;
 }
 
 .green{
-background:#15803d;
+background:linear-gradient(100deg,#00a85a,#00c8d7);
 color:white;
 }
 
@@ -56,19 +61,20 @@ background:#9ca3af;
 color:white;
 }
 
-#map{
-height:260px;
-margin:10px;
-border-radius:10px;
-}
-
+.location-actions{margin:10px 12px}
+.section-title{margin:18px 12px 8px;font-size:17px}
 input{
-width:95%;
-margin:10px;
-padding:10px;
-border-radius:8px;
-border:1px solid #ccc;
+display:block;
+width:calc(100% - 24px);
+margin:10px 12px;
+padding:13px 12px;
+border-radius:12px;
+border:1px solid #a8dfc6;
+background:#fff;
+font-size:15px;
 }
+.checkout,.clearBtn{width:calc(100% - 24px);margin:10px 12px;}
+
 
 .checkout{
 display:block;
@@ -100,6 +106,15 @@ text-align:center;
 box-shadow:0 4px 10px rgba(0,0,0,0.2);
 }
 
+
+.location-actions button{padding:11px 14px;font-size:14px;border-radius:10px}
+.checkout{background:linear-gradient(90deg,#00a85a,#00c8d7);color:#fff}
+.clearBtn{background:#ffd400;color:#222}
+@media(max-width:520px){
+  header{font-size:18px}
+  .card{margin:10px;padding:13px}
+  .checkout,.clearBtn{width:calc(100% - 20px);margin:10px}
+}
 </style>
 </head>
 
@@ -109,13 +124,10 @@ box-shadow:0 4px 10px rgba(0,0,0,0.2);
 
 <div id="cartList"></div>
 
-<h3 style="margin-left:10px;">📍 Pilih Lokasi Pengiriman</h3>
-
-<div id="map"></div>
-
-<button class="green" onclick="gunakanLokasi()" style="margin-left:10px;">
-📡 Gunakan Lokasi Saya
-</button>
+<h3 class="section-title">📍 Lokasi Pengiriman</h3>
+<div class="location-actions">
+  <button class="green" onclick="gunakanLokasi()">📡 Gunakan Lokasi Saya</button>
+</div>
 
 <div id="infoZona" class="card">
 Belum memilih lokasi
@@ -123,9 +135,8 @@ Belum memilih lokasi
 
 <input type="text" id="namaPembeli" placeholder="Nama Pembeli">
 <input type="tel" id="waPembeli" placeholder="Nomor WhatsApp Aktif">
-<input type="text" id="manualLokasi" 
-placeholder="Alamat lengkap / Link Google Maps (jika lokasi tidak akurat)"
-style="display:none;">.
+<input type="text" id="manualLokasi"
+placeholder="Alamat lengkap / Link Google Maps (isi jika GPS tidak akurat)">
 
 <button class="checkout" onclick="lanjutBayar()">
 Checkout
@@ -138,10 +149,33 @@ Kosongkan Keranjang
 
 /* ================= DATA ================= */
 
-let cart = JSON.parse(localStorage.getItem("cart")) || [];
-
 const tokoLat = -6.883831;
 const tokoLng = 108.302788;
+
+// Index menyimpan pilihan di "tsa_cart" dengan properti name/price.
+// Halaman ini memakai "cart" dengan properti nama/harga. Satukan keduanya agar
+// produk yang dipilih di index otomatis muncul di halaman keranjang.
+function parseHarga(value){
+  if(typeof value === "number") return value;
+  const cleaned = String(value ?? "").replace(/[^0-9,.-]/g,"").replace(/\./g,"").replace(",",".");
+  const n = Number(cleaned);
+  return Number.isFinite(n) ? n : 0;
+}
+function normalisasiCart(items){
+  if(!Array.isArray(items)) return [];
+  return items.map((p,i)=>({
+    id:String(p.id ?? i),
+    nama:String(p.nama ?? p.name ?? p.title ?? "Produk"),
+    harga:parseHarga(p.harga ?? p.price ?? p.hargaJual ?? 0),
+    qty:Math.max(1,parseInt(p.qty ?? p.jumlah ?? 1,10) || 1)
+  }));
+}
+const cartLama = normalisasiCart(JSON.parse(localStorage.getItem("cart") || "[]"));
+const cartIndex = normalisasiCart(JSON.parse(localStorage.getItem("tsa_cart") || "[]"));
+let cart = cartIndex.length ? cartIndex : cartLama;
+if(cart.length){
+  localStorage.setItem("cart",JSON.stringify(cart));
+}
 
 let tujuanLat = null;
 let tujuanLng = null;
@@ -152,8 +186,6 @@ let minimalBelanja = 0;
 let namaDesa="-";
 let namaKecamatan="-";
 
-let markerUser=null;
-let markerMotor=null;
 
 /* ================= FORMAT RUPIAH ================= */
 
@@ -211,7 +243,7 @@ list.innerHTML+=`
 
 <hr>
 
-<b style="color:#15803d;font-size:18px">
+<b style="color:#008b4c;font-size:18px">
 
 TOTAL BAYAR : Rp ${rupiah(totalBayar)}
 
@@ -241,13 +273,18 @@ simpan();
 }
 
 function simpan(){
-localStorage.setItem("cart",JSON.stringify(cart));
-renderCart();
+  localStorage.setItem("cart",JSON.stringify(cart));
+  // Tetap simpan format yang dipahami index, supaya kedua halaman sinkron.
+  localStorage.setItem("tsa_cart",JSON.stringify(cart.map(p=>({
+    id:p.id,name:p.nama,price:p.harga,qty:p.qty
+  }))));
+  renderCart();
 }
 
 function kosongkan(){
-localStorage.removeItem("cart");
-location.reload();
+  localStorage.removeItem("cart");
+  localStorage.removeItem("tsa_cart");
+  location.reload();
 }
 
 /* ================= CHECKOUT ================= */
@@ -276,8 +313,8 @@ return;
 
 let manual = document.getElementById("manualLokasi").value.trim();
 
-if(!tujuanLat && !manual){
-popup("Pilih lokasi atau isi alamat manual");
+if((tujuanLat===null || tujuanLng===null) && !manual){
+popup("Gunakan lokasi GPS atau isi alamat lengkap secara manual");
 return;
 }
 
@@ -310,210 +347,91 @@ window.location.href = "bayar.html";
 
 }
 
-/* ================= MAP ================= */
-
-var map = L.map('map').setView([tokoLat,tokoLng],15);
-
-// PETA NORMAL
-var normalLayer = L.tileLayer(
-'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-{maxZoom:19}
-).addTo(map);
-
-// SATELIT
-var satelliteLayer = L.tileLayer(
-'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-{maxZoom:19}
-);
-
-// SATELIT + NAMA TEMPAT
-var labelLayer = L.tileLayer(
-'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-{opacity:0.5}
-);
-
-var satelliteWithLabel = L.layerGroup([
-satelliteLayer,
-labelLayer
-]);
-
-// CONTROL PILIHAN PETA
-L.control.layers({
-"Peta Normal": normalLayer,
-"Satelit": satelliteLayer,
-"Satelit + Nama": satelliteWithLabel
-}).addTo(map);
-
-map.on('click',function(e){
-
-setLokasi(e.latlng.lat,e.latlng.lng);
-
-});
-
-/* ================= GPS ================= */
+/* ================= LOKASI TANPA TAMPILAN PETA ================= */
+// GPS, pencarian alamat, jarak, ongkir, dan estimasi tetap berfungsi.
+// Jarak dihitung dengan rumus Haversine karena peta visual dihilangkan.
+function jarakKm(lat1, lon1, lat2, lon2){
+  const R = 6371;
+  const rad = derajat => derajat * Math.PI / 180;
+  const dLat = rad(lat2-lat1);
+  const dLon = rad(lon2-lon1);
+  const a = Math.sin(dLat/2)**2 +
+    Math.cos(rad(lat1))*Math.cos(rad(lat2))*Math.sin(dLon/2)**2;
+  return R * 2 * Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
 
 function gunakanLokasi(){
-
-popup("📡 Mencari lokasi Anda...");
-
-if(!navigator.geolocation){
-popup("HP tidak mendukung GPS");
-return;
+  if(!navigator.geolocation){
+    document.getElementById("manualLokasi").style.display="block";
+    popup("HP tidak mendukung GPS. Silakan isi alamat lengkap.");
+    return;
+  }
+  popup("📡 Sedang mencari lokasi Anda...");
+  navigator.geolocation.getCurrentPosition(
+    function(pos){
+      const lat=pos.coords.latitude;
+      const lng=pos.coords.longitude;
+      const akurasi=pos.coords.accuracy;
+      const box=document.getElementById("popupBox");
+      if(box) box.remove();
+      setLokasi(lat,lng);
+      if(akurasi>100){
+        document.getElementById("manualLokasi").style.display="block";
+        popup("⚠️ Lokasi kurang akurat ("+Math.round(akurasi)+" meter). Periksa alamat Anda atau isi alamat manual.");
+      }
+    },
+    function(){
+      const box=document.getElementById("popupBox");
+      if(box) box.remove();
+      document.getElementById("manualLokasi").style.display="block";
+      popup("❌ Lokasi GPS tidak ditemukan. Aktifkan GPS atau isi alamat lengkap secara manual.");
+    },
+    {enableHighAccuracy:true,timeout:15000,maximumAge:0}
+  );
 }
-
-navigator.geolocation.getCurrentPosition(
-
-function(pos){
-
-let lat = pos.coords.latitude;
-let lng = pos.coords.longitude;
-let akurasi = pos.coords.accuracy;
-
-// hapus popup loading
-document.querySelectorAll("body > div").forEach(el=>{
-if(el.style.zIndex=="9999") el.remove();
-});
-
-// 🔥 CEK AKURASI GPS
-if(akurasi > 100){
-
-document.getElementById("manualLokasi").style.display = "block";
-
-popup(
-"⚠️ Lokasi kurang akurat ("+Math.round(akurasi)+" meter)<br><br>" +
-"Silakan isi alamat manual atau klik peta"
-);
-
-}
-
-// tetap tampilkan titik biar user lihat posisi
-setLokasi(lat, lng);
-
-},
-
-function(error){
-
-// hapus popup loading
-document.querySelectorAll("body > div").forEach(el=>{
-if(el.style.zIndex=="9999") el.remove();
-});
-
-popup("❌ Tidak bisa mendapatkan lokasi. Aktifkan GPS.");
-
-},
-
-{
-enableHighAccuracy:true,
-timeout:10000,
-maximumAge:0
-}
-
-);
-
-}
-
-/* ================= SET LOKASI ================= */
 
 function setLokasi(lat,lng){
-
-tujuanLat=lat;
-tujuanLng=lng;
-
-if(markerUser) map.removeLayer(markerUser);
-
-markerUser=L.marker([lat,lng]).addTo(map);
-
-map.setView([lat,lng],17);
-
-fetch(
-`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`
-)
-.then(res=>res.json())
-.then(data=>{
-
-namaDesa = data.address?.village || "-";
-
-namaKecamatan =
-data.address?.subdistrict ||
-data.address?.city_district ||
-data.address?.town ||
-"-";
-hitungOngkir();
-
-});
-
+  tujuanLat=lat;
+  tujuanLng=lng;
+  document.getElementById("infoZona").innerHTML="Lokasi ditemukan. Sedang menghitung jarak dan ongkir...";
+  fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
+    .then(res=>res.json())
+    .then(data=>{
+      const a=data.address||{};
+      namaDesa=a.village||a.hamlet||a.suburb||a.neighbourhood||"-";
+      namaKecamatan=a.subdistrict||a.city_district||a.town||a.county||"-";
+      hitungOngkir();
+    })
+    .catch(()=>{
+      namaDesa="-";
+      namaKecamatan="-";
+      hitungOngkir();
+    });
 }
-
-/* ================= HITUNG ONGKIR BARU ================= */
 
 function hitungOngkir(){
+  if(tujuanLat===null || tujuanLng===null) return;
+  jarakFix=jarakKm(tokoLat,tokoLng,tujuanLat,tujuanLng);
 
-jarakFix = map.distance([tokoLat,tokoLng],[tujuanLat,tujuanLng]) / 1000;
+  if(jarakFix<=10){ongkir=5000;minimalBelanja=150000;}
+  else if(jarakFix<=20){ongkir=10000;minimalBelanja=200000;}
+  else if(jarakFix<=30){ongkir=15000;minimalBelanja=300000;}
+  else{ongkir=20000;minimalBelanja=400000;}
 
-/* ONGKIR MAX 20RB */
-
-if(jarakFix <= 10){
-
-ongkir = 5000;
-minimalBelanja = 150000;
-
-}
-
-else if(jarakFix <= 20){
-
-ongkir = 10000;
-minimalBelanja = 200000;
-
-}
-
-else if(jarakFix <= 30){
-
-ongkir = 15000;
-minimalBelanja = 300000;
-
-}
-
-else{
-
-ongkir = 20000;
-minimalBelanja = 400000;
-
-}
-
-let totalBarang=0;
-
-cart.forEach(p=>{
-
-totalBarang += p.harga * p.qty;
-
-});
-
-let kurang = minimalBelanja - totalBarang;
-
-let infoTambah="";
-
-if(minimalBelanja>0 && totalBarang<minimalBelanja){
-
-infoTambah =
-"<br><b style='color:red'>Tambah belanja Rp "+
-rupiah(kurang)+" lagi</b>";
-
-}
-
-let estimasi=Math.ceil(jarakFix*3);
-
-document.getElementById("infoZona").innerHTML=
-
-"Jarak : "+jarakFix.toFixed(1)+" km<br>"+
-"Ongkir : Rp "+rupiah(ongkir)+"<br>"+
-"Minimal Belanja : Rp "+rupiah(minimalBelanja)+
-infoTambah+
-"<br>Estimasi Antar : ±"+estimasi+" menit<br>"+
-"Desa : "+namaDesa+"<br>"+
-"Kecamatan : "+namaKecamatan;
-
-renderCart();
-
+  const totalBarang=cart.reduce((sum,p)=>sum+(p.harga*p.qty),0);
+  const kurang=minimalBelanja-totalBarang;
+  const infoTambah=totalBarang<minimalBelanja
+    ? "<br><b style='color:#b42318'>Tambah belanja Rp "+rupiah(kurang)+" lagi</b>"
+    : "";
+  const estimasi=Math.ceil(jarakFix*3);
+  document.getElementById("infoZona").innerHTML=
+    "Jarak : "+jarakFix.toFixed(1)+" km<br>"+
+    "Ongkir : Rp "+rupiah(ongkir)+"<br>"+
+    "Minimal Belanja : Rp "+rupiah(minimalBelanja)+infoTambah+
+    "<br>Estimasi Antar : ±"+estimasi+" menit<br>"+
+    "Desa : "+namaDesa+"<br>"+
+    "Kecamatan : "+namaKecamatan;
+  renderCart();
 }
 
 /* ================= POPUP ================= */
@@ -538,14 +456,14 @@ box.innerHTML=
 
 `<div style="background:white;padding:20px;border-radius:12px;width:80%;max-width:300px;text-align:center">
 
-<h3 style="color:#15803d;margin-top:0">
+<h3 style="color:#008b4c;margin-top:0">
 TOKO SIAP ANTAR
 </h3>
 
 <p>${pesan}</p>
 
 <button onclick="this.parentElement.parentElement.remove()"
-style="background:#15803d;color:white;border:none;padding:10px 20px;border-radius:6px">
+style="background:linear-gradient(100deg,#00a85a,#00c8d7);color:white;border:none;padding:10px 20px;border-radius:6px">
 OK
 </button>
 
@@ -557,12 +475,18 @@ document.body.appendChild(box);
 
 renderCart();
 
-window.onload = function(){
-gunakanLokasi();
-setTimeout(()=>{
-popup("📍 Jika titik tidak tepat, klik peta untuk memilih lokasi manual");
-},2000);
-};
+window.addEventListener("load",function(){
+  if(cart.length) updateCartStorageSafe();
+  // Mencoba mengambil lokasi otomatis; pembeli tetap bisa mengisi alamat manual.
+  gunakanLokasi();
+});
+
+function updateCartStorageSafe(){
+  localStorage.setItem("cart",JSON.stringify(cart));
+  localStorage.setItem("tsa_cart",JSON.stringify(cart.map(p=>({
+    id:p.id,name:p.nama,price:p.harga,qty:p.qty
+  }))));
+}
 </script>
 
 </body>
