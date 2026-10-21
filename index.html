@@ -62,7 +62,12 @@ footer h3{margin:0 0 16px;color:#009c54}
 
 /* Penyesuaian header dan logo dari kode indeks yang dikirim */
 body{background:#f4fff7;color:var(--ink)}
-header{position:sticky;top:0;z-index:20;background:#fff;border:0;box-shadow:0 2px 7px rgba(0,80,40,.08);isolation:isolate}
+header{position:sticky;top:0;z-index:20;background:#fff;border:0;box-shadow:0 2px 7px rgba(0,80,40,.08);isolation:isolate;display:flex;align-items:center;justify-content:space-between;min-height:72px;overflow:visible}
+.brand{display:flex;align-items:center;gap:8px;flex:1 1 auto;min-width:0}
+.welcome-text{display:flex!important;flex:1 1 auto;flex-direction:column;justify-content:center;gap:3px;min-width:0;max-width:560px;visibility:visible!important;opacity:1!important}
+.welcome-text strong,.welcome-text span{display:block!important;visibility:visible!important;opacity:1!important;position:static!important;white-space:normal;overflow:visible}
+.welcome-text strong{font-size:15px;line-height:1.3;font-weight:800;color:#008b4c}
+.welcome-text span{font-size:12px;line-height:1.35;color:#52635b}
 header::before,header::after{content:"";position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,#ffd400 0%,#00a85a 28%,#00c8d7 52%,#a9d900 76%,#ffd400 100%);pointer-events:none;z-index:1}
 header::before{top:0}header::after{bottom:0}
 .brand{color:#18312b;text-shadow:none;min-width:0}
@@ -74,12 +79,17 @@ header::before{top:0}header::after{bottom:0}
   header{padding:8px 10px;gap:6px}
   .brand{gap:7px;flex:1 1 0}
   .brand img{width:48px;height:46px}
-  .welcome-text{flex:1 1 auto;max-width:none;min-width:0}
-  .welcome-text strong{font-size:11px;display:block;overflow-wrap:anywhere}
-  .welcome-text span{font-size:9px;display:block;overflow-wrap:anywhere}
+  .welcome-text{display:flex!important;flex:1 1 auto;max-width:none;min-width:0;visibility:visible!important;opacity:1!important}
+  .welcome-text strong{display:block!important;font-size:12px;line-height:1.3;overflow-wrap:anywhere;color:#008b4c}
+  .welcome-text span{display:block!important;font-size:10px;line-height:1.35;overflow-wrap:anywhere;color:#52635b}
   .head-actions{gap:5px;flex:0 0 auto}
   .head-actions button{padding:7px 8px;font-size:17px}
 }
+
+/* Perbaikan final: teks header harus tetap tampil di layar kecil maupun besar */
+header .brand, header .welcome-text, header .welcome-text strong, header .welcome-text span{visibility:visible!important;opacity:1!important}
+header .welcome-text{display:flex!important}
+header .welcome-text strong, header .welcome-text span{position:static!important;transform:none!important;clip:auto!important}
 </style>
 </head>
 <body>
