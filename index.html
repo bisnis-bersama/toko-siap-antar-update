@@ -61,6 +61,77 @@ footer h3{margin:0 0 16px;color:#009c54}
 @media(max-width:520px){.products{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.product-photo{height:125px}.product-name{font-size:12px}.product-desc{font-size:10px}.price{font-size:13px}.quick-wrap{top:58px}.promo-track img{height:125px}}
 @media(max-width:600px){.promo-window{min-height:145px;padding:6px 0}.promo-track img{height:133px;margin-top:0;margin-bottom:0}}
 @media(max-width:360px){.products{grid-template-columns:repeat(2,minmax(0,1fr))}.product-photo{height:105px}.cat{padding:9px 11px;font-size:13px}}
+
+/* Header logo: latar putih dengan list gradasi tipis */
+header {
+  background: #fff !important;
+  border-bottom: 3px solid transparent;
+  border-image: linear-gradient(
+    90deg,
+    #ffd400,
+    #00a85a,
+    #00c8d7,
+    #8bd400,
+    #ffd400
+  ) 1;
+  box-shadow: 0 2px 5px #0000000a;
+}
+
+/* Logo tetap di kiri, dengan ruang yang cukup */
+.brand {
+  color: #18312b;
+  text-shadow: none;
+  gap: 10px;
+}
+
+.brand img {
+  background: #fff;
+  border-radius: 8px;
+  object-fit: contain;
+}
+
+/* Ucapan selamat datang di latar putih */
+.welcome-text strong {
+  color: #008b4c;
+  text-shadow: none;
+}
+
+.welcome-text span {
+  color: #52635b;
+  text-shadow: none;
+}
+
+/* Tombol header tetap terlihat di latar putih */
+.head-actions button {
+  color: #008b4c;
+  background: #f5fff8;
+  border: 1px solid #b9e5ce;
+}
+
+/* Garis pelangi tipis di atas header */
+header {
+  border-top: 3px solid transparent;
+  border-image: linear-gradient(
+    90deg,
+    #ffd400,
+    #00a85a,
+    #00c8d7,
+    #a9d900,
+    #ffd400
+  ) 1;
+}
+
+@media (max-width: 520px) {
+  header {
+    padding: 8px 10px;
+  }
+
+  .brand img {
+    width: 42px;
+    height: 44px;
+  }
+}
+
 </style>
 </head>
 <body>
