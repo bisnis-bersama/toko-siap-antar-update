@@ -12,14 +12,16 @@ html{scroll-behavior:smooth}
 body{margin:0;background:var(--paper);color:var(--ink);font-family:Arial,Helvetica,sans-serif;padding-bottom:82px}
 header{position:sticky;top:0;z-index:20;background:linear-gradient(100deg,#009b4b,#00c9c9,#a9d900);padding:10px 14px;min-height:58px;display:flex;align-items:center;justify-content:space-between;gap:12px;border-bottom:2px solid var(--yellow)}
 .brand{display:flex;align-items:center;gap:8px;color:white;font-weight:800;text-shadow:0 1px 3px #246a40}
-.brand img{width:44px;height:38px;object-fit:contain}
+.brand img{display:block;width:64px;height:52px;object-fit:contain;flex:0 0 auto}
 .head-actions{display:flex;gap:8px}
 .head-actions button{border:1px solid #ffffff80;background:#ffffff20;color:#fff;border-radius:12px;padding:8px 11px;font-size:20px}
 .promo{margin:8px 0 0;border-block:2px solid var(--yellow);background:linear-gradient(90deg,#00a85a,#00c8d7,#d8e500);padding:4px 0}
 .promo-window{overflow:hidden;background:#fff;border-radius:10px;min-height:135px}
-.promo-track{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scrollbar-width:none}
-.promo-track::-webkit-scrollbar{display:none}
-.promo-track img{display:block;flex:0 0 100%;width:100%;height:135px;object-fit:contain;background:#fff;scroll-snap-align:center}
+.promo-track{display:flex;width:max-content;animation:promoGeser 30s linear infinite;will-change:transform}
+.promo-track:hover{animation-play-state:paused}
+.promo-track img{display:block;flex:0 0 min(100vw,900px);width:min(100vw,900px);height:135px;object-fit:contain;background:#fff}
+@keyframes promoGeser{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+@media(prefers-reduced-motion:reduce){.promo-track{animation:none;overflow-x:auto;max-width:100%}}
 .quick-wrap{position:sticky;top:58px;z-index:15;background:#fffef0;padding:10px 12px 8px;border-bottom:1px solid var(--line)}
 .categories{display:flex;gap:8px;overflow-x:auto;white-space:nowrap;padding:2px 0 9px;scrollbar-width:none}
 .categories::-webkit-scrollbar{display:none}
@@ -55,12 +57,13 @@ footer h3{margin:0 0 16px;color:#009c54}
 </head>
 <body>
 <header>
-  <div class="brand"><img src="logo2.png" alt="Logo" onerror="this.style.display='none'"><span>TOKO SIAP ANTAR</span></div>
+  <div class="brand"><img class="brand-logo-left" src="logo3.png" alt="Logo Toko Siap Antar"></div>
   <div class="head-actions"><button id="refresh" aria-label="Muat ulang">↻</button><button id="theme" aria-label="Ganti tema">☾</button></div>
 </header>
 <section class="promo" aria-label="Promo">
   <div class="promo-window"><div class="promo-track" id="promoTrack">
     <img src="silde1.png" alt="Promo 1"><img src="silde2.png" alt="Promo 2"><img src="silde3.png" alt="Promo 3"><img src="silde4.png" alt="Promo 4"><img src="silde5.png" alt="Promo 5"><img src="silde6.png" alt="Promo 6">
+    <img src="silde1.png" alt="Promo 1" aria-hidden="true"><img src="silde2.png" alt="Promo 2" aria-hidden="true"><img src="silde3.png" alt="Promo 3" aria-hidden="true"><img src="silde4.png" alt="Promo 4" aria-hidden="true"><img src="silde5.png" alt="Promo 5" aria-hidden="true"><img src="silde6.png" alt="Promo 6" aria-hidden="true">
   </div></div>
 </section>
 <section class="quick-wrap">
