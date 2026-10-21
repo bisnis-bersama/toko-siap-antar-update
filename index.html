@@ -136,7 +136,12 @@ let allProducts = [];
 let activeCategory = 'Semua';
 function readCart(){
   let raw=[];
-  try{raw=JSON.parse(localStorage.getItem('tsa_cart') || localStorage.getItem('cart') || '[]')}catch(_){raw=[]}
+  try{
+    // Halaman keranjang memakai key 'cart', jadi key itu harus menjadi sumber utama.
+    const cartData=localStorage.getItem('cart');
+    const savedData=cartData !== null ? cartData : (localStorage.getItem('tsa_cart') || '[]');
+    raw=JSON.parse(savedData);
+  }catch(_){raw=[]}
   if(!Array.isArray(raw))raw=[];
   return raw.map((p,i)=>{
     const nama=String(p.nama ?? p.name ?? '').trim();
@@ -216,9 +221,11 @@ function refreshCartBadgeFromStorage(){
   cart = readCart();
   document.getElementById('cartCount').textContent = cart.reduce((sum,item)=>sum+item.qty,0);
 }
+// Sinkronkan angka ketika kembali dari halaman keranjang atau tab mendapat fokus.
 window.addEventListener('pageshow', refreshCartBadgeFromStorage);
+window.addEventListener('focus', refreshCartBadgeFromStorage);
 window.addEventListener('storage', event => {
-  if(event.key === 'tsa_cart' || event.key === 'cart') refreshCartBadgeFromStorage();
+  if(event.key === 'tsa_cart' || event.key === 'cart' || event.key === null) refreshCartBadgeFromStorage();
 });
 function openWhatsApp(p, intro='Halo, saya ingin pesan: ') {
   const message = intro + p.name + ' — ' + formatPrice(p.price);
