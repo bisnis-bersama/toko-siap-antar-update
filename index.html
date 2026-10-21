@@ -78,7 +78,18 @@ header::before,header::after{
 }
 header::before{top:0}header::after{bottom:0}
 .brand{color:#18312b;text-shadow:none;min-width:0}
-.brand img{background:#fff;object-fit:contain;border-radius:7px}
+/* Bingkai logo header: sudut membulat, latar putih, garis pelangi tipis */
+.brand img{
+  background:#fff;
+  object-fit:contain;
+  border:1.5px solid transparent;
+  border-radius:12px;
+  padding:3px;
+  background:
+    linear-gradient(#fff,#fff) padding-box,
+    linear-gradient(135deg,#ffd400 0%,#00a85a 30%,#00c8d7 58%,#a9d900 80%,#ffd400 100%) border-box;
+  box-shadow:0 1px 4px rgba(0,120,65,.10);
+}
 .welcome-text strong{color:#008b4c;text-shadow:none}
 .welcome-text span{color:#52635b;text-shadow:none}
 .head-actions button{color:#008b4c;background:#f3fff7;border:1px solid #b9e5ce}
