@@ -17,9 +17,9 @@ header{position:sticky;top:0;z-index:20;background:linear-gradient(100deg,#009b4
 .head-actions button{border:1px solid #ffffff80;background:#ffffff20;color:#fff;border-radius:12px;padding:8px 11px;font-size:20px}
 .promo{margin:8px 0 0;border-block:2px solid var(--yellow);background:linear-gradient(90deg,#00a85a,#00c8d7,#d8e500);padding:4px 0}
 .promo-window{overflow:hidden;background:#fff;border-radius:10px;min-height:135px}
-.promo-track{display:flex;width:max-content;animation:promoGeser 30s linear infinite;will-change:transform}
+.promo-track{display:flex;width:max-content;animation:promoGeser 24s linear infinite;will-change:transform}
 .promo-track:hover{animation-play-state:paused}
-.promo-track img{display:block;flex:0 0 min(100vw,900px);width:min(100vw,900px);height:135px;object-fit:contain;background:#fff}
+.promo-track img{display:block;flex:0 0 min(72vw,680px);width:min(72vw,680px);height:135px;object-fit:contain;background:#fff;margin-right:6px}
 @keyframes promoGeser{from{transform:translateX(0)}to{transform:translateX(-50%)}}
 @media(prefers-reduced-motion:reduce){.promo-track{animation:none;overflow-x:auto;max-width:100%}}
 .quick-wrap{position:sticky;top:58px;z-index:15;background:#fffef0;padding:10px 12px 8px;border-bottom:1px solid var(--line)}
