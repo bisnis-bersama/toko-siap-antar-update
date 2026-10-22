@@ -87,6 +87,7 @@ form.addEventListener('submit', async (event) => {
     await setDoc(doc(db, 'users', credential.user.uid), {
       nama,
       email,
+      role: 'pelanggan',
       createdAt: serverTimestamp()
     });
 
