@@ -198,7 +198,14 @@ productsEl.addEventListener('click', e => {
   const p = allProducts.find(item => item.id === btn.dataset.id);
   if (!p) return;
   if (btn.dataset.action === 'wa') openWhatsApp(p, 'Halo, saya mau tanya produk: ');
-  if (btn.dataset.action === 'buy') openWhatsApp(p);
+  if (btn.dataset.action === 'buy') {
+    const existing = cart.find(item=>item.id===p.id);
+    if (existing) existing.qty++;
+    else cart.push({id:p.id,name:p.name,price:p.price,qty:1});
+    updateCart();
+    location.href = 'keranjang.html';
+    return;
+  }
   if (btn.dataset.action === 'cart') {
     const existing = cart.find(item=>item.id===p.id);
     if (existing) existing.qty++;
@@ -220,8 +227,7 @@ document.getElementById('refresh').onclick=()=>location.reload();
 document.getElementById('homeBtn').onclick=()=>window.scrollTo({top:0,behavior:'smooth'});
 document.getElementById('cartBtn').onclick=()=>{
   if(!cart.length){alert('Keranjang masih kosong.');return;}
-  const msg='Pesanan Toko Siap Antar:\n'+cart.map((x,i)=>`${i+1}. ${x.name} — ${x.qty} pcs`).join('\n');
-  window.open('https://wa.me/?text='+encodeURIComponent(msg),'_blank');
+  location.href='keranjang.html';
 };
 document.getElementById('historyBtn').onclick=()=>alert('Riwayat pesanan akan tersedia melalui akun Anda.');
 document.getElementById('profileBtn').onclick=()=>alert('Silakan hubungi admin untuk akses profil/member.');
