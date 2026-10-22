@@ -16,7 +16,14 @@
 import {initializeApp} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js';
 import {getAuth,onAuthStateChanged,signOut} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js';
 import {getFirestore,collection,doc,getDoc,getDocs,query,orderBy,limit,updateDoc,runTransaction,serverTimestamp,Timestamp} from 'https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js';
-const firebaseConfig={apiKey:'AIzaSyBwHjyapmcsvIff_HrGyHsxGrJTl-7CHTo',authDomain:'teknisi-ponsel-maja.firebaseapp.com',projectId:'teknisi-ponsel-maja',storageBucket:'teknisi-ponsel-maja.firebasestorage.app',messagingSenderId:'835618012205',appId:'1:835618012205:web:95e41095d1a56c761d4ca4'};
+const firebaseConfig = {
+  apiKey: "AIzaSyBxqZhl6t3RwrXMwVdJeIkg0NzGfwvlweM",
+  authDomain: "toko-siap-antar-9a7bb.firebaseapp.com",
+  projectId: "toko-siap-antar-9a7bb",
+  storageBucket: "toko-siap-antar-9a7bb.firebasestorage.app",
+  messagingSenderId: "351335838712",
+  appId: "1:351335838712:web:14cc2c7b91bb0c9e1b5c0d"
+};
 const app=initializeApp(firebaseConfig),auth=getAuth(app),db=getFirestore(app);let currentUser=null,allOrders=[],filter='MENUNGGU_PERSETUJUAN',busy=false;
 const $=id=>document.getElementById(id);const money=n=>new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format(Number(n)||0);const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));const statusLabel=s=>({'MENUNGGU_PERSETUJUAN':'Menunggu persetujuan','DISETUJUI':'Disetujui','DITOLAK':'Ditolak','DIPROSES':'Diproses','DIKIRIM':'Dikirim','SELESAI':'Selesai'}[s]||s||'—');
 function msg(text,error=false){$('message').hidden=false;$('message').className='message'+(error?' err':'');$('message').textContent=text}function normalize(s){return String(s||'').toUpperCase().replace(/[ -]+/g,'_')}function itemList(o){return Array.isArray(o.items)?o.items:[]}function qty(o){return Number(o.totalQty||itemList(o).reduce((a,x)=>a+Number(x.qty||x.jumlah||1),0))}function tempo(o){return Number(o.tempoHari|| (qty(o)>=10?30:qty(o)>=5?15:qty(o)>=3?7:0))}
