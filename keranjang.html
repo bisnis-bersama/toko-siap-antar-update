@@ -115,6 +115,26 @@ box-shadow:0 4px 10px rgba(0,0,0,0.2);
   .card{margin:10px;padding:13px}
   .checkout,.clearBtn{width:calc(100% - 20px);margin:10px}
 }
+
+.add-product-btn{
+  display:block;
+  width:calc(100% - 20px);
+  margin:10px;
+  padding:15px;
+  border:0;
+  border-radius:12px;
+  background:linear-gradient(100deg,#00a85a,#00c8d7);
+  color:#fff;
+  font-size:16px;
+  font-weight:800;
+  text-align:center;
+  text-decoration:none;
+  box-shadow:0 4px 10px rgba(0,0,0,.15);
+}
+.add-product-btn:active{
+  transform:scale(.98);
+}
+
 </style>
 </head>
 
@@ -228,64 +248,59 @@ function gunakanLokasi(){
 
 /* ================= RENDER CART ================= */
 
+
 function renderCart(){
+  const list = document.getElementById("cartList");
+  list.innerHTML = "";
 
-let list=document.getElementById("cartList");
-list.innerHTML="";
+  let total = 0;
 
-let total=0;
+  cart.forEach((p,i)=>{
+    const sub = p.harga * p.qty;
+    total += sub;
 
-cart.forEach((p,i)=>{
+    list.innerHTML += `
+      <div class="card">
+        <b>${escapeText(p.nama)}</b><br>
+        <span class="harga">Rp ${rupiah(p.harga)}</span><br>
+        <button onclick="kurang(${i})">-</button>
+        ${p.qty}
+        <button onclick="tambah(${i})">+</button>
+        <button onclick="hapus(${i})">Hapus</button>
+        <br>
+        Subtotal : Rp ${rupiah(sub)}
+      </div>
+    `;
+  });
 
-let sub=p.harga*p.qty;
-total+=sub;
+  const totalBayar = total + ongkir;
 
-list.innerHTML+=`
-<div class="card">
+  list.innerHTML += `
+    <div class="card">
+      <b>Total Barang : Rp ${rupiah(total)}</b><br>
+      <b>Ongkir : Rp ${rupiah(ongkir)}</b>
+      <hr>
+      <b style="color:#008b4c;font-size:18px">
+        TOTAL BAYAR : Rp ${rupiah(totalBayar)}
+      </b>
+    </div>
 
-<b>${p.nama}</b><br>
-
-<span class="harga">Rp ${rupiah(p.harga)}</span><br>
-
-<button onclick="kurang(${i})">-</button>
-
-${p.qty}
-
-<button onclick="tambah(${i})">+</button>
-
-<button onclick="hapus(${i})">Hapus</button>
-
-<br>
-
-Subtotal : Rp ${rupiah(sub)}
-
-</div>
-`;
-
-});
-
-let totalBayar=total+ongkir;
-
-list.innerHTML+=`
-
-<div class="card">
-
-<b>Total Barang : Rp ${rupiah(total)}</b><br>
-
-<b>Ongkir : Rp ${rupiah(ongkir)}</b>
-
-<hr>
-
-<b style="color:#008b4c;font-size:18px">
-
-TOTAL BAYAR : Rp ${rupiah(totalBayar)}
-
-</b>
-
-</div>
-`;
-
+    <a href="index.html" class="add-product-btn">
+      🛍️ Tambah Produk
+    </a>
+  `;
 }
+
+function escapeText(value){
+  return String(value ?? "").replace(/[&<>"']/g,c=>({
+    "&":"&amp;",
+    "<":"&lt;",
+    ">":"&gt;",
+    '"':"&quot;",
+    "'":"&#39;"
+  }[c]));
+}
+
 
 /* ================= CART CONTROL ================= */
 
