@@ -98,6 +98,61 @@ header::before{top:0}header::after{bottom:0}
 .product-photo{background:linear-gradient(135deg,#d9ffed,#f4ffe2)}
 @media(max-width:520px){header{padding:8px 10px}.brand img{width:48px;height:46px}.welcome-text{max-width:calc(100vw - 160px)}}
 
+/* Popup zoom foto produk */
+.product-photo {
+  cursor: zoom-in;
+}
+
+.product-zoom {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: rgba(0, 0, 0, .82);
+}
+
+.product-zoom.show {
+  display: flex;
+}
+
+.product-zoom img {
+  display: block;
+  max-width: 95vw;
+  max-height: 82vh;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  border-radius: 12px;
+  background: white;
+}
+
+.product-zoom-close {
+  position: absolute;
+  top: max(14px, env(safe-area-inset-top));
+  right: 16px;
+  width: 44px;
+  height: 44px;
+  border: 0;
+  border-radius: 50%;
+  background: white;
+  color: #173b32;
+  font-size: 28px;
+  cursor: pointer;
+}
+
+.product-zoom-name {
+  position: absolute;
+  bottom: max(18px, env(safe-area-inset-bottom));
+  left: 16px;
+  right: 16px;
+  color: white;
+  text-align: center;
+  font-size: 15px;
+  font-weight: 700;
+}
 </style>
 </head>
 <body>
@@ -136,6 +191,15 @@ header::before{top:0}header::after{bottom:0}
 <nav class="bottom-nav" aria-label="Navigasi bawah">
   <button id="homeBtn"><span class="ico">⌂</span>Home</button><button id="historyBtn"><span class="ico">▤</span>Riwayat</button><button id="cartBtn"><span class="ico">🛒 <sup id="cartCount">0</sup></span>Keranjang</button><button id="profileBtn"><span class="ico">👤</span>Profil</button>
 </nav>
+<div id="productZoom" class="product-zoom"
+     role="dialog" aria-modal="true"
+     aria-label="Foto produk diperbesar">
+  <button type="button" id="productZoomClose"
+          class="product-zoom-close"
+          aria-label="Tutup popup">×</button>
+  <img id="productZoomImage" src="" alt="Foto produk">
+  <div id="productZoomName" class="product-zoom-name"></div>
+</div>
 <script>
 const SHEET_URL = 'https://docs.google.com/spreadsheets/d/1H23wsTKmR1grQgSAqULbUCM9wQdfx5u6RHJwrrbROG0/gviz/tq?sheet=MEMBER';
 const productsEl = document.getElementById('products');
@@ -269,6 +333,41 @@ fetch(SHEET_URL, {cache:'no-store'})
   productsEl.innerHTML='<div class="notice" style="grid-column:1/-1;color:#b42318">Produk gagal dimuat: '+escapeHtml(err.message)+'. Pastikan tab spreadsheet yang dipakai benar dan aksesnya publik.</div>';
 });
 updateCart();
+// Popup zoom foto produk
+const productZoom = document.getElementById('productZoom');
+const productZoomImage = document.getElementById('productZoomImage');
+const productZoomName = document.getElementById('productZoomName');
+
+function closeProductZoom() {
+  productZoom.classList.remove('show');
+  productZoomImage.src = '';
+  document.body.style.overflow = '';
+}
+
+productsEl.addEventListener('click', function(e) {
+  // Jangan membuka popup jika yang diklik tombol beli/keranjang/WA
+  if (e.target.closest('button')) return;
+
+  const img = e.target.closest('.product-photo img');
+  if (!img || !img.src) return;
+
+  productZoomImage.src = img.src;
+  productZoomImage.alt = img.alt || 'Foto produk';
+  productZoomName.textContent = img.alt || '';
+  productZoom.classList.add('show');
+  document.body.style.overflow = 'hidden';
+});
+
+document.getElementById('productZoomClose')
+  .addEventListener('click', closeProductZoom);
+
+productZoom.addEventListener('click', function(e) {
+  if (e.target === productZoom) closeProductZoom();
+});
+
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeProductZoom();
+});
 </script>
 </body>
 </html>
