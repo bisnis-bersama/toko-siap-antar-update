@@ -45,8 +45,26 @@ const $=id=>document.getElementById(id);let currentUser=null,profile=null,busy=f
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 function message(el,text,type=""){el.className=type;el.textContent=text}
 function normStatus(s){return String(s||"menunggu").trim().toLowerCase().replace(/[\s-]+/g,"_")}
-function statusText(s){const k=normStatus(s);return ({menunggu:"Menunggu",menunggu_persetujuan:"Menunggu persetujuan",disetujui:"Disetujui",ditugaskan:"Ditugaskan ke mitra",ditugaskan_ke_mitra:"Ditugaskan ke mitra",diambil:"Pesanan diambil",diambil_mitra:"Pesanan diambil",dalam_pengantaran:"Dalam pengantaran",dikirim:"Dalam pengantaran",sedang_diantar:"Dalam pengantaran",selesai:"Selesai",terkirim:"Selesai",dibatalkan:"Dibatalkan"})[k]||s||"—"}
-function fmtMoney(v){const n=Number(v??0);return "Rp "+(Number.isFinite(n)?n:0).toLocaleString("id-ID")}
+function statusText(s){
+  const k = normStatus(s);
+  return ({
+    menunggu: "Menunggu",
+    menunggu_persetujuan: "Menunggu persetujuan",
+    disetujui: "Disetujui",
+    dikemas: "Dikemas",
+    siap_diambil: "Siap diambil",
+    ditugaskan: "Ditugaskan ke mitra",
+    ditugaskan_ke_mitra: "Ditugaskan ke mitra",
+    diambil: "Pesanan diambil",
+    diambil_mitra: "Pesanan diambil",
+    dalam_pengantaran: "Dalam pengantaran",
+    dikirim: "Dalam pengantaran",
+    sedang_diantar: "Dalam pengantaran",
+    selesai: "Selesai",
+    terkirim: "Selesai",
+    dibatalkan: "Dibatalkan"
+  })[k] || s || "—";
+}
 function getOrderAddress(o){const candidates=[o.alamatLengkap,o.alamatManual,o.alamatPengiriman,o.alamat,o.address];for(const a of candidates){if(typeof a==="string"&&a.trim()&&a.trim()!=="[object Object]")return a.trim();if(a&&typeof a==="object"){const parts=[a.alamatLengkap,a.alamatManual,a.alamat,a.detail,a.jalan,a.patokan,a.desa,a.kecamatan,a.kabupaten,a.provinsi].filter(Boolean);if(parts.length)return parts.join(", ")}}return [o.desa,o.kecamatan,o.kabupaten,o.provinsi].filter(Boolean).join(", ")||"Alamat lengkap belum tersedia"}
 function getMapsLink(o){const candidates=[o.gpsLink,o.alamatManual,o.alamatLengkap,o.alamatPengiriman,o.alamat,o.address];for(const a of candidates){if(typeof a==="string"){const m=a.match(/https?:\/\/[^\s"'<>]+/i);if(m&&/(google\.[^/]+\/maps|maps\.google\.[^/]+|maps\.app\.goo\.gl)/i.test(m[0]))return m[0].replace(/[),.;]+$/,'')}if(a&&typeof a==="object"){const lat=a.lat??a.latitude??o.lat??o.lokasi?.lat,lng=a.lng??a.longitude??a.long??o.lng??o.lokasi?.lng;if(lat!=null&&lng!=null)return "https://www.google.com/maps?q="+encodeURIComponent(lat+","+lng);for(const value of Object.values(a)){if(typeof value==="string"){const m=value.match(/https?:\/\/[^\s"'<>]+/i);if(m&&/(google\.[^/]+\/maps|maps\.google\.[^/]+|maps\.app\.goo\.gl)/i.test(m[0]))return m[0].replace(/[),.;]+$/,'')}}}}const lat=o.lat??o.lokasi?.lat,lng=o.lng??o.lokasi?.lng;if(lat!=null&&lng!=null)return "https://www.google.com/maps?q="+encodeURIComponent(lat+","+lng);const address=getOrderAddress(o);return address!=="Alamat lengkap belum tersedia"?"https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(address):""}
 function getWhatsApp(phone,text=""){let digits=String(phone||"").trim().replace(/\D/g,"");if(!digits)return "";if(digits.startsWith("0"))digits="62"+digits.slice(1);else if(digits.startsWith("8"))digits="62"+digits;return "https://wa.me/"+digits+(text?"?text="+encodeURIComponent(text):"")}
@@ -54,7 +72,27 @@ function getItems(o){return Array.isArray(o.items)?o.items:(Array.isArray(o.prod
 function orderItems(o){const a=getItems(o);return a.map(x=>`<li>${esc(x.nama||x.name||x.title||x.namaProduk||"Produk")} × ${Number(x.qty??x.quantity??1)}</li>`).join("")||"<li>Rincian barang tidak tersedia</li>"}
 function paymentInfo(o){const method=String(o.metodePembayaran||o.paymentMethod||o.payment_method||o.metodeBayar||"belum dicantumkan").trim();const paymentStatus=String(o.statusPembayaran||o.paymentStatus||o.payment_status||o.statusBayar||"belum dicantumkan").trim();const ns=paymentStatus.toLowerCase().replace(/[\s-]+/g,"_");const paid=["lunas","paid","sudah_lunas","berhasil","success","settlement","terbayar"].includes(ns);const cod=/cod|bayar di tempat|tunai saat diterima/i.test(method);return{paid,cod,method,status:paymentStatus}}
 function buildDeliveryMessage(o){const mitraName=profile?.nama||currentUser?.displayName||currentUser?.email||"Mitra Toko Siap Antar";const customerName=o.namaPelanggan||o.nama||o.namaPembeli||o.ownerName||"Kak";const orderNo=o.nomorPesanan||o.orderNumber||o.invoice||o.idPesanan||"";const items=getItems(o);const productLines=items.length?items.map((x,i)=>`${i+1}. ${x.nama||x.name||x.title||x.namaProduk||"Produk"} × ${Number(x.qty??x.quantity??1)}`).join("\n"):"Rincian produk belum tersedia";const s=normStatus(o.status);let deliveryMessage="Saya menghubungi Kakak terkait pesanan dari Toko Siap Antar.";if(["menunggu","menunggu_persetujuan","disetujui","ditugaskan","ditugaskan_ke_mitra"].includes(s))deliveryMessage="Saya menghubungi Kakak terkait pesanan. Pesanan Kakak belum mulai diantar. Mohon konfirmasi, apakah Kakak berada di alamat pengiriman?";else if(["diambil","diambil_mitra"].includes(s))deliveryMessage="Pesanan Kakak sudah saya ambil untuk diproses. Saya akan mengabari Kakak saat mulai mengantar.";else if(["dalam_pengantaran","dikirim","sedang_diantar"].includes(s))deliveryMessage="Pesanan Kakak sedang saya antar. Apakah Kakak ada di lokasi pengiriman?";else if(["selesai","terkirim"].includes(s))deliveryMessage="Pesanan Kakak telah ditandai selesai. Terima kasih sudah berbelanja di Toko Siap Antar.";else if(s==="dibatalkan")deliveryMessage="Saya menghubungi Kakak terkait perubahan status pesanan.";const total=o.total??o.totalHarga??o.grandTotal??o.total_pesanan??o.totalBelanja??0;const payment=paymentInfo(o);const lines=[`Halo Kak${customerName!=="Kak"?" "+customerName:""},`,`Perkenalkan, saya ${mitraName} dari Toko Siap Antar.`,orderNo?`Nomor pesanan: ${orderNo}`:"","","DETAIL PESANAN",productLines,"",`Total pesanan: ${fmtMoney(total)}`,`Alamat pengiriman: ${getOrderAddress(o)}`,"",`Status pesanan: ${statusText(o.status)}`,deliveryMessage];if(payment.paid)lines.push("Status pembayaran: sudah lunas. Tidak perlu melakukan pembayaran kembali.");else if(payment.cod)lines.push("Metode pembayaran: COD (bayar di tempat). Mohon siapkan pembayaran sesuai total pesanan saat pesanan diterima.");else{lines.push(`Metode pembayaran: ${payment.method}.`);lines.push(`Status pembayaran: ${payment.status}.`)}lines.push("","Terima kasih sudah berbelanja di Toko Siap Antar. 🙏");return lines.join("\n")}
-function canStart(s){return ["menunggu","menunggu_persetujuan","disetujui","ditugaskan","ditugaskan_ke_mitra"].includes(normStatus(s))}
+function canStart(s){
+  return [
+    "menunggu",
+    "menunggu_persetujuan",
+    "disetujui",
+    "dikemas",
+    "siap_diambil",
+    "ditugaskan",
+    "ditugaskan_ke_mitra"
+  ].includes(normStatus(s));
+}
+
+function canDeliver(s){
+  return [
+    "diambil",
+    "diambil_mitra",
+    "dalam_pengantaran",
+    "dikirim",
+    "sedang_diantar"
+  ].includes(normStatus(s));
+}
 function canDeliver(s){return ["diambil","diambil_mitra","dalam_pengantaran","dikirim","sedang_diantar"].includes(normStatus(s))}
 function card(id,o){const st=o.status||"menunggu";const phone=o.noWA||o.telepon||o.whatsapp||o.nomorWA||o.phone||"";const wa=getWhatsApp(phone,buildDeliveryMessage(o));const map=getMapsLink(o);let buttons="";if(canStart(st))buttons=`<button data-action="ambil" data-id="${esc(id)}">📦 Ambil Pesanan</button>`;else if(canDeliver(st))buttons=`<button data-action="jalan" data-id="${esc(id)}">🛵 Mulai Pengantaran</button><button data-action="selesai" data-id="${esc(id)}">✅ Tandai Selesai</button>`;return `<article class="order"><div class="topline"><h3>Pesanan ${esc(o.nomorPesanan||o.orderNumber||o.invoice||id)}</h3><span class="status">${esc(statusText(st))}</span></div><p><b>Pelanggan:</b> ${esc(o.namaPelanggan||o.nama||o.ownerName||o.namaPembeli||"—")}</p><p><b>WhatsApp:</b> ${phone&&wa?`<a class="contact-link" href="${esc(wa)}" target="_blank" rel="noopener noreferrer">💬 Hubungi Kakak via WhatsApp (pesan tugas otomatis)</a> <span class="small muted">(${esc(phone)})</span>`:"Nomor WhatsApp pelanggan belum tersedia"}</p><p><b>Alamat:</b> ${esc(getOrderAddress(o))}</p><p><b>Total:</b> ${fmtMoney(o.total??o.totalHarga??o.grandTotal??o.total_pesanan??o.totalBelanja??0)}</p><p><b>Barang:</b></p><ul class="items">${orderItems(o)}</ul><div class="actions">${map?`<a class="btn secondary" href="${esc(map)}" target="_blank" rel="noopener noreferrer">📍 Navigasi ke pelanggan</a>`:""}${buttons}</div><p class="small muted">ID pesanan: ${esc(id)}</p></article>`}
 function searchableText(d){const o=d.data;return [d.id,o.nomorPesanan,o.orderNumber,o.invoice,o.idPesanan,o.namaPelanggan,o.nama,o.namaPembeli,o.ownerName,o.noWA,o.telepon,o.whatsapp,o.nomorWA,o.phone,getOrderAddress(o)].filter(Boolean).join(" ").toLowerCase()}
