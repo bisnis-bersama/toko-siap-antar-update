@@ -62,6 +62,9 @@ function canDeliver(s){return ["diambil","DIAMBIL","dalam_pengantaran","DALAM_PE
 function card(id,o){
  const st=String(o.status||"menunggu");
  const phone=o.noWA||o.telepon||o.whatsapp||"";
+ const wa=getWhatsApp(phone);
+ const address=getOrderAddress(o);
+ const map=getMapsLink(o);
  let buttons="";
  if(canStart(st))buttons=`<button data-action="ambil" data-id="${esc(id)}">📦 Ambil Pesanan</button>`;
  else if(canDeliver(st))buttons=`<button data-action="jalan" data-id="${esc(id)}">🛵 Dalam Pengantaran</button><button data-action="selesai" data-id="${esc(id)}">✅ Selesai</button>`;
