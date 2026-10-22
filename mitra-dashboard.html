@@ -55,7 +55,7 @@ function message(el,text,type=""){el.className=type;el.textContent=text;}
 function statusText(s){return ({menunggu:"Menunggu",MENUNGGU:"Menunggu",MENUNGGU_PERSETUJUAN:"Menunggu persetujuan",disetujui:"Disetujui",DISETUJUI:"Disetujui",diambil:"Pesanan diambil",DALAM_PENGANTARAN:"Dalam pengantaran",dalam_pengantaran:"Dalam pengantaran",dikirim:"Dalam pengantaran",selesai:"Selesai",SELESAI:"Selesai",dibatalkan:"Dibatalkan",DIBATALKAN:"Dibatalkan"})[s]||s||"—";}
 function fmtMoney(v){return "Rp "+Number(v||0).toLocaleString("id-ID");}
 function getOrderAddress(o){const a=o.alamatPengiriman||o.alamat||{};if(typeof a==="string")return a;return [a.alamat,a.alamatManual,a.alamatPengiriman,a.desa,a.kecamatan,a.kabupaten,a.provinsi].filter(Boolean).join(", ")||"Alamat belum tersedia";}
-function getMapsLink(o){const a=o.alamatPengiriman||o.alamat||{};if(a&&typeof a==="object"){const lat=a.lat??a.latitude??o.lat??o.lokasi?.lat;const lng=a.lng??a.longitude??o.lng??o.lokasi?.lng;if(lat!=null&&lng!=null)return `https://www.google.com/maps?q=${encodeURIComponent(lat+","+lng)}`;}const text=getOrderAddress(o);const match=text.match(/https?:\/\/maps\.google\.com\/\?q=[^\\s]+/);return match?match[0]:"https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(text);}
+function getMapsLink(o){if(o.gpsLink&&/^https?:\/\//i.test(o.gpsLink))return o.gpsLink;const a=o.alamatPengiriman||o.alamat||{};if(a&&typeof a==="object"){const lat=a.lat??a.latitude??o.lat??o.lokasi?.lat;const lng=a.lng??a.longitude??o.lng??o.lokasi?.lng;if(lat!=null&&lng!=null)return `https://www.google.com/maps?q=${encodeURIComponent(lat+","+lng)}`;}if(o.lat!=null&&o.lng!=null)return `https://www.google.com/maps?q=${encodeURIComponent(o.lat+","+o.lng)}`;const text=getOrderAddress(o);const match=text.match(/https?:\/\/(?:www\.)?maps\.google\.com\/\?q=[^\s]+/);return match?match[0]:"https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(text);}
 function orderItems(o){const a=Array.isArray(o.items)?o.items:[];return a.map(x=>`<li>${esc(x.nama||x.name||x.title||"Produk")} × ${Number(x.qty||x.quantity||1)}</li>`).join("")||"<li>Rincian barang tidak tersedia</li>";}
 function canStart(s){return ["menunggu","MENUNGGU","disetujui","DISETUJUI","MENUNGGU_PERSETUJUAN","ditugaskan","DITUGASKAN"].includes(String(s||""));}
 function canDeliver(s){return ["diambil","DIAMBIL","dalam_pengantaran","DALAM_PENGANTARAN","dikirim"].includes(String(s||""));}
@@ -69,7 +69,9 @@ function card(id,o){
   <div class="topline"><h3>Pesanan ${esc(o.nomorPesanan||id)}</h3><span class="status">${esc(statusText(st))}</span></div>
   <p><b>Pelanggan:</b> ${esc(o.nama||o.ownerName||o.namaPembeli||"—")}</p>
   <p><b>WhatsApp:</b> ${phone?`<a href="https://wa.me/${esc(phone.replace(/\\D/g,""))}">${esc(phone)}</a>`:"—"}</p>
-  <p><b>Alamat:</b> ${esc(getOrderAddress(o))}</p>
+  <p><b>Alamat lengkap:</b> ${esc(getOrderAddress(o))}</p>
+  <p><b>Jarak estimasi:</b> ${o.jarakKm!=null?Number(o.jarakKm).toFixed(1)+" km":"Tidak tersedia"}</p>
+  <p><b>Ongkos kirim:</b> ${fmtMoney(o.ongkir||0)}</p>
   <p><b>Total:</b> ${fmtMoney(o.total)}</p>
   <p><b>Barang:</b></p><ul class="items">${orderItems(o)}</ul>
   <div class="actions"><a class="btn secondary" href="${esc(getMapsLink(o))}" target="_blank" rel="noopener">📍 Buka Google Maps</a>${buttons}</div>

@@ -1,39 +1,10 @@
-<!doctype html>
-<html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Login Satu Pintu | Toko Siap Antar</title><link rel="stylesheet" href="style.css">
-<style>
-.login-card{max-width:520px;margin:24px auto}.role-guide{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:18px 0}.role-item{border:1px solid #dce9e3;border-radius:12px;padding:12px;background:#f7fcf9}.role-item b{display:block}.role-item small{color:#66756f}.login-card input{width:100%;box-sizing:border-box}.notice{overflow-wrap:anywhere}@media(max-width:420px){.role-guide{grid-template-columns:1fr}}
-</style></head><body>
-<header><strong>TOKO SIAP ANTAR</strong><nav><a href="index.html">Toko</a><a href="register.html">Daftar pelanggan</a></nav></header>
-<main class="shell"><section class="panel login-card"><h1>Login Satu Pintu</h1><p class="muted">Gunakan email dan password akun. Sistem memeriksa role akun di Firestore dan membuka halaman sesuai hak akses.</p><div id="notice" class="notice" hidden></div>
-<form id="loginForm"><label for="email">Email</label><input id="email" name="email" type="email" autocomplete="username" required><label for="password">Password</label><input id="password" name="password" type="password" autocomplete="current-password" required><div class="actions"><button id="submitBtn" type="submit">Masuk</button><a class="btn light" href="register.html">Daftar pelanggan</a></div></form>
-<div class="role-guide"><div class="role-item"><b>🛍️ Pelanggan</b><small>Beranda / akun pelanggan</small></div><div class="role-item"><b>🛵 Mitra</b><small>Halaman pesanan mitra</small></div><div class="role-item"><b>🧰 Admin</b><small>Dashboard pengelolaan</small></div><div class="role-item"><b>🛡️ Superadmin</b><small>Dashboard pengelolaan</small></div></div>
-<p class="muted" style="font-size:13px">Akses admin, superadmin, dan mitra hanya diberikan oleh pengelola melalui role pada dokumen <code>users/{UID}</code>. Pendaftaran publik hanya membuat akun pelanggan.</p></section></main>
+<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Login | Toko Siap Antar</title><link rel="stylesheet" href="style.css"></head><body>
+<header><strong>TOKO SIAP ANTAR</strong><nav><a href="index.html">Toko</a><a href="register.html">Daftar</a></nav></header>
+<main class="shell"><section class="panel" style="max-width:520px;margin:auto"><h1>Masuk akun</h1><p class="muted">Masuk untuk melihat pesanan dan fitur sesuai hak akses akun.</p><div id="notice" class="notice" hidden></div>
+<form id="loginForm"><label>Email</label><input name="email" type="email" autocomplete="username" required><label>Password</label><input name="password" type="password" autocomplete="current-password" required><div class="actions"><button type="submit">Masuk</button><a class="btn light" href="register.html">Buat akun</a></div></form></section></main>
 <script type="module">
-import {auth,db} from "./firebase-config.js";
-import {signInWithEmailAndPassword,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
-import {doc,getDoc} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
-const form=document.querySelector("#loginForm"),btn=document.querySelector("#submitBtn"),noticeBox=document.querySelector("#notice");
-const params=new URLSearchParams(location.search);let routing=false;
-function say(text,type="error"){noticeBox.textContent=text;noticeBox.className="notice "+type;noticeBox.hidden=false;}
-function targetFor(role){switch(String(role||"").toLowerCase().trim()){
- case "superadmin": case "admin": case "karyawan": return "admin.html";
- case "mitra": return "mitra.html";
- case "pelanggan": return "akun.html";
- default: return null;
-}}
-const customerNextAllowed=new Set(["index.html","akun.html","checkout.html","keranjang.html","riwayat.html","lacak.html","profil.html"]);
-async function routeUser(user){if(!user||routing)return;routing=true;btn.disabled=true;say("Login berhasil. Memeriksa role akun…","success");
- try{
-  const snap=await getDoc(doc(db,"users",user.uid));
-  if(!snap.exists()){routing=false;btn.disabled=false;say("Profil Firestore untuk akun ini belum ditemukan. Minta admin memeriksa dokumen users/"+user.uid+".");return;}
-  const profile=snap.data(),role=String(profile.role||"").toLowerCase().trim(),target=targetFor(role);
-  if(!target){routing=false;btn.disabled=false;say("Role akun kosong atau tidak dikenal ("+(role||"belum diisi")+"). Admin/superadmin perlu memperbaiki field role pada users/"+user.uid+".");return;}
-  // next hanya dipakai pelanggan dan hanya untuk halaman pelanggan yang dikenal.
-  const next=params.get("next")||"";
-  const destination=role==="pelanggan"&&customerNextAllowed.has(next)?next:target;
-  location.replace(destination);
- }catch(err){routing=false;btn.disabled=false;say("Gagal membaca role dari Firestore: "+err.message+". Periksa rules baca dokumen users/{UID}.");}
-}
-form.addEventListener("submit",async e=>{e.preventDefault();if(routing)return;btn.disabled=true;say("Sedang memverifikasi login…","success");try{const credential=await signInWithEmailAndPassword(auth,form.email.value.trim(),form.password.value);await routeUser(credential.user);}catch(err){btn.disabled=false;say(err.code==="auth/invalid-credential"||err.code==="auth/wrong-password"||err.code==="auth/user-not-found"?"Email atau password salah.":"Login gagal: "+err.message);}});
-onAuthStateChanged(auth,user=>{if(user&&!routing)routeUser(user);});
+import {auth} from "./firebase-config.js";
+import {signInWithEmailAndPassword} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+import {getProfile,notice} from "./common.js";
+document.querySelector("#loginForm").addEventListener("submit",async e=>{e.preventDefault();const f=new FormData(e.currentTarget);try{const c=await signInWithEmailAndPassword(auth,f.get("email"),f.get("password"));const p=await getProfile(c.user);if(!p){notice("Akun masuk, tetapi profil Firestore belum ada. Hubungi admin.","error");return;}const next=new URLSearchParams(location.search).get("next");location.href=(next && /^[a-z0-9-]+\.html$/i.test(next))?next:(({superadmin:"admin.html",admin:"admin.html",karyawan:"admin.html",mitra:"mitra.html",pelanggan:"akun.html"})[p.role]||"akun.html");}catch(err){notice("Login gagal: "+err.message,"error");}});
 </script></body></html>

@@ -61,7 +61,7 @@ background:#9ca3af;
 color:white;
 }
 
-.location-actions{margin:10px 12px}
+.location-actions{margin:10px 12px}.gps-card{background:#fff;border:1px solid var(--line);border-radius:15px;padding:14px;margin:12px}.gps-status{font-size:13px;line-height:1.5;color:#52645d;white-space:pre-wrap}.map-link{display:inline-block;color:#087b45;font-weight:bold;margin-top:8px;overflow-wrap:anywhere}
 .section-title{margin:18px 12px 8px;font-size:17px}
 input{
 display:block;
@@ -124,6 +124,14 @@ box-shadow:0 4px 10px rgba(0,0,0,0.2);
 
 <div id="cartList"></div>
 
+<section class="gps-card">
+  <h3 style="margin:0 0 8px">📍 Lokasi Pengiriman</h3>
+  <p style="margin:0 0 12px">Ambil lokasi GPS HP untuk menghitung jarak dan ongkos kirim. Lokasi ini juga disimpan agar mitra dapat membuka titik pengantaran di Google Maps.</p>
+  <button class="checkout" style="width:100%;margin:0" type="button" onclick="gunakanLokasi()">📍 Gunakan Lokasi Saya</button>
+  <div id="gpsStatus" class="gps-status" role="status" style="margin-top:10px">Lokasi belum diambil. Tekan tombol di atas.</div>
+  <a id="mapLink" class="map-link" href="#" target="_blank" rel="noopener" hidden>🗺️ Buka lokasi di Google Maps</a>
+</section>
+
 <button class="checkout" onclick="lanjutBayar()">Checkout</button>
 <button class="clearBtn" onclick="kosongkan()">Kosongkan Keranjang</button>
 <script>
@@ -166,12 +174,56 @@ let minimalBelanja = 0;
 
 let namaDesa="-";
 let namaKecamatan="-";
+let gpsAddress = "";
+try {
+  const savedCheckout = JSON.parse(localStorage.getItem("checkoutData") || "{}");
+  if (Number.isFinite(Number(savedCheckout.lat)) && Number.isFinite(Number(savedCheckout.lng)) &&
+      savedCheckout.lat !== null && savedCheckout.lng !== null) {
+    tujuanLat = Number(savedCheckout.lat);
+    tujuanLng = Number(savedCheckout.lng);
+    jarakFix = hitungJarakKm(tokoLat, tokoLng, tujuanLat, tujuanLng);
+    ongkir = Math.max(5000, Math.ceil(jarakFix * 2000 / 1000) * 1000);
+    gpsAddress = savedCheckout.gpsLink || "https://www.google.com/maps?q=" + tujuanLat + "," + tujuanLng;
+  }
+} catch(e) {}
 
 
 /* ================= FORMAT RUPIAH ================= */
 
 function rupiah(a){
 return Math.round(a).toLocaleString("id-ID");
+}
+function hitungJarakKm(lat1,lon1,lat2,lon2){
+  const R=6371, rad=v=>v*Math.PI/180;
+  const dLat=rad(lat2-lat1), dLon=rad(lon2-lon1);
+  const a=Math.sin(dLat/2)**2+Math.cos(rad(lat1))*Math.cos(rad(lat2))*Math.sin(dLon/2)**2;
+  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
+function renderGpsStatus(){
+  const status=document.getElementById("gpsStatus");
+  const link=document.getElementById("mapLink");
+  if(tujuanLat!==null && tujuanLng!==null){
+    status.textContent="Lokasi berhasil disimpan.\nKoordinat: "+tujuanLat.toFixed(6)+", "+tujuanLng.toFixed(6)+"\nJarak garis lurus: "+jarakFix.toFixed(1)+" km\nOngkos kirim: Rp "+rupiah(ongkir)+"\nCatatan: jarak ini estimasi GPS garis lurus, bukan jarak jalan.";
+    link.href="https://www.google.com/maps?q="+tujuanLat+","+tujuanLng;
+    link.hidden=false;
+  }
+}
+function gunakanLokasi(){
+  const status=document.getElementById("gpsStatus");
+  if(!navigator.geolocation){status.textContent="Browser tidak mendukung GPS. Aktifkan lokasi atau coba browser lain.";return;}
+  status.textContent="Meminta izin lokasi HP…";
+  navigator.geolocation.getCurrentPosition(pos=>{
+    tujuanLat=pos.coords.latitude; tujuanLng=pos.coords.longitude;
+    jarakFix=hitungJarakKm(tokoLat,tokoLng,tujuanLat,tujuanLng);
+    // Ongkir: Rp2.000/km (pembulatan ribuan), minimum Rp5.000.
+    ongkir=Math.max(5000,Math.ceil(jarakFix*2)*1000);
+    gpsAddress="https://www.google.com/maps?q="+tujuanLat+","+tujuanLng;
+    let old={};try{old=JSON.parse(localStorage.getItem("checkoutData")||"{}")}catch(e){}
+    localStorage.setItem("checkoutData",JSON.stringify({...old,lat:tujuanLat,lng:tujuanLng,ongkir,jarakKm:jarakFix,gpsLink:gpsAddress}));
+    renderCart();renderGpsStatus();
+  },err=>{
+    status.textContent=err.code===1?"Izin lokasi ditolak. Izinkan akses lokasi untuk situs ini lalu coba lagi.":err.code===3?"GPS terlalu lama merespons. Coba lagi di tempat terbuka.":"Lokasi gagal diambil. Pastikan GPS HP aktif.";
+  },{enableHighAccuracy:true,timeout:20000,maximumAge:0});
 }
 
 /* ================= RENDER CART ================= */
@@ -274,7 +326,11 @@ function lanjutBayar(){
     popup("Keranjang masih kosong");
     return;
   }
-  // Data alamat, nomor WhatsApp, dan GPS diisi satu kali pada halaman checkout.
+  if(tujuanLat === null || tujuanLng === null){
+    popup("Ambil lokasi GPS terlebih dahulu agar ongkos kirim dapat dihitung dan titik pengantaran bisa digunakan mitra.");
+    return;
+  }
+  // GPS dan ongkir disimpan di keranjang; alamat penerima dipilih pada checkout.
   localStorage.setItem("cart", JSON.stringify(cart));
   localStorage.setItem("tsa_cart", JSON.stringify(cart.map(p=>({
     id:p.id, name:p.nama, price:p.harga, qty:p.qty
@@ -282,15 +338,13 @@ function lanjutBayar(){
   let existing = {};
   try { existing = JSON.parse(localStorage.getItem("checkoutData") || "{}"); } catch(e) {}
   localStorage.setItem("checkoutData", JSON.stringify({
-    ongkir: 0,
-    minimalBelanja: 0,
-    namaPembeli: existing.namaPembeli || "",
-    noWa: existing.noWa || "",
-    alamatManual: "",
-    lat: null,
-    lng: null,
-    desa: "",
-    kecamatan: ""
+    ...existing,
+    ongkir: ongkir,
+    jarakKm: jarakFix,
+    lat: tujuanLat,
+    lng: tujuanLng,
+    gpsLink: tujuanLat !== null && tujuanLng !== null ? "https://www.google.com/maps?q="+tujuanLat+","+tujuanLng : "",
+    minimalBelanja: minimalBelanja
   }));
   window.location.href = "checkout.html";
 }
@@ -335,6 +389,7 @@ document.body.appendChild(box);
 }
 
 renderCart();
+renderGpsStatus();
 
 window.addEventListener("load",function(){
   if(cart.length) updateCartStorageSafe();
