@@ -1,0 +1,1150 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Data Pesanan | FIXZY BUSINESS</title>
+<style>
+:root{--yellow:#FFC107;--black:#111;--bg:#f3f4f6;--white:#fff;--muted:#6b7280;--border:#e5e7eb;--green:#16a34a;--red:#dc2626;--blue:#2563eb}
+*{box-sizing:border-box}
+body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:#111}
+.app{width:100%;max-width:1180px;margin:auto;min-height:100vh;padding-bottom:82px}
+.top{background:#111;color:#fff;padding:18px 18px 82px;border-radius:0 0 30px 30px}
+.brand{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand-left{display:flex;align-items:center;gap:11px;min-width:0}
+.logo{width:48px;height:48px;border-radius:14px;overflow:hidden;background:#111;border:1px solid var(--yellow);display:grid;place-items:center;flex:0 0 48px;box-shadow:0 4px 12px rgba(0,0,0,.25)}
+.logo img{width:100%;height:100%;object-fit:contain;display:block}
+.brand h1{font-size:17px;margin:0;font-weight:900;letter-spacing:.2px;color:var(--yellow)}
+.brand small{display:block;color:#d1d5db;margin-top:3px;font-size:12px}
+.home{color:#fff;text-decoration:none;font-size:23px;padding:6px}
+.content{padding:0 clamp(14px,3vw,28px);margin-top:-60px}
+.card{background:#fff;border:1px solid var(--border);border-radius:18px;padding:16px;margin-bottom:14px;box-shadow:0 3px 12px rgba(0,0,0,.05)}
+.hero{background:#fff}
+.hero-title{font-size:20px;font-weight:900;margin:0}
+.hero-note{font-size:12px;color:var(--muted);margin:6px 0 0;line-height:1.5}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}
+.stat{background:#f8f8f8;border-radius:14px;padding:13px}
+.stat small{display:block;color:var(--muted);font-size:11px}
+.stat b{display:block;margin-top:6px;font-size:20px}
+.filters{display:flex;gap:8px;overflow:auto;padding-bottom:2px}
+.filter{border:1px solid var(--border);background:#fff;border-radius:999px;padding:9px 13px;font-weight:800;font-size:12px;white-space:nowrap;cursor:pointer}
+.filter.active{background:#111;color:var(--yellow);border-color:#111}
+.list{display:flex;flex-direction:column;gap:12px}
+.order{border:1px solid var(--border);border-radius:16px;padding:14px;background:#fff}
+.order-head{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+.order-no{font-size:15px;font-weight:900}
+.owner{font-size:12px;color:var(--muted);margin-top:4px}
+.badge{display:inline-block;padding:6px 9px;border-radius:999px;font-size:10px;font-weight:900;white-space:nowrap}
+.wait{background:#fef3c7;color:#92400e}
+.ok{background:#dcfce7;color:#166534}
+.ship{background:#dbeafe;color:#1e40af}
+.done{background:#dcfce7;color:#166534}
+.bad{background:#fee2e2;color:#991b1b}
+.info-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin:12px 0}
+.info{background:#f8f8f8;border-radius:11px;padding:10px}
+.info small{display:block;color:var(--muted);font-size:10px}
+.info b{display:block;margin-top:4px;font-size:13px}
+.products{border-top:1px solid var(--border);border-bottom:1px solid var(--border);padding:10px 0;margin:10px 0}
+.product-row{display:flex;justify-content:space-between;gap:10px;padding:6px 0;font-size:12px}
+.product-row span:first-child{max-width:70%}
+.address{font-size:12px;line-height:1.5;background:#f8f8f8;border-radius:11px;padding:10px;margin-bottom:10px}
+.address b{display:block;margin-bottom:3px}
+.actions{display:flex;flex-wrap:wrap;gap:8px}
+.btn{border:0;border-radius:11px;padding:11px 13px;font-weight:900;font-size:12px;cursor:pointer;background:#111;color:#fff}
+.btn.yellow{background:var(--yellow);color:#111}
+.btn.green{background:var(--green);color:#fff}
+.btn.blue{background:var(--blue);color:#fff}
+.btn.red{background:var(--red);color:#fff}
+.btn.light{background:#eee;color:#111}
+.btn:disabled{opacity:.55;cursor:not-allowed}
+.empty{text-align:center;color:var(--muted);padding:25px 10px;font-size:13px}
+.loading{text-align:center;padding:25px;color:var(--muted)}
+.message{display:none;padding:11px 13px;border-radius:11px;margin-bottom:12px;font-size:12px;font-weight:700}
+.message.show{display:block}
+.message.okmsg{background:#dcfce7;color:#166534}
+.message.errmsg{background:#fee2e2;color:#991b1b}
+.bottom{position:fixed;left:50%;bottom:0;transform:translateX(-50%);width:min(1180px,100%);background:#111;border-top:1px solid #2b2b2b;display:grid;grid-template-columns:repeat(5,1fr);padding:8px 6px calc(8px + env(safe-area-inset-bottom));z-index:10;backdrop-filter:blur(12px)}
+.nav{border:0;background:transparent;color:var(--yellow);font-size:10px;font-weight:800;text-decoration:none;text-align:center;padding:3px;cursor:pointer}
+.nav i{display:block;font-style:normal;font-size:21px;margin-bottom:3px;color:var(--yellow)}
+.nav.active{color:var(--yellow)}
+@media(max-width:700px){
+  .top{padding:16px 15px 66px}
+  .content{margin-top:-42px}
+  .stats{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:480px){
+  .info-grid{grid-template-columns:1fr 1fr}
+  .order-head{flex-direction:column}
+}
+
+.edit-modal{position:fixed;inset:0;background:rgba(0,0,0,.55);display:none;align-items:flex-end;justify-content:center;z-index:60}
+.edit-modal.show{display:flex}
+.edit-box{width:min(620px,100%);max-height:90vh;overflow:auto;background:#fff;border-radius:22px 22px 0 0;padding:18px}
+.edit-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:12px}
+.edit-head h3{margin:0;font-size:18px}
+.edit-note{background:#fff7d6;border-radius:11px;padding:10px;font-size:11px;line-height:1.45;margin-bottom:12px;color:#6b4e00}
+.edit-field{margin-bottom:10px}
+.edit-field label{display:block;font-size:11px;font-weight:900;margin-bottom:4px}
+.edit-field input{width:100%;box-sizing:border-box}
+.edit-actions{display:flex;gap:8px;margin-top:12px}
+.edit-actions .btn{flex:1}
+.product-row-main{display:flex;justify-content:space-between;align-items:flex-start;gap:8px;width:100%}
+.product-edit{margin-top:6px;border:1px solid #e5e7eb;background:#fff;border-radius:8px;padding:6px 9px;font-size:10px;font-weight:900;cursor:pointer}
+.replace-box{border:1px solid #e5e7eb;border-radius:13px;padding:11px;margin-bottom:12px;background:#fafafa}
+.replace-title{font-size:12px;font-weight:900;margin-bottom:7px}
+.replace-row{display:flex;gap:7px}
+.replace-row input{flex:1;margin:0}
+.replace-row button{min-width:72px}
+.replace-list{margin-top:8px;max-height:220px;overflow:auto;display:none}
+.replace-item{width:100%;text-align:left;border:1px solid #e5e7eb;background:#fff;border-radius:10px;padding:9px;margin-bottom:6px;cursor:pointer}
+.replace-item b{display:block;font-size:12px}
+.replace-item small{display:block;color:#6b7280;font-size:10px;margin-top:3px;line-height:1.4}
+.replace-empty{padding:9px;color:#6b7280;font-size:11px}
+</style>
+</head>
+<body>
+<div class="app">
+
+<header class="top">
+  <div class="brand">
+    <div class="brand-left">
+      <div class="logo"><img src="logofixzy.png" alt="FIXZY"></div>
+      <div>
+        <h1>FIXZY BUSINESS</h1>
+        <small>Superadmin · Data Pesanan</small>
+      </div>
+    </div>
+    <a class="home" href="index-superadmin.html" title="Dashboard">⌂</a>
+  </div>
+</header>
+
+<main class="content">
+  <section class="card hero">
+    <h2 class="hero-title">Data Pesanan</h2>
+    <p class="hero-note">Kelola pesanan Owner mulai dari persetujuan sampai pesanan selesai.</p>
+    <div class="stats">
+      <div class="stat"><small>Menunggu</small><b id="sWait">0</b></div>
+      <div class="stat"><small>Disetujui</small><b id="sApproved">0</b></div>
+      <div class="stat"><small>Dikirim</small><b id="sShipping">0</b></div>
+      <div class="stat"><small>Selesai</small><b id="sDone">0</b></div>
+    </div>
+  </section>
+
+  <div id="message" class="message"></div>
+
+  <section class="card">
+    <div class="filters">
+      <button class="filter active" data-filter="SEMUA">Semua</button>
+      <button class="filter" data-filter="MENUNGGU_PERSETUJUAN">Menunggu</button>
+      <button class="filter" data-filter="DISETUJUI">Disetujui</button>
+      <button class="filter" data-filter="DIKEMAS">Dikemas</button>
+      <button class="filter" data-filter="DIKIRIM">Dikirim</button>
+      <button class="filter" data-filter="DIANTAR">Diantar</button>
+      <button class="filter" data-filter="SELESAI">Selesai</button>
+      <button class="filter" data-filter="DITOLAK">Ditolak</button>
+    </div>
+  </section>
+
+  <section class="card">
+    <div id="loading" class="loading">Memuat data pesanan...</div>
+    <div id="orders" class="list"></div>
+  </section>
+</main>
+
+<nav class="bottom">
+  <a class="nav" href="index-superadmin.html"><i>⌂</i>Beranda</a>
+  <a class="nav" href="data-produk.html"><i>▦</i>Produk</a>
+  <a class="nav active" href="data-pesanan.html"><i>🛒</i>Pesanan</a>
+  <a class="nav" href="data-tagihan.html"><i>▤</i>Tagihan</a>
+  <a class="nav" href="pengaturan.html"><i>⚙</i>Profil</a>
+</nav>
+</div>
+
+<div class="edit-modal" id="editProductModal">
+  <div class="edit-box">
+    <div class="edit-head">
+      <h3>Edit Produk Pesanan</h3>
+      <button class="close" id="closeEditProduct" type="button">✕</button>
+    </div>
+
+    <div class="edit-note">
+      Produk hanya dapat diubah sebelum pesanan disetujui.
+      Jika produk atau harga berubah, status supplier akan kembali menjadi
+      belum dikonfirmasi sehingga supplier perlu dicek ulang.
+    </div>
+
+    <div class="replace-box">
+      <div class="replace-title">🔄 Produk Pengganti dari Spreadsheet</div>
+      <div class="replace-row">
+        <input id="replacementSearch" type="text"
+          placeholder="Ketik minimal 2 huruf nama / merk...">
+        <button class="btn yellow" id="loadReplacementBtn" type="button">LOAD</button>
+      </div>
+      <div class="replace-list" id="replacementList"></div>
+    </div>
+
+    <div class="edit-field">
+      <label>Nama Produk / Merk</label>
+      <input id="editProductName" type="text" placeholder="Nama produk">
+    </div>
+
+    <div class="edit-field">
+      <label>Harga per Pcs</label>
+      <input id="editProductPrice" type="number" min="0" step="1">
+    </div>
+
+    <div class="edit-field">
+      <label>Jumlah (pcs)</label>
+      <input id="editProductQty" type="number" min="1" step="1">
+    </div>
+
+    <div class="edit-actions">
+      <button class="btn light" id="cancelEditProduct" type="button">Batal</button>
+      <button class="btn green" id="saveEditProduct" type="button">Simpan Perubahan</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+import {
+  getAuth,
+  onAuthStateChanged
+} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+import {
+  getFirestore,
+  collection,
+  getDocs,
+  doc,
+  getDoc,
+  updateDoc,
+  setDoc,
+  runTransaction,
+  serverTimestamp,
+  Timestamp
+} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBwHjyapmcsvIff_HrGyHsxGrJTl-7CHTo",
+  authDomain: "teknisi-ponsel-maja.firebaseapp.com",
+  projectId: "teknisi-ponsel-maja",
+  storageBucket: "teknisi-ponsel-maja.firebasestorage.app",
+  messagingSenderId: "835618012205",
+  appId: "1:835618012205:web:95e41095d1a56c761d4ca4"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+
+let allOrders = [];
+let activeFilter = "SEMUA";
+let busy = false;
+let editingProduct = null;
+let replacementProducts = [];
+let replacementLoaded = false;
+
+const $ = id => document.getElementById(id);
+
+function money(v){
+  return new Intl.NumberFormat("id-ID",{style:"currency",currency:"IDR",maximumFractionDigits:0}).format(Number(v)||0);
+}
+
+function esc(v){
+  return String(v ?? "").replace(/[&<>"']/g,m=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[m]));
+}
+
+function normalizeStatus(s){
+  return String(s||"").trim().toUpperCase().replaceAll(" ","_");
+}
+
+function statusLabel(s){
+  const map={
+    MENUNGGU_PERSETUJUAN:"MENUNGGU PERSETUJUAN",
+    DISETUJUI:"DISETUJUI",
+    DIKEMAS:"DIKEMAS",
+    DIKIRIM:"DIKIRIM",
+    DIANTAR:"DIANTAR",
+    SELESAI:"SELESAI",
+    DITOLAK:"DITOLAK"
+  };
+  return map[normalizeStatus(s)] || String(s||"-");
+}
+
+function badgeClass(s){
+  s=normalizeStatus(s);
+  if(s==="MENUNGGU_PERSETUJUAN") return "wait";
+  if(s==="DITOLAK") return "bad";
+  if(s==="SELESAI") return "done";
+  if(["DIKIRIM","DIANTAR"].includes(s)) return "ship";
+  return "ok";
+}
+
+function formatDate(v){
+  if(!v) return "-";
+  try{
+    const d = v?.toDate ? v.toDate() : new Date(v);
+    if(Number.isNaN(d.getTime())) return "-";
+    return d.toLocaleString("id-ID",{dateStyle:"medium",timeStyle:"short"});
+  }catch{return "-"}
+}
+
+function showMessage(text,ok=true){
+  const el=$("message");
+  el.textContent=text;
+  el.className="message show "+(ok?"okmsg":"errmsg");
+  setTimeout(()=>el.className="message",4000);
+}
+
+function getItems(order){
+  return Array.isArray(order.items) ? order.items : [];
+}
+
+function getOwnerName(order){
+  return order.ownerName || order.namaOwner || order.businessName || order.namaUsaha || order.ownerUid || "-";
+}
+
+function formatAddress(value){
+  if(!value) return "Belum ada alamat";
+  if(typeof value === "string") return value;
+  if(typeof value === "object"){
+    const nama = value.nama || value.namaPenerima || value.penerima || "";
+    const telepon = value.telepon || value.noHp || value.nomorHp || value.phone || "";
+    const alamat = value.alamat || value.address || value.alamatLengkap || "";
+    const parts=[];
+    if(nama) parts.push(`<b>${esc(nama)}</b>`);
+    if(telepon) parts.push(`<span>${esc(telepon)}</span>`);
+    if(alamat) parts.push(`<span>${esc(alamat)}</span>`);
+    return parts.join("<br>") || "Belum ada alamat";
+  }
+  return String(value);
+}
+
+function renderStats(){
+  const c={wait:0,approved:0,shipping:0,done:0};
+  for(const o of allOrders){
+    const s=normalizeStatus(o.status);
+    if(s==="MENUNGGU_PERSETUJUAN") c.wait++;
+    else if(s==="DISETUJUI" || s==="DIKEMAS") c.approved++;
+    else if(s==="DIKIRIM" || s==="DIANTAR") c.shipping++;
+    else if(s==="SELESAI") c.done++;
+  }
+  $("sWait").textContent=c.wait;
+  $("sApproved").textContent=c.approved;
+  $("sShipping").textContent=c.shipping;
+  $("sDone").textContent=c.done;
+}
+
+function getTempoHari(order){
+  const qty=Number(order?.totalQty||getItems(order).reduce((a,x)=>a+Number(x.qty||x.jumlah||1),0));
+  const saved=Number(order?.tempoHari||0);
+  if(saved>0)return saved;
+  if(qty>=10)return 30;
+  if(qty>=5)return 15;
+  if(qty>=3)return 7;
+  return 0;
+}
+function procurementReady(order){
+  return String(order?.procurementStatus||"").toUpperCase()==="TERSEDIA";
+}
+function procurementLabel(order){
+  const s=String(order?.procurementStatus||"").toUpperCase();
+  if(s==="TERSEDIA")return "BARANG TERSEDIA";
+  if(s==="DIKIRIM_SUPPLIER")return "MENUNGGU SUPPLIER";
+  if(s==="DIPROSES")return "DIPROSES";
+  return "BELUM KONFIRMASI SUPPLIER";
+}
+
+function render(){
+  renderStats();
+  const list = activeFilter==="SEMUA"
+    ? allOrders
+    : allOrders.filter(o=>normalizeStatus(o.status)===activeFilter);
+
+  $("loading").style.display="none";
+
+  if(!list.length){
+    $("orders").innerHTML='<div class="empty">Belum ada pesanan pada kategori ini.</div>';
+    return;
+  }
+
+  $("orders").innerHTML=list.map(order=>{
+    const s=normalizeStatus(order.status);
+    const items=getItems(order);
+    const payment=String(order.metodePembayaran||order.paymentMethod||"-").toUpperCase();
+    const total=Number(order.total||0);
+
+    const products=items.length
+      ? items.map((it,idx)=>{
+          const qty=Number(it.qty||it.jumlah||1);
+          const price=Number(it.harga||it.price||it.tunai||it.hargaTunai||it.tempo||it.hargaTempo||0);
+          const editable = s==="MENUNGGU_PERSETUJUAN";
+          return `<div class="product-row">
+            <div class="product-row-main">
+              <div>
+                <div>${esc(it.nama||it.name||it.produk||"Produk")} × ${qty}</div>
+                ${editable ? `<button class="product-edit" type="button" data-action="edit-product" data-id="${esc(order.id)}" data-index="${idx}">✏️ EDIT PRODUK</button>` : ""}
+              </div>
+              <b>${money(price*qty)}</b>
+            </div>
+          </div>`;
+        }).join("")
+      : '<div class="product-row"><span>Detail produk tidak tersedia</span></div>';
+
+    let actions="";
+    if(s==="MENUNGGU_PERSETUJUAN"){
+      const ready=procurementReady(order);
+      actions=`
+        ${ready
+          ? '<button class="btn green" data-action="approve" data-id="'+esc(order.id)+'">✓ SETUJUI</button>'
+          : '<button class="btn light" disabled>⏳ Belum tersedia</button>'}
+        <a class="btn yellow" href="supplier.html" style="text-decoration:none">🏭 Supplier</a>
+        <button class="btn red" data-action="reject" data-id="${esc(order.id)}">✕ TOLAK</button>`;
+    }else if(s==="DISETUJUI"){
+      actions=`<button class="btn yellow" data-action="pack" data-id="${esc(order.id)}">📦 DIKEMAS</button>`;
+    }else if(s==="DIKEMAS"){
+      actions=`<button class="btn blue" data-action="ship" data-id="${esc(order.id)}">🚚 DIKIRIM</button>`;
+    }else if(s==="DIKIRIM"){
+      actions=`<button class="btn blue" data-action="deliver" data-id="${esc(order.id)}">🛵 DIANTAR</button>`;
+    }else if(s==="DIANTAR"){
+      actions=`<button class="btn green" data-action="done" data-id="${esc(order.id)}">✓ SELESAI</button>`;
+    }
+
+    return `
+      <article class="order">
+        <div class="order-head">
+          <div>
+            <div class="order-no">${esc(order.nomorPesanan||order.nomorOrder||order.id)}</div>
+            <div class="owner">${esc(getOwnerName(order))}</div>
+          </div>
+          <span class="badge ${badgeClass(s)}">${esc(statusLabel(s))}</span>
+        </div>
+
+        <div class="info-grid">
+          <div class="info"><small>Total</small><b>${money(total)}</b></div>
+          <div class="info"><small>Pembayaran</small><b>${esc(payment==="SALDO_PRIBADI"?"SALDO PRIBADI":payment==="LIMIT"?"LIMIT / TEMPO":payment)}</b></div>
+          <div class="info"><small>Jumlah Barang</small><b>${Number(order.totalQty||items.reduce((a,x)=>a+Number(x.qty||x.jumlah||1),0))} pcs</b></div>
+          <div class="info"><small>Dibuat</small><b>${esc(formatDate(order.createdAt))}</b></div>
+        </div>
+
+        <div class="info-grid">
+          <div class="info"><small>Status Supplier</small><b>${esc(procurementLabel(order))}</b></div>
+          <div class="info"><small>Tempo</small><b>${payment==="LIMIT" ? (getTempoHari(order) ? getTempoHari(order)+" hari" : "Tidak memenuhi minimal") : "-"}</b></div>
+        </div>
+        <div class="products">${products}</div>
+
+        <div class="address">
+          <b>Alamat Pengiriman</b>
+          ${formatAddress(order.alamatPengiriman ?? order.address)}
+        </div>
+
+        <div class="actions">${actions || '<span class="note">Tidak ada aksi untuk status ini.</span>'}</div>
+      </article>`;
+  }).join("");
+}
+
+async function loadOrders(){
+  $("loading").style.display="block";
+  $("orders").innerHTML="";
+
+  try{
+    const result = await Promise.race([
+      getDocs(collection(db,"orders")),
+      new Promise((_,reject)=>
+        setTimeout(()=>reject(new Error("Waktu memuat pesanan habis. Periksa koneksi Firebase dan Firestore Rules.")),12000)
+      )
+    ]);
+
+    allOrders=result.docs.map(d=>({id:d.id,...d.data()}));
+
+    allOrders.sort((a,b)=>{
+      const ta=a.createdAt?.toMillis
+        ? a.createdAt.toMillis()
+        : new Date(a.createdAt||0).getTime();
+      const tb=b.createdAt?.toMillis
+        ? b.createdAt.toMillis()
+        : new Date(b.createdAt||0).getTime();
+      return tb-ta;
+    });
+
+    render();
+  }catch(err){
+    console.error("FIXZY loadOrders:",err);
+    $("loading").style.display="none";
+    $("orders").innerHTML=
+      `<div class="empty">
+        <b>Gagal memuat data pesanan.</b><br>
+        <small>${esc(err?.message || err)}</small>
+      </div>`;
+  }
+}
+
+
+
+const aliases = {
+  nama: [
+    "namaproduk","namabarang","produk","barang","namaproduct",
+    "productname","itemname","description","deskripsi"
+  ],
+  tunai: [
+    "tunai","hargatunai","hargacash","cash","cashprice",
+    "hargacash","hargaoffline"
+  ],
+  tempo: [
+    "tempo","hargatempo","hargakredit","kredit","credit",
+    "creditprice","hargapiutang"
+  ],
+  stok: [
+    "stok","stock","persediaan","qty","quantity","jumlahstok",
+    "stocktersedia"
+  ],
+  supplier: [
+    "supplier","suplier","pemasok","distributor","vendor"
+  ],
+  kategori: [
+    "kategori","katagory","category","jenis","kelompok","type"
+  ]
+};
+
+function normalizeHeader(value){
+  return String(value ?? "")
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g,"")
+    .replace(/[^a-z0-9]+/g,"")
+    .trim();
+}
+
+function findHeaderIndex(headers, field){
+  const normalized = headers.map(normalizeHeader);
+  for(const alias of aliases[field]){
+    const i = normalized.indexOf(alias);
+    if(i >= 0) return i;
+  }
+  return -1;
+}
+
+function parseCSV(text){
+  const rows = [];
+  let row = [];
+  let cell = "";
+  let quoted = false;
+
+  for(let i=0;i<text.length;i++){
+    const c = text[i];
+
+    if(c === '"'){
+      if(quoted && text[i+1] === '"'){
+        cell += '"';
+        i++;
+      }else{
+        quoted = !quoted;
+      }
+    }else if(c === "," && !quoted){
+      row.push(cell);
+      cell = "";
+    }else if((c === "\n" || c === "\r") && !quoted){
+      if(c === "\r" && text[i+1] === "\n") i++;
+      row.push(cell);
+      cell = "";
+      if(row.some(v => String(v).trim() !== "")) rows.push(row);
+      row = [];
+    }else{
+      cell += c;
+    }
+  }
+
+  if(cell !== "" || row.length){
+    row.push(cell);
+    if(row.some(v => String(v).trim() !== "")) rows.push(row);
+  }
+  return rows;
+}
+
+function makeCSVUrl(url){
+  const u = new URL(url);
+
+  // Google published Spreadsheet:
+  // /pubhtml?...  -> /pub?...&output=csv
+  if(u.hostname === "docs.google.com"){
+    if(u.pathname.includes("/pubhtml")){
+      u.pathname = u.pathname.replace("/pubhtml","/pub");
+    }
+    u.searchParams.set("output","csv");
+    return u.toString();
+  }
+
+  return url;
+}
+
+function mapRows(rows, catalogName){
+  if(!rows.length) return [];
+
+  const headers = rows[0];
+  const idx = {
+    nama: findHeaderIndex(headers,"nama"),
+    tunai: findHeaderIndex(headers,"tunai"),
+    tempo: findHeaderIndex(headers,"tempo"),
+    stok: findHeaderIndex(headers,"stok"),
+    supplier: findHeaderIndex(headers,"supplier"),
+    kategori: findHeaderIndex(headers,"kategori")
+  };
+
+  // Nama produk adalah field wajib.
+  if(idx.nama < 0){
+    throw new Error(`Kolom Nama Produk/Barang tidak ditemukan pada katalog "${catalogName}".`);
+  }
+
+  return rows.slice(1)
+    .map(row => ({
+      nama: cleanCatalogCell(row[idx.nama]),
+      tunai: idx.tunai >= 0 ? cleanCatalogCell(row[idx.tunai]) : "",
+      tempo: idx.tempo >= 0 ? cleanCatalogCell(row[idx.tempo]) : "",
+      stok: idx.stok >= 0 ? cleanCatalogCell(row[idx.stok]) : "",
+      supplier: idx.supplier >= 0 ? cleanCatalogCell(row[idx.supplier]) : "",
+      kategori: idx.kategori >= 0 ? cleanCatalogCell(row[idx.kategori]) : "",
+      katalog: catalogName
+    }))
+    .filter(p => p.nama);
+}
+
+function cleanCatalogCell(v){
+  return String(v ?? "").trim();
+}
+
+function catalogNumber(v){
+  if(v === null || v === undefined || String(v).trim() === "") return 0;
+  const raw = String(v).trim();
+  const cleaned = raw.replace(/[^\d,.-]/g,"");
+  if(!cleaned) return 0;
+
+  let normalized = cleaned;
+  if(cleaned.includes(".") && cleaned.includes(",")){
+    normalized = cleaned.replace(/\./g,"").replace(",",".");
+  }else if(cleaned.includes(",")){
+    const parts = cleaned.split(",");
+    normalized = parts.length === 2 && parts[1].length <= 2
+      ? cleaned.replace(",",".")
+      : cleaned.replace(/,/g,"");
+  }else if(cleaned.includes(".")){
+    const parts = cleaned.split(".");
+    normalized = parts.length > 2 || (parts.length === 2 && parts[1].length === 3)
+      ? cleaned.replace(/\./g,"")
+      : cleaned;
+  }
+
+  let n = Number(normalized);
+  if(!Number.isFinite(n)) return 0;
+
+  // Nilai harga dari Spreadsheet FIXZY kadang terbaca sebagai desimal
+  // karena format angka Google Sheets, misalnya 347.4 yang sebenarnya
+  // mewakili Rp347.400. Untuk harga katalog, pecahan seperti ini
+  // dikonversi ke rupiah penuh.
+  if(Number.isInteger(n) === false && n > 0){
+    n = Math.round(n * 1000);
+  }
+
+  return n;
+}
+
+async function loadReplacementProducts(){
+  if(replacementLoaded) return replacementProducts;
+
+  replacementProducts=[];
+  const errors=[];
+
+  const snap=await getDocs(collection(db,"productCatalogs"));
+  const catalogs=snap.docs
+    .map(d=>({id:d.id,...d.data()}))
+    .filter(c=>c.aktif !== false);
+
+  if(!catalogs.length){
+    throw new Error("Tidak ada katalog productCatalogs yang aktif.");
+  }
+
+  for(const catalog of catalogs){
+    try{
+      if(!catalog.spreadsheetUrl){
+        throw new Error("spreadsheetUrl kosong");
+      }
+
+      // Sama persis dengan mekanisme halaman produk yang sudah terbukti bekerja.
+      const csvUrl=makeCSVUrl(catalog.spreadsheetUrl);
+      const response=await fetch(csvUrl,{cache:"no-store"});
+
+      if(!response.ok){
+        throw new Error(`HTTP ${response.status}`);
+      }
+
+      const text=await response.text();
+      if(!text || text.trim().startsWith("<!DOCTYPE") || text.trim().startsWith("<html")){
+        throw new Error("Spreadsheet belum tersedia sebagai CSV publik.");
+      }
+
+      const rows=parseCSV(text);
+      const mapped=mapRows(rows,catalog.nama || "Katalog Produk");
+
+      mapped.forEach((p,i)=>{
+        replacementProducts.push({
+          id:`${catalog.id}_${i}`,
+          nama:p.nama || "",
+          tunai:catalogNumber(p.tunai),
+          tempo:catalogNumber(p.tempo),
+          stok:p.stok || "",
+          supplier:p.supplier || "",
+          kategori:p.kategori || ""
+        });
+      });
+    }catch(err){
+      errors.push(`${catalog.nama || "Katalog"}: ${err.message || err}`);
+      console.warn("Gagal membaca katalog pengganti:",catalog.nama,err);
+    }
+  }
+
+  replacementLoaded=true;
+
+  // Simpan diagnostik agar hasil LOAD tidak terlihat seperti sekadar "tidak ditemukan".
+  window.__replacementCatalogDebug={
+    katalogAktif:catalogs.length,
+    jumlahProduk:replacementProducts.length,
+    errors
+  };
+
+  return replacementProducts;
+}
+
+function renderReplacementResults(){
+  const box=$("replacementList");
+  const q=$("replacementSearch").value.trim().toLowerCase();
+
+  if(q.length<2){
+    box.style.display="none";
+    return;
+  }
+
+  const list=replacementProducts
+    .filter(p=>`${p.nama} ${p.supplier} ${p.kategori}`.toLowerCase().includes(q))
+    .slice(0,40);
+
+  box.style.display="block";
+
+  if(!list.length){
+    const d=window.__replacementCatalogDebug||{};
+    const extra=d.errors?.length ? `<br><small>${esc(d.errors.join(' | '))}</small>` : `<br><small>Katalog aktif: ${Number(d.katalogAktif||0)} · Produk terbaca: ${Number(d.jumlahProduk||0)}</small>`;
+    box.innerHTML=`<div class="replace-empty">Produk pengganti tidak ditemukan.${extra}</div>`;
+    return;
+  }
+
+  box.innerHTML=list.map(p=>`
+    <button type="button" class="replace-item" data-replacement-id="${esc(p.id)}">
+      <b>${esc(p.nama)}</b>
+      <small>${esc(p.supplier||"-")} · Tunai ${money(catalogNumber(p.tunai))} · Tempo ${money(catalogNumber(p.tempo))} · Stok ${catalogNumber(p.stok)} pcs</small>
+    </button>
+  `).join("");
+
+  box.querySelectorAll("[data-replacement-id]").forEach(btn=>{
+    btn.onclick=()=>selectReplacementProduct(btn.dataset.replacementId);
+  });
+}
+
+function selectReplacementProduct(id){
+  const p=replacementProducts.find(x=>x.id===id);
+  if(!p) return;
+
+  const order=editingProduct ? allOrders.find(x=>x.id===editingProduct.orderId) : null;
+  const payment=String(order?.metodePembayaran||order?.paymentMethod||"").toUpperCase();
+  const price=(payment==="LIMIT" || payment==="TEMPO") ? catalogNumber(p.tempo) : catalogNumber(p.tunai);
+
+  $("editProductName").value=p.nama;
+  $("editProductPrice").value=price||0;
+  $("editProductName").dataset.supplier=p.supplier||"";
+  $("editProductName").dataset.stok=String(p.stok||0);
+  $("editProductName").dataset.kategori=p.kategori||"";
+  $("replacementList").style.display="none";
+}
+
+function openEditProduct(order,index){
+  if(normalizeStatus(order.status)!=="MENUNGGU_PERSETUJUAN"){
+    showMessage("Produk hanya bisa diedit sebelum pesanan disetujui.",false);
+    return;
+  }
+
+  const item=getItems(order)[index];
+  if(!item) return;
+
+  editingProduct={orderId:order.id,index};
+
+  $("replacementSearch").value="";
+  $("replacementList").style.display="none";
+
+  $("editProductName").value=item.nama||item.name||item.produk||"";
+  $("editProductPrice").value=Number(item.harga ?? item.price ?? item.tunai ?? item.hargaTunai ?? item.tempo ?? item.hargaTempo ?? 0);
+  $("editProductQty").value=Number(item.qty ?? item.jumlah ?? 1);
+  $("editProductName").dataset.supplier="";
+  $("editProductName").dataset.stok="";
+  $("editProductName").dataset.kategori="";
+
+  $("editProductModal").classList.add("show");
+}
+
+function closeEditProduct(){
+  editingProduct=null;
+  $("editProductModal").classList.remove("show");
+}
+
+async function saveEditProduct(){
+  if(!editingProduct || busy) return;
+
+  const order=allOrders.find(x=>x.id===editingProduct.orderId);
+  if(!order) return;
+
+  const name=$("editProductName").value.trim();
+  const price=Number($("editProductPrice").value);
+  const qty=Number($("editProductQty").value);
+
+  if(!name) return alert("Nama produk wajib diisi.");
+  if(!Number.isFinite(price) || price<0) return alert("Harga tidak valid.");
+  if(!Number.isInteger(qty) || qty<1) return alert("Jumlah minimal 1 pcs.");
+
+  busy=true;
+
+  try{
+    const ref=doc(db,"orders",order.id);
+    const snap=await getDoc(ref);
+    if(!snap.exists()) throw new Error("Pesanan tidak ditemukan.");
+
+    const current=snap.data();
+    if(normalizeStatus(current.status)!=="MENUNGGU_PERSETUJUAN"){
+      throw new Error("Pesanan sudah diproses dan tidak dapat diedit.");
+    }
+
+    const items=Array.isArray(current.items)
+      ? current.items.map(x=>({...x}))
+      : [];
+
+    const item=items[editingProduct.index];
+    if(!item) throw new Error("Produk tidak ditemukan.");
+
+    item.nama=name;
+    item.harga=price;
+    item.qty=qty;
+
+    if("name" in item) item.name=name;
+    if("produk" in item) item.produk=name;
+    if("price" in item) item.price=price;
+
+    const supplier=$("editProductName").dataset.supplier||"";
+    const stok=$("editProductName").dataset.stok||"";
+    const kategori=$("editProductName").dataset.kategori||"";
+
+    if(supplier) item.supplier=supplier;
+    if(stok!=="") item.stokKatalog=Number(stok);
+    if(kategori) item.kategori=kategori;
+
+    const totalQty=items.reduce((a,x)=>a+Number(x.qty||x.jumlah||1),0);
+    const total=items.reduce((a,x)=>{
+      const p=Number(x.harga ?? x.price ?? x.tunai ?? x.hargaTunai ?? x.tempo ?? x.hargaTempo ?? 0);
+      const q=Number(x.qty ?? x.jumlah ?? 1);
+      return a+p*q;
+    },0);
+
+    // Untuk pesanan LIMIT/TEMPO, total seluruh produk setelah penggantian
+    // tidak boleh melebihi limit tersedia Owner. Jika melebihi, perubahan
+    // ditolak dan pesanan tidak disimpan.
+    const payment=String(current.metodePembayaran||current.paymentMethod||"").toUpperCase();
+    if(payment==="LIMIT" || payment==="LIMIT / TEMPO" || payment==="TEMPO") {
+      const limitRef=doc(db,"limits",current.ownerUid);
+      const limitSnap=await getDoc(limitRef);
+      if(!limitSnap.exists()) throw new Error("Data limit Owner belum tersedia.");
+
+      const limitData=limitSnap.data();
+      const tersedia=Number(limitData.limitTersedia||0);
+      if(!Number.isFinite(tersedia) || tersedia<0) {
+        throw new Error("Data limit Owner tidak valid.");
+      }
+
+      if(total>tersedia){
+        throw new Error(
+          `Perubahan ditolak. Total pesanan ${money(total)} melebihi limit tersedia ${money(tersedia)}.`
+        );
+      }
+    }
+
+    await updateDoc(ref,{
+      items,
+      total,
+      totalQty,
+      procurementStatus:"BELUM_DISETUJUI",
+      supplierConfirmedAt:null,
+      supplierConfirmedBy:null,
+      productEditedAt:serverTimestamp(),
+      productEditedBy:auth.currentUser.uid,
+      updatedAt:serverTimestamp()
+    });
+
+    closeEditProduct();
+    showMessage("Produk berhasil diganti. Supplier harus dikonfirmasi ulang.");
+    await loadOrders();
+  }catch(err){
+    console.error("FIXZY edit product:",err);
+    showMessage(err.message||"Gagal mengubah produk.",false);
+  }finally{
+    busy=false;
+  }
+}
+
+
+async function approveOrder(order){
+  if(busy) return;
+  if(!procurementReady(order)){
+    showMessage("Pesanan belum bisa disetujui. Supplier harus mengonfirmasi barang tersedia terlebih dahulu.",false);
+    return;
+  }
+  const total=Number(order.total||0);
+  if(!total || total<0){showMessage("Total pesanan tidak valid.",false);return;}
+
+  const payment=String(order.metodePembayaran||order.paymentMethod||"").toUpperCase();
+  if(!["SALDO_PRIBADI","LIMIT"].includes(payment)){
+    showMessage("Metode pembayaran pesanan tidak dikenali.",false);
+    return;
+  }
+
+  if(!confirm(`Setujui pesanan ${order.nomorPesanan||order.id} sebesar ${money(total)}?`)) return;
+
+  busy=true;
+  try{
+    await runTransaction(db,async tx=>{
+      const orderRef=doc(db,"orders",order.id);
+      const orderSnap=await tx.get(orderRef);
+      if(!orderSnap.exists()) throw new Error("Pesanan sudah tidak ditemukan.");
+
+      const current=orderSnap.data();
+       if(String(current.procurementStatus||"").toUpperCase()!=="TERSEDIA"){
+         throw new Error("Supplier belum mengonfirmasi barang tersedia.");
+       }
+      if(normalizeStatus(current.status)!=="MENUNGGU_PERSETUJUAN"){
+        throw new Error("Pesanan sudah diproses sebelumnya.");
+      }
+
+      const ownerUid=current.ownerUid;
+      if(!ownerUid) throw new Error("ownerUid pada pesanan tidak ada.");
+
+      if(payment==="SALDO_PRIBADI"){
+        const walletRef=doc(db,"wallets",ownerUid);
+        const walletSnap=await tx.get(walletRef);
+        if(!walletSnap.exists()) throw new Error("Saldo pribadi Owner belum tersedia.");
+
+        const wallet=walletSnap.data();
+        const saldo=Number(wallet.saldoPribadi||0);
+        if(saldo<total){
+          throw new Error(`Saldo pribadi tidak cukup. Tersedia ${money(saldo)}.`);
+        }
+
+        const sesudah=saldo-total;
+        tx.update(walletRef,{
+          saldoPribadi:sesudah,
+          updatedAt:serverTimestamp()
+        });
+
+        tx.update(orderRef,{
+          status:"DISETUJUI",
+          saldoSebelum:saldo,
+          saldoSesudah:sesudah,
+          approvedAt:serverTimestamp(),
+          approvedBy:auth.currentUser.uid,
+          updatedAt:serverTimestamp()
+        });
+      }else{
+        const limitRef=doc(db,"limits",ownerUid);
+        const limitSnap=await tx.get(limitRef);
+        if(!limitSnap.exists()) throw new Error("Data limit Owner belum tersedia.");
+
+        const lim=limitSnap.data();
+        const tersedia=Number(lim.limitTersedia||0);
+        const terpakai=Number(lim.limitTerpakai||0);
+
+        if(tersedia<total){
+          throw new Error(`Limit tidak cukup. Tersedia ${money(tersedia)}.`);
+        }
+
+        const sisa=tersedia-total;
+        const baruTerpakai=terpakai+total;
+
+        tx.update(limitRef,{
+          limitTerpakai:baruTerpakai,
+          limitTersedia:sisa,
+          updatedAt:serverTimestamp()
+        });
+
+        const invoiceRef=doc(collection(db,"invoices"));
+        tx.set(invoiceRef,{
+          ownerUid,
+          orderId:order.id,
+          nomorPesanan:current.nomorPesanan||order.id,
+          total,
+          totalTerbayar:0,
+          sisaTagihan:total,
+          status:"BELUM_DIBAYAR",
+          metodePembayaran:"LIMIT",
+          tempoHari:getTempoHari(current),
+          totalQty:Number(current.totalQty||getItems(current).reduce((a,x)=>a+Number(x.qty||x.jumlah||1),0)),
+          jatuhTempo:Timestamp.fromMillis(Date.now()+(getTempoHari(current)*24*60*60*1000)),
+          createdAt:serverTimestamp()
+        });
+
+        tx.update(orderRef,{
+          status:"DISETUJUI",
+          limitSebelum:tersedia,
+          limitSesudah:sisa,
+          limitTerpakaiSebelum:terpakai,
+          limitTerpakaiSesudah:baruTerpakai,
+          invoiceId:invoiceRef.id,
+          tempoHari:getTempoHari(current),
+           jatuhTempo:Timestamp.fromMillis(Date.now()+(getTempoHari(current)*24*60*60*1000)),
+           approvedAt:serverTimestamp(),
+          approvedBy:auth.currentUser.uid,
+          updatedAt:serverTimestamp()
+        });
+      }
+    });
+
+    showMessage("Pesanan berhasil disetujui.");
+    await loadOrders();
+  }catch(err){
+    console.error(err);
+    showMessage(err.message||"Gagal menyetujui pesanan.",false);
+  }finally{
+    busy=false;
+  }
+}
+
+async function rejectOrder(order){
+  if(busy) return;
+  if(!confirm(`Tolak pesanan ${order.nomorPesanan||order.id}?`)) return;
+  busy=true;
+  try{
+    await updateDoc(doc(db,"orders",order.id),{
+      status:"DITOLAK",
+      rejectedAt:serverTimestamp(),
+      rejectedBy:auth.currentUser.uid,
+      updatedAt:serverTimestamp()
+    });
+    showMessage("Pesanan ditolak.");
+    await loadOrders();
+  }catch(err){
+    console.error(err);
+    showMessage(err.message||"Gagal menolak pesanan.",false);
+  }finally{busy=false;}
+}
+
+async function changeStatus(order,status){
+  if(busy) return;
+  if(!confirm(`Ubah status ${order.nomorPesanan||order.id} menjadi ${statusLabel(status)}?`)) return;
+  busy=true;
+  try{
+    await updateDoc(doc(db,"orders",order.id),{
+      status,
+      updatedAt:serverTimestamp()
+    });
+    showMessage(`Status pesanan menjadi ${statusLabel(status)}.`);
+    await loadOrders();
+  }catch(err){
+    console.error(err);
+    showMessage(err.message||"Gagal mengubah status.",false);
+  }finally{busy=false;}
+}
+
+document.querySelectorAll(".filter").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    document.querySelectorAll(".filter").forEach(x=>x.classList.remove("active"));
+    btn.classList.add("active");
+    activeFilter=btn.dataset.filter;
+    render();
+  });
+});
+
+$("orders").addEventListener("click",async e=>{
+  const btn=e.target.closest("[data-action]");
+  if(!btn) return;
+  const order=allOrders.find(x=>x.id===btn.dataset.id);
+  if(!order) return;
+
+  const action=btn.dataset.action;
+  if(action==="edit-product") openEditProduct(order,Number(btn.dataset.index));
+  else if(action==="approve") await approveOrder(order);
+  else if(action==="reject") await rejectOrder(order);
+  else if(action==="pack") await changeStatus(order,"DIKEMAS");
+  else if(action==="ship") await changeStatus(order,"DIKIRIM");
+  else if(action==="deliver") await changeStatus(order,"DIANTAR");
+  else if(action==="done") await changeStatus(order,"SELESAI");
+});
+
+
+$("loadReplacementBtn").onclick=async ()=>{
+  const q=$("replacementSearch").value.trim();
+  if(q.length<2){
+    alert("Ketik minimal 2 huruf terlebih dahulu.");
+    return;
+  }
+  $("replacementList").style.display="block";
+  $("replacementList").innerHTML='<div class="replace-empty">Memuat produk...</div>';
+  try{
+    await loadReplacementProducts();
+    renderReplacementResults();
+  }catch(err){
+    $("replacementList").innerHTML=`<div class="replace-empty">Gagal memuat produk: ${esc(err.message||err)}</div>`;
+  }
+};
+
+let replacementTimer=null;
+$("replacementSearch").addEventListener("input",()=>{
+  clearTimeout(replacementTimer);
+  const q=$("replacementSearch").value.trim();
+
+  if(q.length<2){
+    $("replacementList").style.display="none";
+    return;
+  }
+
+  replacementTimer=setTimeout(async ()=>{
+    try{
+      if(!replacementLoaded) await loadReplacementProducts();
+      renderReplacementResults();
+    }catch(err){
+      $("replacementList").style.display="block";
+      $("replacementList").innerHTML=`<div class="replace-empty">Gagal memuat produk: ${esc(err.message||err)}</div>`;
+    }
+  },180);
+});
+
+$("closeEditProduct").onclick=closeEditProduct;
+$("cancelEditProduct").onclick=closeEditProduct;
+$("saveEditProduct").onclick=saveEditProduct;
+$("editProductModal").addEventListener("click",e=>{
+  if(e.target.id==="editProductModal") closeEditProduct();
+});
+
+
+onAuthStateChanged(auth,async user=>{
+  if(!user){
+    location.href="index-superadmin.html";
+    return;
+  }
+
+  try{
+    const u=await getDoc(doc(db,"users",user.uid));
+    if(!u.exists() || u.data().role!=="superadmin"){
+      alert("Akses hanya untuk Superadmin.");
+      location.href="index.html";
+      return;
+    }
+    await loadOrders();
+  }catch(err){
+    console.error(err);
+    alert("Gagal memeriksa akses Superadmin.");
+    location.href="index.html";
+  }
+});
+</script>
+</body>
+</html>
