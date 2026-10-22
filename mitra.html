@@ -110,7 +110,7 @@ function card(id,o){
  return `<article class="order">
   <div class="topline"><h3>Pesanan ${esc(o.nomorPesanan||id)}</h3><span class="status">${esc(statusText(st))}</span></div>
   <p><b>Pelanggan:</b> ${esc(o.nama||o.ownerName||o.namaPembeli||"—")}</p>
-  <p><b>WhatsApp:</b> ${phone?`<a href="https://wa.me/${esc(phone.replace(/\\D/g,""))}">${esc(phone)}</a>`:"—"}</p>
+ <p><b>WhatsApp:</b> ${wa ? `<a class="contact-link" href="${esc(wa)}" target="_blank" rel="noopener noreferrer">${esc(phone)}</a>` : "Nomor WA tidak tersedia"}</p>
   <p><b>Alamat:</b> ${esc(getOrderAddress(o))}</p>
   <p><b>Total:</b> ${fmtMoney(o.total)}</p>
   <p><b>Barang:</b></p><ul class="items">${orderItems(o)}</ul>
