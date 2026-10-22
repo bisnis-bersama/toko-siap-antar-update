@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#00a85a">
+<title>Daftar Akun | Toko Siap Antar</title>
+<style>
+:root{--g:#00a85a;--c:#00c8a0;--y:#ffd400;--ink:#18312b;--muted:#66756f;--line:#dceee5}
+*{box-sizing:border-box}body{margin:0;background:#f4fff7;color:var(--ink);font:15px Arial,sans-serif}
+header{background:#fff;border-bottom:2px solid var(--y);padding:13px 16px;display:flex;align-items:center;gap:12px;box-shadow:0 2px 8px #0000000b}
+header img{width:48px;height:44px;object-fit:contain}header strong{color:#008b4c;font-size:17px}header small{display:block;color:var(--muted);font-size:12px;margin-top:3px}
+main{max-width:520px;margin:24px auto;padding:0 14px}.card{background:white;border:1px solid var(--line);border-radius:16px;padding:20px;box-shadow:0 3px 12px #18312b08}
+h1{font-size:23px;margin:0 0 8px}.sub{color:var(--muted);font-size:13px;line-height:1.5;margin:0 0 20px}
+label{display:block;font-weight:700;font-size:13px;margin-top:12px}input{display:block;width:100%;border:1px solid #cfe5d8;border-radius:10px;padding:13px;font:inherit;margin:6px 0 2px;background:#fff;color:var(--ink)}
+.btn{display:block;width:100%;border:0;border-radius:10px;padding:13px;background:linear-gradient(100deg,var(--g),var(--c));color:white;font-weight:700;font-size:15px;cursor:pointer;margin-top:18px}
+.btn:disabled{opacity:.6;cursor:wait}.linkbtn{display:block;text-align:center;margin-top:14px;color:#087b45;text-decoration:none;font-weight:700}
+.msg{display:none;padding:12px;border-radius:10px;margin:12px 0;font-size:13px;line-height:1.5}.msg.show{display:block}.err{background:#fff0ed;color:#b42318}.ok{background:#e5fff0;color:#087b45}
+.note{background:#eef7ff;border-radius:10px;padding:12px;font-size:12px;color:#31546a;line-height:1.5;margin-top:15px}
+</style>
+</head>
+<body>
+<header><img src="logo3.png" alt="Logo Toko Siap Antar"><div><strong>Toko Siap Antar</strong><small>Belanja sparepart dan aksesori HP lebih mudah</small></div></header>
+<main><section class="card">
+<h1>Daftar Akun Baru</h1>
+<p class="sub">Buat akun pelanggan untuk checkout, menyimpan alamat, dan melihat pesanan.</p>
+<div id="msg" class="msg" role="status" aria-live="polite"></div>
+<form id="registerForm">
+<label for="nama">Nama lengkap</label>
+<input id="nama" name="nama" autocomplete="name" required maxlength="100" placeholder="Masukkan nama lengkap">
+<label for="email">Email</label>
+<input id="email" name="email" type="email" autocomplete="email" required placeholder="nama@email.com">
+<label for="password">Password</label>
+<input id="password" name="password" type="password" autocomplete="new-password" minlength="6" required placeholder="Minimal 6 karakter">
+<label for="password2">Ulangi password</label>
+<input id="password2" name="password2" type="password" autocomplete="new-password" minlength="6" required placeholder="Ketik ulang password">
+<button id="registerBtn" class="btn" type="submit">Daftar Akun</button>
+</form>
+<div class="note">Pendaftaran ini hanya membuat akun pelanggan. Formulir tidak menyediakan pilihan role admin, mitra, atau owner dan tidak menyimpan field role. Hak akses khusus harus diberikan secara terpisah oleh admin.</div>
+<a class="linkbtn" href="profil.html">Sudah punya akun? Login</a>
+<a class="linkbtn" href="index.html">Kembali ke Beranda</a>
+</section></main>
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
+import { getAuth, createUserWithEmailAndPassword, updateProfile } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+import { getFirestore, doc, setDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBxqZhl6t3RwrXMwVdJeIkg0NzGfwvlweM",
+  authDomain: "toko-siap-antar-9a7bb.firebaseapp.com",
+  projectId: "toko-siap-antar-9a7bb",
+  storageBucket: "toko-siap-antar-9a7bb.firebasestorage.app",
+  messagingSenderId: "351335838712",
+  appId: "1:351335838712:web:14cc2c7b91bb0c9e1b5c0d"
+};
+
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const form = document.getElementById('registerForm');
+const msg = document.getElementById('msg');
+const btn = document.getElementById('registerBtn');
+
+function showMessage(text, type) {
+  msg.textContent = text;
+  msg.className = 'msg show ' + type;
+}
+
+form.addEventListener('submit', async (event) => {
+  event.preventDefault();
+  const nama = document.getElementById('nama').value.trim();
+  const email = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+  const password2 = document.getElementById('password2').value;
+
+  if (!nama) return showMessage('Nama lengkap wajib diisi.', 'err');
+  if (password !== password2) return showMessage('Konfirmasi password tidak sama.', 'err');
+  if (password.length < 6) return showMessage('Password minimal 6 karakter.', 'err');
+
+  btn.disabled = true;
+  btn.textContent = 'Mendaftarkan...';
+  try {
+    const credential = await createUserWithEmailAndPassword(auth, email, password);
+    await updateProfile(credential.user, { displayName: nama });
+
+    // Sengaja tidak menyimpan field role. Akun baru bukan admin, mitra, atau owner.
+    await setDoc(doc(db, 'users', credential.user.uid), {
+      nama,
+      email,
+      createdAt: serverTimestamp()
+    });
+
+    showMessage('Pendaftaran berhasil. Akun pelanggan sudah dibuat.', 'ok');
+    form.reset();
+    setTimeout(() => { window.location.href = 'profil.html'; }, 1200);
+  } catch (error) {
+    let text = 'Pendaftaran gagal. Silakan coba lagi.';
+    if (error.code === 'auth/email-already-in-use') text = 'Email ini sudah terdaftar. Silakan login.';
+    else if (error.code === 'auth/invalid-email') text = 'Format email tidak valid.';
+    else if (error.code === 'auth/weak-password') text = 'Password terlalu lemah. Gunakan minimal 6 karakter.';
+    else if (error.code === 'auth/operation-not-allowed' || error.code === 'auth/configuration-not-found') text = 'Metode Email/Password belum diaktifkan di Firebase Authentication.';
+    else if (error.code === 'permission-denied' || error.code === 'firestore/permission-denied') text = 'Akun Auth terbentuk, tetapi penyimpanan profil ditolak oleh Firestore Rules. Periksa izin create pada users/{uid}.';
+    showMessage(text, 'err');
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Daftar Akun';
+  }
+});
+</script>
+</body>
+</html>
