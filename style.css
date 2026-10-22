@@ -1,0 +1,14 @@
+ :root{--yellow:#ffc107;--ink:#161616;--paper:#f5f6f8;--muted:#68707d;--line:#e4e7ec;--danger:#b42318;--green:#067647}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font:15px/1.5 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+header{background:var(--ink);color:#fff;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;border-bottom:4px solid var(--yellow)}
+header strong{font-size:18px}nav{display:flex;gap:8px;flex-wrap:wrap}nav a,.navlink{color:#fff;text-decoration:none;padding:7px 10px;border-radius:8px}nav a:hover,.navlink:hover{background:#333}
+.shell{width:min(1100px,100%);margin:22px auto;padding:0 14px}.panel{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;margin:0 0 16px;box-shadow:0 4px 18px #1018280a}
+h1{font-size:26px;margin:0 0 8px}h2{font-size:19px;margin:0 0 12px}.muted{color:var(--muted)}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px}
+label{display:block;font-weight:650;margin:12px 0 5px}input,textarea,select{font:inherit;width:100%;padding:11px 12px;border:1px solid #cfd4dc;border-radius:9px;background:#fff;color:var(--ink)}textarea{min-height:90px;resize:vertical}
+.btn,button{font:inherit;font-weight:700;border:0;border-radius:9px;padding:10px 14px;background:var(--yellow);color:#181818;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.btn.dark,button.dark{background:#222;color:#fff}.btn.light{background:#edf0f4}.btn.danger,button.danger{background:#fee4e2;color:#912018}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.notice{padding:11px 13px;border-radius:9px;background:#eef4ff;margin:12px 0}.notice.error{background:#fee4e2;color:#912018}.notice.success{background:#dcfae6;color:#05603a}
+.table-wrap{overflow:auto}table{width:100%;border-collapse:collapse;background:#fff}th,td{text-align:left;padding:10px;border-bottom:1px solid var(--line);vertical-align:top}th{background:#f8f9fb;white-space:nowrap}
+.badge{display:inline-block;border-radius:999px;padding:4px 9px;background:#edf0f4;font-size:12px;font-weight:750}.badge.menunggu{background:#fff1c2}.badge.disetujui{background:#dbeafe}.badge.dikemas{background:#f3e8ff}.badge.dikirim{background:#dbeafe}.badge.selesai{background:#dcfae6}.badge.dibatalkan{background:#fee4e2}
+.stat{padding:16px;border:1px solid var(--line);border-radius:12px;background:#fff}.stat b{display:block;font-size:24px}.hidden{display:none!important}footer{text-align:center;padding:26px;color:var(--muted);font-size:13px}
+@media(max-width:600px){header{align-items:flex-start}header nav{width:100%}.shell{margin:14px auto}.panel{padding:15px}h1{font-size:22px}th,td{padding:8px;font-size:13px}}

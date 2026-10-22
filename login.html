@@ -1,0 +1,10 @@
+<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Login | Toko Siap Antar</title><link rel="stylesheet" href="style.css"></head><body>
+<header><strong>TOKO SIAP ANTAR</strong><nav><a href="index.html">Toko</a><a href="register.html">Daftar</a></nav></header>
+<main class="shell"><section class="panel" style="max-width:520px;margin:auto"><h1>Masuk akun</h1><p class="muted">Masuk untuk melihat pesanan dan fitur sesuai hak akses akun.</p><div id="notice" class="notice" hidden></div>
+<form id="loginForm"><label>Email</label><input name="email" type="email" autocomplete="username" required><label>Password</label><input name="password" type="password" autocomplete="current-password" required><div class="actions"><button type="submit">Masuk</button><a class="btn light" href="register.html">Buat akun</a></div></form></section></main>
+<script type="module">
+import {auth} from "./firebase-config.js";
+import {signInWithEmailAndPassword} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+import {getProfile,notice} from "./common.js";
+document.querySelector("#loginForm").addEventListener("submit",async e=>{e.preventDefault();const f=new FormData(e.currentTarget);try{const c=await signInWithEmailAndPassword(auth,f.get("email"),f.get("password"));const p=await getProfile(c.user);if(!p){notice("Akun masuk, tetapi profil Firestore belum ada. Hubungi admin.","error");return;}location.href=({superadmin:"admin.html",admin:"admin.html",karyawan:"admin.html",mitra:"mitra.html",pelanggan:"akun.html"})[p.role]||"akun.html";}catch(err){notice("Login gagal: "+err.message,"error");}});
+</script></body></html>
