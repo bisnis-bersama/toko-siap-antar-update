@@ -1,35 +1,62 @@
+
 <!doctype html>
 <html lang="id">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Dashboard Mitra Pengantaran | Toko Siap Antar</title>
+<title>Dashboard Mitra | Toko Siap Antar</title>
 <link rel="stylesheet" href="style.css">
 <style>
 :root{--green:#008b5a;--teal:#00b8b0;--ink:#173b32;--muted:#64756f;--line:#dce9e3;--bg:#f1fff6}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
-header{position:sticky;top:0;z-index:5;background:#fff;border-bottom:4px solid #ffd400;padding:14px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;box-shadow:0 2px 12px #143b3210}
-.brand{font-weight:800;color:var(--green);font-size:19px}.sub{font-size:13px;color:var(--muted);margin-top:2px}.wrap{max-width:980px;margin:22px auto;padding:0 14px 40px}
-h1{font-size:27px;margin:8px 0}.muted{color:var(--muted)}.panel{background:white;border:1px solid var(--line);border-radius:18px;padding:18px;margin:14px 0;box-shadow:0 5px 18px #153c3210}
-input,button,select{font:inherit}input{width:100%;padding:13px 14px;border:1px solid #cbd9d3;border-radius:12px;margin:6px 0 14px;background:white;color:var(--ink)}
-button,.btn{border:0;border-radius:12px;padding:12px 16px;background:linear-gradient(100deg,var(--green),var(--teal));color:#fff;font-weight:700;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:7px}
-button.secondary,.btn.secondary{background:#edf5f1;color:var(--ink);border:1px solid var(--line)}button.danger{background:#a92b2b}
-.actions{display:flex;gap:8px;flex-wrap:wrap}.status{display:inline-block;padding:5px 9px;border-radius:999px;background:#e9f7ef;font-size:12px;font-weight:800}.error{background:#fff0f0;color:#a21c1c;padding:12px;border-radius:12px}.success{background:#e8fff1;color:#087243;padding:12px;border-radius:12px}.order{border:1px solid var(--line);border-radius:15px;padding:15px;margin:12px 0}.order h3{margin:0 0 8px}.order p{margin:6px 0;overflow-wrap:anywhere}.items{padding-left:20px}.hidden{display:none!important}.topline{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;flex-wrap:wrap}.small{font-size:13px}
-@media(min-width:720px){.grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}.grid .panel{margin:0}}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+header{position:sticky;top:0;z-index:5;background:#171717;color:white;border-bottom:5px solid #ffd400;padding:16px;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.brand{font-weight:800;font-size:20px}
+.wrap{max-width:980px;margin:22px auto;padding:0 14px 40px}
+h1{font-size:26px;margin:8px 0}
+.panel,.order{background:white;border:1px solid var(--line);border-radius:18px;padding:18px;margin:14px 0;box-shadow:0 5px 18px #153c3210}
+input,button{font:inherit}
+input{width:100%;padding:13px;border:1px solid #cbd9d3;border-radius:12px;margin:7px 0 14px}
+button,.btn{border:0;border-radius:11px;padding:11px 14px;background:linear-gradient(100deg,var(--green),var(--teal));color:white;font-weight:700;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+button.secondary,.btn.secondary{background:#edf5f1;color:var(--ink);border:1px solid var(--line)}
+button.accept{background:#087b45}
+button.cancel{background:#b42318}
+.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}
+.actions a{color:#075fc5;text-decoration:underline;font-weight:700;overflow-wrap:anywhere}
+.status{display:inline-block;padding:6px 10px;border-radius:999px;background:#e9f7ef;font-size:12px;font-weight:800}
+.error,.success{padding:12px;border-radius:12px;margin:10px 0}
+.error{background:#fff0f0;color:#a21c1c}
+.success{background:#e8fff1;color:#087243}
+.order h3{margin:0}
+.order p{margin:9px 0;overflow-wrap:anywhere;line-height:1.5}
+.hidden{display:none!important}
+.topline{display:flex;justify-content:space-between;gap:10px;align-items:flex-start;flex-wrap:wrap}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+.address{white-space:pre-wrap;overflow-wrap:anywhere}
+.link{color:#075fc5;font-weight:700;overflow-wrap:anywhere}
+.items{padding-left:22px}
+@media(min-width:720px){.wrap{padding-left:20px;padding-right:20px}.order{padding:22px}}
 </style>
 </head>
 <body>
 <header>
-  <div><div class="brand">🛵 TOKO SIAP ANTAR · MITRA</div><div class="sub">Dashboard mitra pengantaran</div></div>
+  <div>
+    <div class="brand">🛵 TOKO SIAP ANTAR · MITRA</div>
+    <div class="small">Dashboard mitra pengantaran</div>
+  </div>
   <button id="logoutBtn" class="secondary hidden" type="button">Keluar</button>
 </header>
+
 <main class="wrap">
   <section id="loginPanel" class="panel">
     <h1>Login Mitra</h1>
-    <p class="muted">Masuk menggunakan akun yang sudah dibuat admin dan memiliki role <b>mitra</b>.</p>
+    <p class="muted">Gunakan akun yang telah dibuat admin dan memiliki role mitra.</p>
     <form id="loginForm">
-      <label for="email">Email</label><input id="email" type="email" autocomplete="username" required>
-      <label for="password">Password</label><input id="password" type="password" autocomplete="current-password" required>
+      <label for="email">Email</label>
+      <input id="email" type="email" autocomplete="username" required>
+      <label for="password">Password</label>
+      <input id="password" type="password" autocomplete="current-password" required>
       <button type="submit">Masuk Dashboard Mitra</button>
     </form>
     <p id="loginMsg" aria-live="polite"></p>
@@ -37,97 +64,397 @@ button.secondary,.btn.secondary{background:#edf5f1;color:var(--ink);border:1px s
 
   <section id="dashboard" class="hidden">
     <div class="panel">
-      <div class="topline"><div><h1>Pesanan Saya</h1><p id="welcome" class="muted">Memuat akun mitra…</p></div><button id="refreshBtn" class="secondary" type="button">↻ Muat ulang</button></div>
-      <p class="small muted">Pesanan yang ditampilkan hanya pesanan dengan <code>mitraUid</code> yang sama dengan akun ini.</p>
+      <div class="topline">
+        <div>
+          <h1>Pesanan yang Ditugaskan</h1>
+          <p id="welcome" class="muted">Memuat akun mitra...</p>
+        </div>
+        <button id="refreshBtn" class="secondary" type="button">↻ Muat ulang</button>
+      </div>
       <div id="pageMsg" aria-live="polite"></div>
     </div>
     <div id="ordersList"></div>
   </section>
 </main>
+
 <script type="module">
 import {auth,db} from "./firebase-config.js";
-import {onAuthStateChanged,signInWithEmailAndPassword,signOut} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
-import {collection,query,where,getDocs,doc,getDoc,updateDoc,serverTimestamp} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+import {
+  onAuthStateChanged,
+  signInWithEmailAndPassword,
+  signOut
+} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+import {
+  collection,query,where,getDocs,doc,getDoc,
+  updateDoc,serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+
 const $=id=>document.getElementById(id);
-let currentUser=null, profile=null, busy=false;
-const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-function message(el,text,type=""){el.className=type;el.textContent=text;}
-function statusText(s){return ({menunggu:"Menunggu",MENUNGGU:"Menunggu",MENUNGGU_PERSETUJUAN:"Menunggu persetujuan",disetujui:"Disetujui",DISETUJUI:"Disetujui",diambil:"Pesanan diambil",DALAM_PENGANTARAN:"Dalam pengantaran",dalam_pengantaran:"Dalam pengantaran",dikirim:"Dalam pengantaran",selesai:"Selesai",SELESAI:"Selesai",dibatalkan:"Dibatalkan",DIBATALKAN:"Dibatalkan"})[s]||s||"—";}
-function fmtMoney(v){return "Rp "+Number(v||0).toLocaleString("id-ID");}
-function getOrderAddress(o){const a=o.alamatPengiriman||o.alamat||{};if(typeof a==="string")return a;return [a.alamat,a.alamatManual,a.alamatPengiriman,a.desa,a.kecamatan,a.kabupaten,a.provinsi].filter(Boolean).join(", ")||"Alamat belum tersedia";}
-function getMapsLink(o){if(o.gpsLink&&/^https?:\/\//i.test(o.gpsLink))return o.gpsLink;const a=o.alamatPengiriman||o.alamat||{};if(a&&typeof a==="object"){const lat=a.lat??a.latitude??o.lat??o.lokasi?.lat;const lng=a.lng??a.longitude??o.lng??o.lokasi?.lng;if(lat!=null&&lng!=null)return `https://www.google.com/maps?q=${encodeURIComponent(lat+","+lng)}`;}if(o.lat!=null&&o.lng!=null)return `https://www.google.com/maps?q=${encodeURIComponent(o.lat+","+o.lng)}`;const text=getOrderAddress(o);const match=text.match(/https?:\/\/(?:www\.)?maps\.google\.com\/\?q=[^\s]+/);return match?match[0]:"https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(text);}
-function orderItems(o){const a=Array.isArray(o.items)?o.items:[];return a.map(x=>`<li>${esc(x.nama||x.name||x.title||"Produk")} × ${Number(x.qty||x.quantity||1)}</li>`).join("")||"<li>Rincian barang tidak tersedia</li>";}
-function canStart(s){return ["menunggu","MENUNGGU","disetujui","DISETUJUI","MENUNGGU_PERSETUJUAN","ditugaskan","DITUGASKAN"].includes(String(s||""));}
-function canDeliver(s){return ["diambil","DIAMBIL","dalam_pengantaran","DALAM_PENGANTARAN","dikirim"].includes(String(s||""));}
+let currentUser=null;
+let busy=false;
+
+const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({
+  "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+}[c]));
+
+function message(el,text,type=""){
+  el.className=type;
+  el.textContent=text;
+}
+
+function money(v){
+  return "Rp "+Number(v||0).toLocaleString("id-ID");
+}
+
+function statusText(s){
+  return ({
+    menunggu:"Menunggu",
+    MENUNGGU:"Menunggu",
+    MENUNGGU_PERSETUJUAN:"Menunggu persetujuan",
+    ditugaskan:"Ditugaskan",
+    DITUGASKAN:"Ditugaskan",
+    disetujui:"Disetujui",
+    DISETUJUI:"Disetujui",
+    diambil:"Pesanan diambil",
+    DIAMBIL:"Pesanan diambil",
+    dalam_pengantaran:"Dalam pengantaran",
+    DALAM_PENGANTARAN:"Dalam pengantaran",
+    dikirim:"Dalam pengantaran",
+    selesai:"Selesai",
+    SELESAI:"Selesai",
+    dibatalkan:"Dibatalkan",
+    DIBATALKAN:"Dibatalkan"
+  })[s]||s||"—";
+}
+
+function getOrderAddress(o){
+  const candidates=[
+    o.alamatLengkap,
+    o.alamatManual,
+    o.alamatPengiriman,
+    o.alamat,
+    o.address
+  ];
+
+  for(const a of candidates){
+    if(typeof a==="string"&&a.trim()){
+      const cleaned=a.trim();
+      if(cleaned!=="[object Object]")return cleaned;
+    }
+
+    if(a&&typeof a==="object"){
+      const parts=[
+        a.alamatLengkap,a.alamatManual,a.alamat,
+        a.detail,a.jalan,a.patokan,a.desa,
+        a.kecamatan,a.kabupaten,a.provinsi
+      ].filter(Boolean);
+
+      if(parts.length)return parts.join(", ");
+    }
+  }
+
+  return [o.desa,o.kecamatan,o.kabupaten,o.provinsi]
+    .filter(Boolean).join(", ")||"Alamat lengkap belum tersedia";
+}
+
+function getMapsLink(o){
+  const possible=[
+    o.gpsLink,
+    o.alamatManual,
+    o.alamatLengkap,
+    o.alamatPengiriman,
+    o.alamat
+  ];
+
+  for(const a of possible){
+    if(typeof a==="string"){
+      const m=a.match(/https?:\/\/(?:www\.)?(?:google\.com\/maps|maps\.google\.com|maps\.app\.goo\.gl)[^\s]*/i);
+      if(m)return m[0].replace(/[),.;]+$/,"");
+    }
+
+    if(a&&typeof a==="object"){
+      const lat=a.lat??a.latitude??o.lat??o.lokasi?.lat;
+      const lng=a.lng??a.longitude??a.long??o.lng??o.lokasi?.lng;
+
+      if(lat!=null&&lng!=null){
+        return "https://www.google.com/maps?q="+
+          encodeURIComponent(lat+","+lng);
+      }
+
+      for(const value of Object.values(a)){
+        if(typeof value==="string"){
+          const m=value.match(/https?:\/\/(?:www\.)?(?:google\.com\/maps|maps\.google\.com|maps\.app\.goo\.gl)[^\s]*/i);
+          if(m)return m[0].replace(/[),.;]+$/,"");
+        }
+      }
+    }
+  }
+
+  const lat=o.lat??o.lokasi?.lat;
+  const lng=o.lng??o.lokasi?.lng;
+
+  if(lat!=null&&lng!=null){
+    return "https://www.google.com/maps?q="+
+      encodeURIComponent(lat+","+lng);
+  }
+
+  const address=getOrderAddress(o);
+  if(address!=="Alamat lengkap belum tersedia"){
+    return "https://www.google.com/maps/search/?api=1&query="+
+      encodeURIComponent(address);
+  }
+
+  return "";
+}
+
+function getWhatsApp(phone){
+  const digits=String(phone||"").replace(/\D/g,"");
+  if(!digits)return "";
+
+  let normalized=digits;
+  if(normalized.startsWith("0"))normalized="62"+normalized.slice(1);
+  else if(normalized.startsWith("8"))normalized="62"+normalized;
+
+  return "https://wa.me/"+normalized;
+}
+
+function orderItems(o){
+  const items=Array.isArray(o.items)?o.items:[];
+  return items.map(x=>
+    `<li>${esc(x.nama||x.name||x.title||"Produk")} × ${Number(x.qty||x.quantity||1)}</li>`
+  ).join("")||"<li>Rincian barang tidak tersedia</li>";
+}
+
+function canApprove(s){
+  return [
+    "menunggu","MENUNGGU","MENUNGGU_PERSETUJUAN",
+    "ditugaskan","DITUGASKAN"
+  ].includes(String(s||""));
+}
+
+function canDeliver(s){
+  return [
+    "disetujui","DISETUJUI","diambil","DIAMBIL",
+    "dalam_pengantaran","DALAM_PENGANTARAN","dikirim"
+  ].includes(String(s||""));
+}
+
 function card(id,o){
- const st=String(o.status||"menunggu");
- const phone=o.noWA||o.telepon||o.whatsapp||"";
- let buttons="";
- if(canStart(st))buttons=`<button data-action="ambil" data-id="${esc(id)}">📦 Ambil Pesanan</button>`;
- else if(canDeliver(st))buttons=`<button data-action="jalan" data-id="${esc(id)}">🛵 Dalam Pengantaran</button><button data-action="selesai" data-id="${esc(id)}">✅ Selesai</button>`;
- return `<article class="order">
-  <div class="topline"><h3>Pesanan ${esc(o.nomorPesanan||id)}</h3><span class="status">${esc(statusText(st))}</span></div>
-  <p><b>Pelanggan:</b> ${esc(o.nama||o.ownerName||o.namaPembeli||"—")}</p>
-  <p><b>WhatsApp:</b> ${phone?`<a href="https://wa.me/${esc(phone.replace(/\\D/g,""))}">${esc(phone)}</a>`:"—"}</p>
-  <p><b>Alamat lengkap:</b> ${esc(getOrderAddress(o))}</p>
-  <p><b>Jarak estimasi:</b> ${o.jarakKm!=null?Number(o.jarakKm).toFixed(1)+" km":"Tidak tersedia"}</p>
-  <p><b>Ongkos kirim:</b> ${fmtMoney(o.ongkir||0)}</p>
-  <p><b>Total:</b> ${fmtMoney(o.total)}</p>
-  <p><b>Barang:</b></p><ul class="items">${orderItems(o)}</ul>
-  <div class="actions"><a class="btn secondary" href="${esc(getMapsLink(o))}" target="_blank" rel="noopener">📍 Buka Google Maps</a>${buttons}</div>
-  <p class="small muted">ID pesanan: ${esc(id)}</p>
- </article>`;
+  const st=String(o.status||"menunggu");
+  const phone=o.noWA||o.telepon||o.whatsapp||"";
+  const wa=getWhatsApp(phone);
+  const map=getMapsLink(o);
+  const address=getOrderAddress(o);
+
+  let buttons="";
+
+  if(canApprove(st)){
+    buttons=`
+      <button class="accept" data-action="setujui" data-id="${esc(id)}">✓ Terima pesanan</button>
+      <button class="cancel" data-action="batal" data-id="${esc(id)}">✕ Batalkan</button>`;
+  }else if(canDeliver(st)){
+    buttons=`
+      <button data-action="jalan" data-id="${esc(id)}">🛵 Dalam pengantaran</button>
+      <button class="accept" data-action="selesai" data-id="${esc(id)}">✓ Selesai</button>
+      <button class="cancel" data-action="batal" data-id="${esc(id)}">✕ Batalkan</button>`;
+  }
+
+  return `
+  <article class="order">
+    <div class="topline">
+      <h3>Pesanan ${esc(o.nomorPesanan||id)}</h3>
+      <span class="status">${esc(statusText(st))}</span>
+    </div>
+
+    <p><b>Nama penerima:</b> ${esc(o.nama||o.namaPembeli||o.ownerName||"—")}</p>
+
+    <p><b>WhatsApp:</b>
+      ${wa
+        ? `<a class="link" href="${esc(wa)}" target="_blank" rel="noopener noreferrer">${esc(phone)} · Buka chat</a>`
+        : "Nomor belum tersedia"}
+    </p>
+
+    <p><b>Alamat lengkap:</b></p>
+    <div class="address">${esc(address)}</div>
+
+    <p><b>GPS / Peta:</b><br>
+      ${map
+        ? `<a class="link" href="${esc(map)}" target="_blank" rel="noopener noreferrer">📍 Buka lokasi di Google Maps</a>`
+        : "Lokasi belum tersedia"}
+    </p>
+
+    <p><b>Jarak estimasi:</b>
+      ${o.jarakKm!=null?Number(o.jarakKm).toFixed(1)+" km":"Tidak tersedia"}
+    </p>
+    <p><b>Ongkos kirim:</b> ${money(o.ongkir)}</p>
+    <p><b>Total pesanan:</b> ${money(o.total)}</p>
+    <p><b>Metode pembayaran:</b> ${esc(o.metodePembayaran||"—")}</p>
+    <p><b>Catatan:</b> ${esc(o.catatan||"—")}</p>
+
+    <p><b>Barang:</b></p>
+    <ul class="items">${orderItems(o)}</ul>
+
+    <div class="actions">
+      ${map?`<a class="btn secondary" href="${esc(map)}" target="_blank" rel="noopener noreferrer">📍 Navigasi ke pelanggan</a>`:""}
+      ${buttons}
+    </div>
+
+    <p class="small muted">ID pesanan: ${esc(id)}</p>
+  </article>`;
 }
+
 async function loadOrders(){
- if(!currentUser)return;
- $("ordersList").innerHTML="";
- message($("pageMsg"),"Memuat pesanan…");
- try{
-  // Query is scoped to the signed-in mitra; Firestore rules also enforce this.
-  const snap=await getDocs(query(collection(db,"orders"),where("mitraUid","==",currentUser.uid)));
-  if(snap.empty){$("ordersList").innerHTML='<div class="panel"><b>Belum ada pesanan yang ditugaskan.</b><p class="muted">Minta admin memilih akun mitra ini pada pesanan yang sudah disetujui.</p></div>';message($("pageMsg"),"");return;}
-  const docs=snap.docs.map(d=>({id:d.id,data:d.data()})).sort((a,b)=>{const ta=a.data.createdAt?.seconds||0,tb=b.data.createdAt?.seconds||0;return tb-ta;});
-  $("ordersList").innerHTML=docs.map(d=>card(d.id,d.data)).join("");
-  message($("pageMsg"),`${docs.length} pesanan ditemukan.`,"success");
- }catch(e){message($("pageMsg"),"Gagal memuat pesanan: "+e.message+" Pastikan akun memiliki role mitra dan rules Firestore mengizinkan pembacaan pesanan yang ditugaskan.","error");}
+  if(!currentUser)return;
+
+  $("ordersList").innerHTML="";
+  message($("pageMsg"),"Memuat pesanan...");
+
+  try{
+    const snap=await getDocs(query(
+      collection(db,"orders"),
+      where("mitraUid","==",currentUser.uid)
+    ));
+
+    if(snap.empty){
+      $("ordersList").innerHTML=`
+        <div class="panel">
+          <b>Belum ada pesanan yang ditugaskan.</b>
+          <p class="muted">Admin harus menugaskan pesanan ke akun mitra ini terlebih dahulu.</p>
+        </div>`;
+      message($("pageMsg"),"");
+      return;
+    }
+
+    const docs=snap.docs.map(d=>({
+      id:d.id,
+      data:d.data()
+    })).sort((a,b)=>
+      (b.data.createdAt?.seconds||0)-(a.data.createdAt?.seconds||0)
+    );
+
+    $("ordersList").innerHTML=docs.map(d=>card(d.id,d.data)).join("");
+    message($("pageMsg"),docs.length+" pesanan ditemukan.","success");
+  }catch(e){
+    message(
+      $("pageMsg"),
+      "Gagal memuat pesanan: "+e.message+
+      ". Periksa role mitra dan Rules Firestore.",
+      "error"
+    );
+  }
 }
+
 async function updateStatus(id,action){
- if(busy)return;busy=true;
- const statuses={ambil:"diambil",jalan:"dalam_pengantaran",selesai:"selesai"};
- const next=statuses[action];if(!next){busy=false;return;}
- try{
-  // The supplied rules currently do not allow mitra to update orders.
-  // Show a clear message rather than pretending the update succeeded.
-  await updateDoc(doc(db,"orders",id),{status:next,updatedAt:serverTimestamp()});
-  message($("pageMsg"),"Status pesanan diperbarui.","success");
-  await loadOrders();
- }catch(e){
-  message($("pageMsg"),"Status belum berubah. Rules Firestore saat ini belum mengizinkan mitra memperbarui pesanan. Admin perlu menambahkan izin update khusus mitra pada pesanan yang mitraUid-nya sama dengan UID login. Detail: "+e.message,"error");
- }finally{busy=false;}
+  if(busy)return;
+
+  const statuses={
+    setujui:"disetujui",
+    jalan:"dalam_pengantaran",
+    selesai:"selesai",
+    batal:"dibatalkan"
+  };
+
+  const next=statuses[action];
+  if(!next)return;
+
+  const confirmText={
+    setujui:"Terima pesanan ini?",
+    jalan:"Ubah status menjadi Dalam Pengantaran?",
+    selesai:"Tandai pesanan ini selesai?",
+    batal:"Batalkan pesanan ini?"
+  };
+
+  if(!confirm(confirmText[action]))return;
+
+  busy=true;
+  const buttons=$("ordersList").querySelectorAll("button[data-action]");
+  buttons.forEach(b=>b.disabled=true);
+
+  try{
+    const changes={
+      status:next,
+      updatedAt:serverTimestamp()
+    };
+
+    if(action==="setujui")changes.approvedAt=serverTimestamp();
+    if(action==="jalan")changes.shippedAt=serverTimestamp();
+    if(action==="selesai")changes.completedAt=serverTimestamp();
+    if(action==="batal")changes.cancelledAt=serverTimestamp();
+
+    await updateDoc(doc(db,"orders",id),changes);
+
+    message($("pageMsg"),"Status pesanan berhasil diperbarui.","success");
+    await loadOrders();
+  }catch(e){
+    message(
+      $("pageMsg"),
+      "Gagal mengubah status. Rules Firestore harus mengizinkan mitra mengubah status pesanan yang ditugaskan kepadanya. Detail: "+e.message,
+      "error"
+    );
+    buttons.forEach(b=>b.disabled=false);
+  }finally{
+    busy=false;
+  }
 }
+
 $("loginForm").addEventListener("submit",async e=>{
- e.preventDefault();message($("loginMsg"),"Memeriksa akun…");
- try{await signInWithEmailAndPassword(auth,$("email").value.trim(),$("password").value);}
- catch(err){message($("loginMsg"),"Login gagal: "+err.message,"error");}
+  e.preventDefault();
+  message($("loginMsg"),"Memeriksa akun...");
+
+  try{
+    await signInWithEmailAndPassword(
+      auth,
+      $("email").value.trim(),
+      $("password").value
+    );
+  }catch(err){
+    message($("loginMsg"),"Login gagal: "+err.message,"error");
+  }
 });
+
 $("logoutBtn").addEventListener("click",()=>signOut(auth));
 $("refreshBtn").addEventListener("click",loadOrders);
-$("ordersList").addEventListener("click",e=>{const b=e.target.closest("button[data-action]");if(b)updateStatus(b.dataset.id,b.dataset.action);});
+
+$("ordersList").addEventListener("click",e=>{
+  const b=e.target.closest("button[data-action]");
+  if(b)updateStatus(b.dataset.id,b.dataset.action);
+});
+
 onAuthStateChanged(auth,async u=>{
- currentUser=u;
- if(!u){$("loginPanel").classList.remove("hidden");$("dashboard").classList.add("hidden");$("logoutBtn").classList.add("hidden");return;}
- try{
-  const snap=await getDoc(doc(db,"users",u.uid));
-  profile=snap.exists()?snap.data():null;
-  if(!profile||profile.role!=="mitra"){
-   $("loginPanel").classList.remove("hidden");$("dashboard").classList.add("hidden");$("logoutBtn").classList.remove("hidden");
-   message($("loginMsg"),"Akun ini belum memiliki role 'mitra'. Minta admin/superadmin mengubah role pada users/"+u.uid+".","error");
-   return;
+  currentUser=u;
+
+  if(!u){
+    $("loginPanel").classList.remove("hidden");
+    $("dashboard").classList.add("hidden");
+    $("logoutBtn").classList.add("hidden");
+    return;
   }
-  $("loginPanel").classList.add("hidden");$("dashboard").classList.remove("hidden");$("logoutBtn").classList.remove("hidden");
-  $("welcome").textContent="Login sebagai "+(profile.nama||u.email||"Mitra");
-  await loadOrders();
- }catch(e){message($("loginMsg"),"Gagal memeriksa role akun: "+e.message,"error");}
+
+  try{
+    const snap=await getDoc(doc(db,"users",u.uid));
+    const profile=snap.exists()?snap.data():null;
+
+    if(!profile||profile.role!=="mitra"){
+      $("loginPanel").classList.remove("hidden");
+      $("dashboard").classList.add("hidden");
+      $("logoutBtn").classList.remove("hidden");
+      message(
+        $("loginMsg"),
+        "Akun ini belum memiliki role mitra. Minta admin memeriksa users/"+u.uid,
+        "error"
+      );
+      return;
+    }
+
+    $("loginPanel").classList.add("hidden");
+    $("dashboard").classList.remove("hidden");
+    $("logoutBtn").classList.remove("hidden");
+    $("welcome").textContent="Login sebagai "+(profile.nama||u.email||"Mitra");
+
+    await loadOrders();
+  }catch(e){
+    message($("loginMsg"),"Gagal memeriksa akun: "+e.message,"error");
+  }
 });
 </script>
 </body>
