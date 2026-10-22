@@ -1,10 +1,15 @@
 <!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Checkout | Toko Siap Antar</title><link rel="stylesheet" href="style.css"></head><body>
 <header><strong>TOKO SIAP ANTAR · CHECKOUT</strong><nav><a href="index.html">Toko</a><a href="keranjang.html">Keranjang</a><a href="akun.html">Akun</a></nav></header>
 <main class="shell"><section class="panel"><h1>Checkout pesanan</h1><p class="muted">Pesanan dikirim langsung ke sistem Toko Siap Antar dan disimpan di Firestore. Tidak dialihkan ke WhatsApp.</p><div id="notice" class="notice" hidden></div><div id="cartSummary"></div>
-<form id="checkoutForm"><label>Nama penerima</label><input name="nama" required><label>Nomor WhatsApp</label><input name="noWA" type="tel" required><label>Alamat pengiriman</label><textarea name="alamat" required></textarea><label>Catatan (opsional)</label><textarea name="catatan"></textarea><label>Metode pembayaran</label><select name="metodePembayaran"><option value="cod">Bayar saat diterima (COD)</option><option value="transfer">Transfer bank</option></select><div class="actions"><button type="submit">Buat pesanan</button><a class="btn light" href="keranjang.html">Kembali ke keranjang</a></div></form></section></main>
+<form id="checkoutForm"><label>Nama penerima</label><input name="nama" required><label>Nomor WhatsApp</label><input name="noWA" type="tel" required><label>Alamat pengiriman</label><textarea name="alamat" required></textarea><label>Catatan (opsional)</label><textarea name="catatan"></textarea><label>Metode pembayaran</label><select name="metodePembayaran" id="metodePembayaran"><option value="cod">Bayar saat diterima (COD)</option><option value="transfer">Transfer bank / QRIS</option></select><div id="qrisPanel" class="panel" hidden style="margin-top:14px;padding:12px"><h3>Pembayaran QRIS</h3><p class="muted">Scan QRIS di bawah untuk membayar pesanan.</p><iframe src="qris2.html" title="QRIS Toko Siap Antar" loading="lazy" style="display:block;width:100%;min-height:520px;border:0;border-radius:10px;background:#fff"></iframe><p class="muted">Jika QRIS tidak tampil, <a href="qris2.html" target="_blank" rel="noopener">buka halaman QRIS</a>.</p></div><div class="actions"><button type="submit">Buat pesanan</button><a class="btn light" href="keranjang.html">Kembali ke keranjang</a></div></form></section></main>
 <script type="module">
 import {auth,db} from "./firebase-config.js";import {onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";import {addDoc,collection,doc,getDoc,serverTimestamp} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";import {money,notice,esc} from "./common.js";
 const form=document.querySelector("#checkoutForm");let user=null;let items=[];let checkoutData={};
+const paymentSelect=document.querySelector("#metodePembayaran");
+const qrisPanel=document.querySelector("#qrisPanel");
+function updatePaymentPanel(){qrisPanel.hidden=paymentSelect.value!=="transfer";}
+paymentSelect.addEventListener("change",updatePaymentPanel);
+updatePaymentPanel();
 try{items=JSON.parse(localStorage.getItem("cart")||"[]");}catch{}
 try{checkoutData=JSON.parse(localStorage.getItem("checkoutData")||"{}");}catch{}
 if(!items.length){try{items=JSON.parse(localStorage.getItem("tsa_cart")||"[]");}catch{}}
