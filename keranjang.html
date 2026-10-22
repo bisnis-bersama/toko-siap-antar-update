@@ -124,27 +124,8 @@ box-shadow:0 4px 10px rgba(0,0,0,0.2);
 
 <div id="cartList"></div>
 
-<h3 class="section-title">📍 Lokasi Pengiriman</h3>
-<div class="location-actions">
-  <button class="green" onclick="gunakanLokasi()">📡 Gunakan Lokasi Saya</button>
-</div>
-
-<div id="infoZona" class="card">
-Belum memilih lokasi
-</div>
-
-<input type="text" id="namaPembeli" placeholder="Nama Pembeli">
-<input type="tel" id="waPembeli" placeholder="Nomor WhatsApp Aktif">
-<input type="text" id="manualLokasi"
-placeholder="Alamat lengkap / Link Google Maps (isi jika GPS tidak akurat)">
-
-<button class="checkout" onclick="lanjutBayar()">
-Checkout
-</button>
-
-<button class="clearBtn" onclick="kosongkan()">
-Kosongkan Keranjang
-</button>
+<button class="checkout" onclick="lanjutBayar()">Checkout</button>
+<button class="clearBtn" onclick="kosongkan()">Kosongkan Keranjang</button>
 <script>
 
 /* ================= DATA ================= */
@@ -289,149 +270,29 @@ function kosongkan(){
 
 /* ================= CHECKOUT ================= */
 function lanjutBayar(){
-if(cart.length == 0){
-popup("Keranjang masih kosong");
-return;
-}
-let totalBarang = 0;
-
-cart.forEach(p=>{
-totalBarang += p.harga * p.qty;
-});
-
-if(minimalBelanja > 0 && totalBarang < minimalBelanja){
-
-popup(
-"Minimal belanja Rp " + rupiah(minimalBelanja) +
-"<br>Tambah belanja Rp " +
-rupiah(minimalBelanja-totalBarang) + " lagi"
-);
-
-return;
-
-}
-
-let manual = document.getElementById("manualLokasi").value.trim();
-
-if((tujuanLat===null || tujuanLng===null) && !manual){
-popup("Gunakan lokasi GPS atau isi alamat lengkap secara manual");
-return;
-}
-
-let namaPembeli = document.getElementById("namaPembeli").value.trim();
-let noWa = document.getElementById("waPembeli").value.trim();
-
-if(!namaPembeli){
-popup("Isi nama pembeli dulu");
-return;
-}
-
-if(!noWa){
-popup("Isi nomor WhatsApp dulu");
-return;
-}
-
-localStorage.setItem("checkoutData", JSON.stringify({
-lat: tujuanLat,
-lng: tujuanLng,
-alamatManual: manual,
-desa: namaDesa,
-kecamatan: namaKecamatan,
-ongkir: ongkir,
-minimalBelanja: minimalBelanja,
-noWa: noWa,
-namaPembeli: namaPembeli
-}));
-
-window.location.href = "checkout.html";
-
-}
-
-/* ================= LOKASI TANPA TAMPILAN PETA ================= */
-// GPS, pencarian alamat, jarak, ongkir, dan estimasi tetap berfungsi.
-// Jarak dihitung dengan rumus Haversine karena peta visual dihilangkan.
-function jarakKm(lat1, lon1, lat2, lon2){
-  const R = 6371;
-  const rad = derajat => derajat * Math.PI / 180;
-  const dLat = rad(lat2-lat1);
-  const dLon = rad(lon2-lon1);
-  const a = Math.sin(dLat/2)**2 +
-    Math.cos(rad(lat1))*Math.cos(rad(lat2))*Math.sin(dLon/2)**2;
-  return R * 2 * Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
-}
-
-function gunakanLokasi(){
-  if(!navigator.geolocation){
-    document.getElementById("manualLokasi").style.display="block";
-    popup("HP tidak mendukung GPS. Silakan isi alamat lengkap.");
+  if(cart.length === 0){
+    popup("Keranjang masih kosong");
     return;
   }
-  popup("📡 Sedang mencari lokasi Anda...");
-  navigator.geolocation.getCurrentPosition(
-    function(pos){
-      const lat=pos.coords.latitude;
-      const lng=pos.coords.longitude;
-      const akurasi=pos.coords.accuracy;
-      const box=document.getElementById("popupBox");
-      if(box) box.remove();
-      setLokasi(lat,lng);
-      if(akurasi>100){
-        document.getElementById("manualLokasi").style.display="block";
-        popup("⚠️ Lokasi kurang akurat ("+Math.round(akurasi)+" meter). Periksa alamat Anda atau isi alamat manual.");
-      }
-    },
-    function(){
-      const box=document.getElementById("popupBox");
-      if(box) box.remove();
-      document.getElementById("manualLokasi").style.display="block";
-      popup("❌ Lokasi GPS tidak ditemukan. Aktifkan GPS atau isi alamat lengkap secara manual.");
-    },
-    {enableHighAccuracy:true,timeout:15000,maximumAge:0}
-  );
-}
-
-function setLokasi(lat,lng){
-  tujuanLat=lat;
-  tujuanLng=lng;
-  document.getElementById("infoZona").innerHTML="Lokasi ditemukan. Sedang menghitung jarak dan ongkir...";
-  fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}`)
-    .then(res=>res.json())
-    .then(data=>{
-      const a=data.address||{};
-      namaDesa=a.village||a.hamlet||a.suburb||a.neighbourhood||"-";
-      namaKecamatan=a.subdistrict||a.city_district||a.town||a.county||"-";
-      hitungOngkir();
-    })
-    .catch(()=>{
-      namaDesa="-";
-      namaKecamatan="-";
-      hitungOngkir();
-    });
-}
-
-function hitungOngkir(){
-  if(tujuanLat===null || tujuanLng===null) return;
-  jarakFix=jarakKm(tokoLat,tokoLng,tujuanLat,tujuanLng);
-
-  if(jarakFix<=10){ongkir=5000;minimalBelanja=150000;}
-  else if(jarakFix<=20){ongkir=10000;minimalBelanja=200000;}
-  else if(jarakFix<=30){ongkir=15000;minimalBelanja=300000;}
-  else{ongkir=20000;minimalBelanja=400000;}
-
-  const totalBarang=cart.reduce((sum,p)=>sum+(p.harga*p.qty),0);
-  const kurang=minimalBelanja-totalBarang;
-  const infoTambah=totalBarang<minimalBelanja
-    ? "<br><b style='color:#b42318'>Tambah belanja Rp "+rupiah(kurang)+" lagi</b>"
-    : "";
-  const estimasi=Math.ceil(jarakFix*3);
-  document.getElementById("infoZona").innerHTML=
-    "Jarak : "+jarakFix.toFixed(1)+" km<br>"+
-    "Ongkir : Rp "+rupiah(ongkir)+"<br>"+
-    "Minimal Belanja : Rp "+rupiah(minimalBelanja)+infoTambah+
-    "<br>Estimasi Antar : ±"+estimasi+" menit<br>"+
-    "Desa : "+namaDesa+"<br>"+
-    "Kecamatan : "+namaKecamatan;
-  renderCart();
+  // Data alamat, nomor WhatsApp, dan GPS diisi satu kali pada halaman checkout.
+  localStorage.setItem("cart", JSON.stringify(cart));
+  localStorage.setItem("tsa_cart", JSON.stringify(cart.map(p=>({
+    id:p.id, name:p.nama, price:p.harga, qty:p.qty
+  }))));
+  let existing = {};
+  try { existing = JSON.parse(localStorage.getItem("checkoutData") || "{}"); } catch(e) {}
+  localStorage.setItem("checkoutData", JSON.stringify({
+    ongkir: 0,
+    minimalBelanja: 0,
+    namaPembeli: existing.namaPembeli || "",
+    noWa: existing.noWa || "",
+    alamatManual: "",
+    lat: null,
+    lng: null,
+    desa: "",
+    kecamatan: ""
+  }));
+  window.location.href = "checkout.html";
 }
 
 /* ================= POPUP ================= */
@@ -477,8 +338,6 @@ renderCart();
 
 window.addEventListener("load",function(){
   if(cart.length) updateCartStorageSafe();
-  // Mencoba mengambil lokasi otomatis; pembeli tetap bisa mengisi alamat manual.
-  gunakanLokasi();
 });
 
 function updateCartStorageSafe(){
