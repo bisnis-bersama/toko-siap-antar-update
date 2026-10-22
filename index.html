@@ -229,8 +229,8 @@ document.getElementById('cartBtn').onclick=()=>{
   if(!cart.length){alert('Keranjang masih kosong.');return;}
   location.href='keranjang.html';
 };
-document.getElementById('historyBtn').onclick=()=>alert('Riwayat pesanan akan tersedia melalui akun Anda.');
-document.getElementById('profileBtn').onclick=()=>alert('Silakan hubungi admin untuk akses profil/member.');
+document.getElementById('historyBtn').onclick=()=>{location.href='login.html?next=riwayat.html';};
+document.getElementById('profileBtn').onclick=()=>{location.href='login.html?next=profil.html';};
 document.getElementById('facebook').onclick=e=>{e.preventDefault();alert('Tambahkan tautan Facebook toko pada HTML.');};
 document.getElementById('instagram').onclick=e=>{e.preventDefault();alert('Tambahkan tautan Instagram toko pada HTML.');};
 document.getElementById('whatsapp').onclick=e=>{e.preventDefault();window.open('https://wa.me/','_blank');};
