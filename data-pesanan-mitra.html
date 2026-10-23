@@ -63,12 +63,16 @@ function actionButtons(id,o){return `<div class="actions"><button data-action="a
 
 async function loadOrders(){
  try{
- const snap=await getDocs(collection(db,"orders"));
- const all=snap.docs.map(d=>({id:d.id,...d.data()})).filter(eligible);
+ const [pendingSnap,assignedSnap]=await Promise.all([
+  getDocs(query(collection(db,"orders"),where("statusPemenuhan","==","pending_mitra"))),
+  getDocs(query(collection(db,"orders"),where("mitraUsahaUid","==",user.uid)))
+ ]);
+ const combined=new Map();[...pendingSnap.docs,...assignedSnap.docs].forEach(d=>combined.set(d.id,{id:d.id,...d.data()}));
+ const all=[...combined.values()].filter(eligible);
  const mine=all.filter(o=>!Array.isArray(o.mitraDitolakUid)||!o.mitraDitolakUid.includes(user.uid));
  const sorted=sortByArea(mine,profile);
  render(sorted,"orders");
- }catch(e){say("Gagal memuat antrean: "+e.message,true)}
+ }catch(e){say("Gagal memuat antrean: "+e.message+" Jika Missing or insufficient permissions, Firestore Rules harus mengizinkan mitra_usaha membaca pesanan pending_mitra dan pesanan yang ditugaskan ke UID ini.",true)}
 }
 
 async function act(id,action){
