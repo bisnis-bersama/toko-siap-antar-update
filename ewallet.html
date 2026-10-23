@@ -93,10 +93,10 @@ let profile=null,currentRole="";
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const rupiah=v=>"Rp "+Number(v||0).toLocaleString("id-ID");
 const menusByRole={
- pelanggan:[["📦","Data Pesanan","Lihat status pesanan","data-pesanan.html"],["🛍️","Belanja","Cari produk","index.html"],["🧾","Tagihan","Tagihan belanja","pesanan.html"],["↻","Riwayat","Riwayat transaksi","riwayat.html"],["💳","E-Wallet","Saldo dompet","ewallet.html"],["👤","Profil Akun","Pengaturan akun","profil.html"]],
- mitra_usaha:[["📦","Data Pesanan","Pesanan toko","mitra-usaha.html"],["🛍️","Belanja Stok","Pembelian stok","mitra-usaha.html"],["🧾","Tagihan","Tagihan mitra","mitra-dompet.html"],["↻","Riwayat","Riwayat transaksi","data-pesanan-mitra.html"],["💰","Saldo & Penghasilan","Penghasilan usaha","mitra-dompet.html"],["↗","Pencairan Saldo","Pengajuan pencairan","mitra-dompet.html"],["💳","E-Wallet","Saldo dompet","ewallet.html"],["👤","Profil Akun","Pengaturan akun","profil.html"]],
- kurir:[["📦","Data Pesanan","Pesanan tersedia","data-pesana-kurir.html"],["🛍️","Belanja","Kebutuhan","index.html"],["🧾","Tagihan","Tagihan kurir","mitra-dashboard.html"],["↻","Riwayat","Riwayat pengantaran","riwayat.html"],["💰","Penghasilan Kurir","Penghasilan antar","mitra-dashboard.html"],["↗","Pencairan Saldo","Pengajuan pencairan","mitra-dompet.html"],["💳","E-Wallet","Saldo dompet","ewallet.html"],["👤","Profil Akun","Pengaturan akun","profil.html"]],
- admin:[["📦","Data Pesanan","Pantau pesanan","data-pesanan-admin.html"],["🛍️","Belanja / Produk","Kelola katalog","produk-admin.html"],["🧾","Tagihan","Keuangan sistem","admin-keuangan.html"],["↻","Riwayat","Aktivitas sistem","data-pesanan-admin.html"],["👥","Data Pengguna","Pengguna","pengguna.html"],["✓","Approval","Persetujuan","admin-approval-pending.html"],["💳","E-Wallet","Saldo dompet","admin-keuangan.html"],["💸","Permintaan Pencairan","Pencairan mitra/kurir","admin-keuangan.html"],["👤","Profil Akun","Pengaturan akun","profil.html"]]
+ pelanggan:[["📦","Data Pesanan","Lihat status pesanan","data-pesanan.html"],["🛍️","Belanja","Cari produk","index.html"],["🧾","Tagihan","Tagihan belanja","pesanan.html"],["↻","Riwayat","Riwayat transaksi","riwayat.html"]],
+ mitra_usaha:[["📦","Data Pesanan","Pesanan toko","mitra-usaha.html"],["🛍️","Belanja Stok","Pembelian stok","mitra-usaha.html"],["↻","Riwayat","Riwayat transaksi","data-pesanan-mitra.html"],["↗","Pencairan Saldo","Pengajuan pencairan","mitra-dompet.html"]],
+ kurir:[["📦","Data Pesanan","Pesanan tersedia","data-pesana-kurir.html"],["🛍️","Belanja","Kebutuhan","index.html"],["🧾","Tagihan","Tagihan kurir","mitra-dashboard.html"],["↻","Riwayat","Riwayat pengantaran","riwayat.html"],["↗","Pencairan Saldo","Pengajuan pencairan","mitra-dompet.html"]],
+ admin:[["📦","Data Pesanan","Pantau pesanan","data-pesanan-admin.html"],["🛍️","Belanja / Produk","Kelola katalog","produk-admin.html"],["🧾","Tagihan","Keuangan sistem","admin-keuangan.html"],["↻","Riwayat","Aktivitas sistem","data-pesanan-admin.html"],["👥","Data Pengguna","Pengguna","pengguna.html"],["✓","Approval","Persetujuan","admin-approval-pending.html"],["💸","Permintaan Pencairan","Pencairan mitra/kurir","admin-keuangan.html"]]
 };
 const roleNames={pelanggan:"Pelanggan",mitra_usaha:"Mitra Usaha",kurir:"Kurir",admin:"Admin"};
 function normalizeRole(value){
@@ -121,6 +121,10 @@ function renderDashboard(user,p){
  $("brandName").textContent=accountName;
  $("dashboardTitle").textContent="DASHBOARD "+roleNames[currentRole].toUpperCase();
  $("roleMenu").textContent=roleNames[currentRole].toUpperCase();
+ // Navigasi bawah mengikuti akun: E-Wallet dihapus untuk semua role;
+ // Tagihan di navigasi bawah dihapus khusus Mitra Usaha.
+ const bottomItems=[["home","⌂","Beranda"],["orders","📦","Pesanan"],...(currentRole==="mitra_usaha"?[]:[["bills","🧾","Tagihan"]]),["history","↻","Riwayat"]];
+ $("bottomNav").innerHTML=bottomItems.map(([key,ico,label])=>`<a href="#" data-menu="${key}"><span class="ico">${ico}</span>${label}</a>`).join("");
  const bal=profile.saldoEwallet??profile.saldoWallet??profile.saldo??profile.walletBalance??0;
  $("balance").textContent=rupiah(bal);
  const income=profile.totalPendapatan??profile.totalPenghasilan??profile.pendapatanTotal??profile.penghasilanTotal??0;
