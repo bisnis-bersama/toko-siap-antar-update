@@ -114,7 +114,7 @@ body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:#111}
         <small>Superadmin · Data Pesanan</small>
       </div>
     </div>
-    <a class="home" href="index-superadmin.html" title="Dashboard">⌂</a>
+    <a class="home" href="admin.html" title="Dashboard">⌂</a>
   </div>
 </header>
 
@@ -152,7 +152,7 @@ body{margin:0;font-family:Arial,sans-serif;background:var(--bg);color:#111}
 </main>
 
 <nav class="bottom">
-  <a class="nav" href="index-superadmin.html"><i>⌂</i>Beranda</a>
+  <a class="nav" href="admin.html"><i>⌂</i>Beranda</a>
   <a class="nav" href="data-produk.html"><i>▦</i>Produk</a>
   <a class="nav active" href="data-pesanan.html"><i>🛒</i>Pesanan</a>
   <a class="nav" href="data-tagihan.html"><i>▤</i>Tagihan</a>
@@ -1127,21 +1127,21 @@ $("editProductModal").addEventListener("click",e=>{
 
 onAuthStateChanged(auth,async user=>{
   if(!user){
-    location.href="index-superadmin.html";
+    location.href="admin.html";
     return;
   }
 
   try{
     const u=await getDoc(doc(db,"users",user.uid));
-    if(!u.exists() || u.data().role!=="superadmin"){
-      alert("Akses hanya untuk Superadmin.");
+    if(!u.exists() || u.data().role!=="admin"){
+      alert("Akses hanya untuk Admin.");
       location.href="index.html";
       return;
     }
     await loadOrders();
   }catch(err){
     console.error(err);
-    alert("Gagal memeriksa akses Superadmin.");
+    alert("Gagal memeriksa akses Admin.");
     location.href="index.html";
   }
 });

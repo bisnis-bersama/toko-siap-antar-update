@@ -6,8 +6,8 @@
 <header><strong>TOKO SIAP ANTAR</strong><nav><a href="index.html">Toko</a><a href="register.html">Daftar pelanggan</a></nav></header>
 <main class="shell"><section class="panel login-card"><h1>Login Satu Pintu</h1><p class="muted">Gunakan email dan password akun. Sistem memeriksa role akun di Firestore dan membuka halaman sesuai hak akses.</p><div id="notice" class="notice" hidden></div>
 <form id="loginForm"><label for="email">Email</label><input id="email" name="email" type="email" autocomplete="username" required><label for="password">Password</label><input id="password" name="password" type="password" autocomplete="current-password" required><div class="actions"><button id="submitBtn" type="submit">Masuk</button><a class="btn light" href="register.html">Daftar pelanggan</a></div></form>
-<div class="role-guide"><div class="role-item"><b>🛍️ Pelanggan</b><small>Beranda / akun pelanggan</small></div><div class="role-item"><b>🛵 Mitra</b><small>Halaman pesanan mitra</small></div><div class="role-item"><b>🧰 Admin</b><small>Dashboard pengelolaan</small></div><div class="role-item"><b>🛡️ Superadmin</b><small>Dashboard pengelolaan</small></div></div>
-<p class="muted" style="font-size:13px">Akses admin, superadmin, dan mitra hanya diberikan oleh pengelola melalui role pada dokumen <code>users/{UID}</code>. Pendaftaran publik hanya membuat akun pelanggan.</p></section></main>
+<div class="role-guide"><div class="role-item"><b>🛍️ Pelanggan</b><small>Beranda / akun pelanggan</small></div><div class="role-item"><b>🏪 Mitra Usaha</b><small>Memeriksa stok dan mengisi harga mitra</small></div><div class="role-item"><b>🛵 Kurir</b><small>Mengambil dan mengantar pesanan</small></div><div class="role-item"><b>🧰 Admin</b><small>Mengelola seluruh sistem</small></div></div>
+<p class="muted" style="font-size:13px">Akses admin, mitra usaha, dan kurir hanya diberikan oleh admin melalui role pada dokumen <code>users/{UID}</code>. Pendaftaran publik hanya membuat akun pelanggan.</p></section></main>
 <script type="module">
 import {auth,db} from "./firebase-config.js";
 import {signInWithEmailAndPassword,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
@@ -16,8 +16,9 @@ const form=document.querySelector("#loginForm"),btn=document.querySelector("#sub
 const params=new URLSearchParams(location.search);let routing=false;
 function say(text,type="error"){noticeBox.textContent=text;noticeBox.className="notice "+type;noticeBox.hidden=false;}
 function targetFor(role){switch(String(role||"").toLowerCase().trim()){
- case "superadmin": case "admin": case "karyawan": return "admin.html";
- case "mitra": return "mitra.html";
+ case "admin": return "admin.html";
+ case "mitra_usaha": return "mitra-usaha.html";
+ case "kurir": return "mitra-dashboard.html";
  case "pelanggan": return "akun.html";
  default: return null;
 }}
@@ -27,7 +28,7 @@ async function routeUser(user){if(!user||routing)return;routing=true;btn.disable
   const snap=await getDoc(doc(db,"users",user.uid));
   if(!snap.exists()){routing=false;btn.disabled=false;say("Profil Firestore untuk akun ini belum ditemukan. Minta admin memeriksa dokumen users/"+user.uid+".");return;}
   const profile=snap.data(),role=String(profile.role||"").toLowerCase().trim(),target=targetFor(role);
-  if(!target){routing=false;btn.disabled=false;say("Role akun kosong atau tidak dikenal ("+(role||"belum diisi")+"). Admin/superadmin perlu memperbaiki field role pada users/"+user.uid+".");return;}
+  if(!target){routing=false;btn.disabled=false;say("Role akun kosong atau tidak dikenal ("+(role||"belum diisi")+"). Admin perlu memperbaiki field role pada users/"+user.uid+".");return;}
   // next hanya dipakai pelanggan dan hanya untuk halaman pelanggan yang dikenal.
   const next=params.get("next")||"";
   const destination=role==="pelanggan"&&customerNextAllowed.has(next)?next:target;

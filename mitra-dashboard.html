@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Dashboard Mitra Pengantaran | Toko Siap Antar</title>
+<title>Dashboard Kurir | Toko Siap Antar</title>
 <link rel="stylesheet" href="style.css">
 <style>
 :root{--green:#008b5a;--teal:#00b8b0;--ink:#173b32;--muted:#64756f;--line:#dce9e3;--bg:#f1fff6}
@@ -20,25 +20,25 @@ button.secondary,.btn.secondary{background:#edf5f1;color:var(--ink);border:1px s
 </head>
 <body>
 <header>
-  <div><div class="brand">🛵 TOKO SIAP ANTAR · MITRA</div><div class="sub">Dashboard mitra pengantaran</div></div>
+  <div><div class="brand">🛵 TOKO SIAP ANTAR · KURIR</div><div class="sub">Dashboard kurir pengantar</div></div>
   <button id="logoutBtn" class="secondary hidden" type="button">Keluar</button>
 </header>
 <main class="wrap">
   <section id="loginPanel" class="panel">
-    <h1>Login Mitra</h1>
-    <p class="muted">Masuk menggunakan akun yang sudah dibuat admin dan memiliki role <b>mitra</b>.</p>
+    <h1>Login Kurir</h1>
+    <p class="muted">Masuk menggunakan akun yang sudah dibuat admin dan memiliki role <b>kurir</b>.</p>
     <form id="loginForm">
       <label for="email">Email</label><input id="email" type="email" autocomplete="username" required>
       <label for="password">Password</label><input id="password" type="password" autocomplete="current-password" required>
-      <button type="submit">Masuk Dashboard Mitra</button>
+      <button type="submit">Masuk Dashboard Kurir</button>
     </form>
     <p id="loginMsg" aria-live="polite"></p>
   </section>
 
   <section id="dashboard" class="hidden">
     <div class="panel">
-      <div class="topline"><div><h1>Pesanan Saya</h1><p id="welcome" class="muted">Memuat akun mitra…</p></div><button id="refreshBtn" class="secondary" type="button">↻ Muat ulang</button></div>
-      <p class="small muted">Pesanan yang ditampilkan hanya pesanan dengan <code>mitraUid</code> yang sama dengan akun ini.</p>
+      <div class="topline"><div><h1>Pesanan Saya</h1><p id="welcome" class="muted">Memuat akun kurir…</p></div><button id="refreshBtn" class="secondary" type="button">↻ Muat ulang</button></div>
+      <p class="small muted">Pesanan yang ditampilkan hanya pesanan dengan <code>kurirUid</code> yang sama dengan akun ini.</p>
       <div id="pageMsg" aria-live="polite"></div>
     </div>
     <div id="ordersList"></div>
@@ -124,8 +124,8 @@ async function loadOrders(){
  message($("pageMsg"),"Memuat pesanan…");
  try{
   // Query is scoped to the signed-in mitra; Firestore rules also enforce this.
-  const snap=await getDocs(query(collection(db,"orders"),where("mitraUid","==",currentUser.uid)));
-  if(snap.empty){$("ordersList").innerHTML='<div class="panel"><b>Belum ada pesanan yang ditugaskan.</b><p class="muted">Minta admin memilih akun mitra ini pada pesanan yang sudah disetujui.</p></div>';message($("pageMsg"),"");return;}
+  const snap=await getDocs(query(collection(db,"orders"),where("kurirUid","==",currentUser.uid)));
+  if(snap.empty){$("ordersList").innerHTML='<div class="panel"><b>Belum ada pesanan yang ditugaskan.</b><p class="muted">Minta admin memilih akun kurir ini pada pesanan yang sudah disetujui.</p></div>';message($("pageMsg"),"");return;}
   const docs=snap.docs.map(d=>({id:d.id,data:d.data()})).sort((a,b)=>{const ta=a.data.createdAt?.seconds||0,tb=b.data.createdAt?.seconds||0;return tb-ta;});
   $("ordersList").innerHTML=docs.map(d=>card(d.id,d.data)).join("");
   message($("pageMsg"),`${docs.length} pesanan ditemukan.`,"success");
@@ -142,7 +142,7 @@ async function updateStatus(id,action){
   message($("pageMsg"),"Status pesanan diperbarui.","success");
   await loadOrders();
  }catch(e){
-  message($("pageMsg"),"Status belum berubah. Rules Firestore saat ini belum mengizinkan mitra memperbarui pesanan. Admin perlu menambahkan izin update khusus mitra pada pesanan yang mitraUid-nya sama dengan UID login. Detail: "+e.message,"error");
+  message($("pageMsg"),"Status belum berubah. Rules Firestore saat ini belum mengizinkan mitra memperbarui pesanan. Admin perlu menambahkan izin update khusus mitra pada pesanan yang kurirUid-nya sama dengan UID login. Detail: "+e.message,"error");
  }finally{busy=false;}
 }
 $("loginForm").addEventListener("submit",async e=>{
@@ -159,13 +159,13 @@ onAuthStateChanged(auth,async u=>{
  try{
   const snap=await getDoc(doc(db,"users",u.uid));
   profile=snap.exists()?snap.data():null;
-  if(!profile||profile.role!=="mitra"){
+  if(!profile||profile.role!=="kurir"){
    $("loginPanel").classList.remove("hidden");$("dashboard").classList.add("hidden");$("logoutBtn").classList.remove("hidden");
-   message($("loginMsg"),"Akun ini belum memiliki role 'mitra'. Minta admin/superadmin mengubah role pada users/"+u.uid+".","error");
+   message($("loginMsg"),"Akun ini belum memiliki role 'kurir'. Minta admin/superadmin mengubah role pada users/"+u.uid+".","error");
    return;
   }
   $("loginPanel").classList.add("hidden");$("dashboard").classList.remove("hidden");$("logoutBtn").classList.remove("hidden");
-  $("welcome").textContent="Login sebagai "+(profile.nama||u.email||"Mitra");
+  $("welcome").textContent="Login sebagai "+(profile.nama||u.email||"Kurir");
   await loadOrders();
  }catch(e){message($("loginMsg"),"Gagal memeriksa role akun: "+e.message,"error");}
 });
