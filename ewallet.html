@@ -92,11 +92,35 @@ const $=id=>document.getElementById(id);
 let profile=null,currentRole="";
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const rupiah=v=>"Rp "+Number(v||0).toLocaleString("id-ID");
+// Menu dan tautan dipisahkan berdasarkan paket role Toko Siap Antar.
+// Nama file mengikuti halaman yang tersedia pada paket masing-masing role.
 const menusByRole={
- pelanggan:[["📦","Data Pesanan","Lihat status pesanan","data-pesanan.html"],["🛍️","Belanja","Cari produk","index.html"],["🧾","Tagihan","Tagihan belanja","pesanan.html"],["↻","Riwayat","Riwayat transaksi","riwayat.html"]],
- mitra_usaha:[["📦","Data Pesanan","Pesanan toko","mitra-usaha.html"],["🛍️","Belanja Stok","Pembelian stok","mitra-usaha.html"],["↻","Riwayat","Riwayat transaksi","data-pesanan-mitra.html"],["↗","Pencairan Saldo","Pengajuan pencairan","mitra-dompet.html"]],
- kurir:[["📦","Data Pesanan","Pesanan tersedia","data-pesanan-kurir.html"],["🛍️","Belanja","Kebutuhan","index.html"],["🧾","Tagihan","Tagihan kurir","mitra-dashboard.html"],["↻","Riwayat","Riwayat pengantaran","riwayat.html"],["↗","Pencairan Saldo","Pengajuan pencairan","mitra-dompet.html"]],
- admin:[["📦","Data Pesanan","Pantau pesanan","data-pesanan-admin.html"],["🛍️","Belanja / Produk","Kelola katalog","produk-admin.html"],["↻","Riwayat","Aktivitas sistem","data-pesanan-admin.html"],["👥","Data Pengguna","Pengguna","pengguna.html"],["✓","Approval","Persetujuan","admin-approval-pending.html"]]
+ pelanggan:[
+  ["📦","Data Pesanan","Lihat status pesanan","data-pesanan.html"],
+  ["🛍️","Belanja","Cari produk","index.html"],
+  ["🧾","Tagihan","Tagihan belanja","pesanan.html"],
+  ["↻","Riwayat","Riwayat transaksi","riwayat.html"]
+ ],
+ mitra_usaha:[
+  ["📦","Data Pesanan","Pesanan toko","mitra-usaha.html"],
+  ["🛍️","Belanja Stok","Pembelian stok","mitra-usaha.html"],
+  ["↻","Riwayat","Riwayat transaksi","data-pesanan-mitra.html"],
+  ["↗","Pencairan Saldo","Pengajuan pencairan","mitra-dompet.html"]
+ ],
+ kurir:[
+  ["📦","Data Pesanan","Pesanan kurir","data-pesana-kurir.html"],
+  ["🛍️","Belanja","Buka toko","index.html"],
+  ["🧾","Tagihan","Tagihan kurir","mitra-dashboard.html"],
+  ["↻","Riwayat","Riwayat pengantaran","riwayat.html"],
+  ["↗","Pencairan Saldo","Pengajuan pencairan","mitra-dompet.html"]
+ ],
+ admin:[
+  ["📦","Data Pesanan","Pantau pesanan","data-pesanan-admin.html"],
+  ["🛍️","Belanja / Produk","Kelola katalog","produk-admin.html"],
+  ["↻","Riwayat","Aktivitas sistem","data-pesanan-admin.html"],
+  ["👥","Data Pengguna","Kelola pengguna","pengguna.html"],
+  ["✓","Approval","Persetujuan pesanan","admin-approval-pending.html"]
+ ]
 };
 const roleNames={pelanggan:"Pelanggan",mitra_usaha:"Mitra Usaha",kurir:"Kurir",admin:"Admin"};
 function normalizeRole(value){
@@ -121,8 +145,8 @@ function renderDashboard(user,p){
  $("brandName").textContent=accountName;
  $("dashboardTitle").textContent="DASHBOARD "+roleNames[currentRole].toUpperCase();
  $("roleMenu").textContent=roleNames[currentRole].toUpperCase();
- // Navigasi bawah mengikuti akun: E-Wallet dihapus untuk semua role;
- // Tagihan di navigasi bawah dihapus khusus Mitra Usaha.
+ // Navigasi bawah hanya menampilkan pintasan yang relevan untuk role.
+ // Admin memakai Approval sebagai pengganti Tagihan; Mitra Usaha tidak menampilkan Tagihan.
  const bottomItems=[["home","⌂","Beranda"],["orders","📦","Pesanan"],...(currentRole==="admin"?[["approval","✓","Approval"]]:currentRole==="mitra_usaha"?[]:[["bills","🧾","Tagihan"]]),["history","↻","Riwayat"]];
  $("bottomNav").innerHTML=bottomItems.map(([key,ico,label])=>`<a href="#" data-menu="${key}"><span class="ico">${ico}</span>${label}</a>`).join("");
  const bal=profile.saldoEwallet??profile.saldoWallet??profile.saldo??profile.walletBalance??0;
@@ -134,7 +158,7 @@ function renderDashboard(user,p){
 }
 $("loginForm").addEventListener("submit",async e=>{e.preventDefault();$("loginMsg").textContent="Memeriksa akun…";try{await signInWithEmailAndPassword(auth,$("email").value.trim(),$("password").value);$("loginMsg").textContent="";}catch(err){$("loginMsg").textContent="Login gagal: "+err.message;}});
 $("logoutBtn").onclick=()=>signOut(auth);
-$("bottomNav").addEventListener("click",e=>{const a=e.target.closest("a[data-menu]");if(!a)return;e.preventDefault();const key=a.dataset.menu;const map={orders:menusByRole[currentRole]?.find(m=>m[1]==="Data Pesanan")?.[3],bills:menusByRole[currentRole]?.find(m=>m[1]==="Tagihan")?.[3],history:menusByRole[currentRole]?.find(m=>m[1]==="Riwayat")?.[3],approval:menusByRole[currentRole]?.find(m=>m[1]==="Approval")?.[3]};if(key==="home"||key==="wallet")window.scrollTo({top:0,behavior:"smooth"});else if(map[key])location.href=map[key];});
+$("bottomNav").addEventListener("click",e=>{const a=e.target.closest("a[data-menu]");if(!a)return;e.preventDefault();const key=a.dataset.menu;const map={orders:menusByRole[currentRole]?.find(m=>m[1]==="Data Pesanan")?.[3],bills:menusByRole[currentRole]?.find(m=>m[1]==="Tagihan")?.[3],history:menusByRole[currentRole]?.find(m=>m[1]==="Riwayat")?.[3],approval:menusByRole[currentRole]?.find(m=>m[1]==="Approval")?.[3]};if(key==="home")window.scrollTo({top:0,behavior:"smooth"});else if(map[key])location.href=map[key];});
 let authCheckInProgress=false;
 onAuthStateChanged(auth,async user=>{
  if(!user){
