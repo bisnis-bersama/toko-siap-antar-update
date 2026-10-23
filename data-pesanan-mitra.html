@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Pesanan MITRA USAHA | Toko Siap Antar</title><style>
+:root{--yellow:#ffc400;--ink:#171717;--muted:#687078;--bg:#f3f5f7;--line:#e0e4e8;--green:#087f5b}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+header{background:#151515;color:#fff;border-bottom:6px solid var(--yellow);padding:18px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{font-weight:800;font-size:18px}.sub{color:#d3d3d3;font-size:13px}
+main{max-width:980px;margin:22px auto;padding:0 14px}.panel,.order{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px;margin-bottom:14px;box-shadow:0 4px 18px #00000006}
+h1{font-size:25px;margin:0 0 8px}h2{font-size:20px;margin:0 0 12px}.muted,.small{color:var(--muted)}.small{font-size:13px}
+label{display:block;font-weight:650;margin:12px 0 5px}input,select,button{font:inherit;border-radius:11px;padding:11px 12px}input,select{width:100%;border:1px solid #cbd0d6;background:white}
+button,.btn{border:0;background:var(--yellow);color:#151515;font-weight:750;cursor:pointer;text-decoration:none;display:inline-block;text-align:center}
+button.secondary,.btn.secondary{background:#eee}.row{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+.badge{display:inline-block;background:#eef2f5;border-radius:999px;padding:4px 10px;font-size:13px;font-weight:700}.status{background:#fff4c2}
+.hidden{display:none!important}.message{padding:10px;border-radius:10px;margin-top:10px;background:#f0f3f5}.error{background:#ffe5e5;color:#9b1c1c}
+.stats{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.stat{border:1px solid var(--line);border-radius:13px;padding:12px}.stat b{display:block;font-size:24px}
+ul{padding-left:20px}.order p{margin:7px 0}.order h3{margin:0;font-size:19px}
+@media(min-width:700px){.stats{grid-template-columns:repeat(4,minmax(0,1fr))}main{padding:0 20px}}
+</style></head>
+<body><header><div><div class="brand">TOKO SIAP ANTAR · MITRA USAHA</div><div class="sub">Setujui atau tolak pesanan di area terdekat</div></div><button id="logout" class="secondary hidden">Keluar</button></header>
+<main>
+<section id="login" class="panel"><h1>Login Mitra Usaha</h1><p class="muted">Gunakan akun yang sudah aktif dan role <b>mitra_usaha</b>.</p><form id="loginForm"><label>Email</label><input id="email" type="email" required autocomplete="username"><label>Password</label><input id="password" type="password" required autocomplete="current-password"><div class="actions"><button type="submit">Masuk</button></div></form><div id="loginMsg" aria-live="polite"></div></section>
+<section id="dashboard" class="hidden"><div class="panel"><div class="row"><div><h1>Pesanan Area Terdekat</h1><p id="welcome" class="muted"></p></div><button id="refresh" class="secondary">Muat ulang</button></div><div class="stats"><div class="stat">Pesanan tersedia<b id="count">0</b></div><div class="stat">Radius awal<b>5 km</b></div><div class="stat">Perluasan<b>10–20 km</b></div><div class="stat">Terakhir<b id="updated">—</b></div></div><p class="small">Pesanan diprioritaskan berdasarkan jarak lokasi pelanggan ke lokasi akun. Jika belum ada yang cocok pada radius awal, pencarian diperluas. Pastikan profil menyimpan <code>lat</code> dan <code>lng</code>; jika lokasi tidak tersedia, pesanan ditampilkan berdasarkan waktu masuk.</p><div id="msg" aria-live="polite"></div></div><div id="orders"></div></section>
+</main>
+<script type="module">
+import {auth,db} from "./firebase-config.js";
+import {onAuthStateChanged,signInWithEmailAndPassword,signOut} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+import {collection,doc,getDoc,getDocs,updateDoc,runTransaction,serverTimestamp,arrayUnion} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+const $=id=>document.getElementById(id);let user=null,profile={},busy=false;
+const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const money=v=>"Rp "+Number(v||0).toLocaleString("id-ID");
+function say(t,err=false){$("msg").innerHTML=`<div class="message ${err?"error":""}">${esc(t)}</div>`}
+function coords(o){
+ const a=o.alamatPengiriman||o.alamat||{};
+ const lat=a.lat??a.latitude??o.lat??o.lokasi?.lat, lng=a.lng??a.longitude??o.lng??o.lokasi?.lng;
+ return Number.isFinite(Number(lat))&&Number.isFinite(Number(lng))?{lat:Number(lat),lng:Number(lng)}:null;
+}
+function distance(a,b){
+ if(!a||!b)return Infinity;const r=Math.PI/180,dLat=(b.lat-a.lat)*r,dLng=(b.lng-a.lng)*r;
+ const q=Math.sin(dLat/2)**2+Math.cos(a.lat*r)*Math.cos(b.lat*r)*Math.sin(dLng/2)**2;
+ return 6371*2*Math.atan2(Math.sqrt(q),Math.sqrt(1-q));
+}
+function sortByArea(list,p){
+ const here=coords(p)||((p.lat!=null&&p.lng!=null)?{lat:Number(p.lat),lng:Number(p.lng)}:null);
+ return list.map(o=>({...o,_distance:distance(here,coords(o))}))
+ .sort((a,b)=>{const tier=d=>d<=5?0:d<=10?1:d<=20?2:3;return tier(a._distance)-tier(b._distance)||a._distance-b._distance||((a.createdAt?.seconds||0)-(b.createdAt?.seconds||0));});
+}
+function getAddress(o){const a=o.alamatPengiriman||o.alamat||{};return typeof a==="string"?a:[a.alamat,a.desa,a.kecamatan,a.kabupaten,a.provinsi].filter(Boolean).join(", ")||"Alamat belum tersedia";}
+function mapLink(o){const c=coords(o);return c?`https://www.google.com/maps?q=${c.lat},${c.lng}`:"https://www.google.com/maps/search/?api=1&query="+encodeURIComponent(getAddress(o));}
+function render(list,id){
+ $(id).innerHTML=list.length?list.map(o=>`<article class="order"><div class="row"><h3>Pesanan ${esc(o.nomorPesanan||o.id)}</h3><span class="badge status">${esc(o.status||"MENUNGGU")}</span></div>
+ <p><b>Pelanggan:</b> ${esc(o.alamatPengiriman?.nama||o.ownerName||o.namaPembeli||"Pelanggan")}</p>
+ <p><b>Alamat:</b> ${esc(getAddress(o))}</p><p><b>Jarak perkiraan:</b> ${Number.isFinite(o._distance)?o._distance.toFixed(1)+" km":"Lokasi belum lengkap"}</p>
+ <p><b>Total:</b> ${money(o.total)} · <b>Pembayaran:</b> ${esc(o.metodePembayaran||"—")}</p>
+ <p><b>Barang:</b></p><ul>${(Array.isArray(o.items)?o.items:[]).map(i=>`<li>${esc(i.nama||i.name||i.title||"Produk")} × ${Number(i.qty||i.quantity||1)}</li>`).join("")||"<li>Rincian tidak tersedia</li>"}</ul>
+ <div class="actions"><a class="btn secondary" href="${esc(mapLink(o))}" target="_blank" rel="noopener">Lihat lokasi</a>${actionButtons(o.id,o)}</div></article>`).join(""):'<div class="panel">Belum ada pesanan di antrean saat ini. Muat ulang untuk memeriksa kembali.</div>';
+ $("count").textContent=list.length;$("updated").textContent=new Date().toLocaleTimeString("id-ID",{hour:"2-digit",minute:"2-digit"});
+}
+
+function eligible(o){
+ const s=String(o.status||"").toUpperCase();
+ return ["MENUNGGU_PERSETUJUAN","MENUNGGU_MITRA","MENUNGGU"].includes(s) && !o.mitraUid;
+}
+function actionButtons(id,o){return `<div class="actions"><button data-action="accept" data-id="${esc(id)}">Setujui Pesanan</button><button class="secondary" data-action="reject" data-id="${esc(id)}">Tolak</button></div>`;}
+
+async function loadOrders(){
+ try{
+ const snap=await getDocs(collection(db,"orders"));
+ const all=snap.docs.map(d=>({id:d.id,...d.data()})).filter(eligible);
+ const mine=all.filter(o=>!Array.isArray(o.mitraDitolakUid)||!o.mitraDitolakUid.includes(user.uid));
+ const sorted=sortByArea(mine,profile);
+ render(sorted,"orders");
+ }catch(e){say("Gagal memuat antrean: "+e.message,true)}
+}
+
+async function act(id,action){
+ if(busy)return; const ref=doc(db,"orders",id);busy=true;
+ try{
+  await runTransaction(db,async tx=>{
+   const snap=await tx.get(ref);if(!snap.exists())throw Error("Pesanan tidak ditemukan.");
+   const o=snap.data(),s=String(o.status||"").toUpperCase();
+   if(!["MENUNGGU_PERSETUJUAN","MENUNGGU_MITRA","MENUNGGU"].includes(s)||o.mitraUid)throw Error("Pesanan sudah diambil mitra lain atau statusnya berubah.");
+   if(action==="accept"){
+    tx.update(ref,{mitraUid:user.uid,mitraNama:profile.nama||profile.namaUsaha||profile.email||"Mitra",status:"DISETUJUI",mitraAcceptedAt:serverTimestamp(),updatedAt:serverTimestamp()});
+   }else{
+    tx.update(ref,{mitraDitolakUid:arrayUnion(user.uid),updatedAt:serverTimestamp()});
+   }
+  });
+  say(action==="accept"?"Pesanan berhasil disetujui.":"Pesanan ditolak; sistem akan menawarkannya ke mitra area berikutnya.");
+  await loadOrders();
+ }catch(e){say("Tidak berhasil: "+e.message+" Periksa Rules Firestore.",true)}finally{busy=false}
+}
+
+$("loginForm").addEventListener("submit",async e=>{e.preventDefault();$("loginMsg").textContent="Memeriksa akun…";try{await signInWithEmailAndPassword(auth,$("email").value.trim(),$("password").value)}catch(err){$("loginMsg").textContent="Login gagal: "+err.message}});
+$("logout").onclick=()=>signOut(auth);$("refresh").onclick=loadOrders;
+$("orders").addEventListener("click",e=>{const b=e.target.closest("button[data-action]");if(b)act(b.dataset.id,b.dataset.action)});
+onAuthStateChanged(auth,async u=>{
+ user=u;if(!u){$("login").classList.remove("hidden");$("dashboard").classList.add("hidden");$("logout").classList.add("hidden");return}
+ try{const snap=await getDoc(doc(db,"users",u.uid));if(!snap.exists())throw Error("Profil users tidak ditemukan");profile=snap.data()||{};
+ if(profile.role!=="mitra_usaha")throw Error("Akses khusus role mitra_usaha. Role akun ini: "+(profile.role||"kosong"));
+ if(profile.status&&profile.status!=="aktif")throw Error("Akun belum aktif");
+ $("login").classList.add("hidden");$("dashboard").classList.remove("hidden");$("logout").classList.remove("hidden");
+ $("welcome").textContent=(profile.nama||profile.namaUsaha||profile.name||profile.email||u.email)+" · Area terdekat";
+ await loadOrders();
+ }catch(err){$("login").classList.remove("hidden");$("loginMsg").textContent=err.message;await signOut(auth)}
+});
+</script></body></html>
