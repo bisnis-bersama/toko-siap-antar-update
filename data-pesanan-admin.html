@@ -1,0 +1,101 @@
+<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Admin | Toko Siap Antar</title><link rel="stylesheet" href="style.css"></head><body>
+<header><strong>TOKO SIAP ANTAR · ADMIN</strong><nav><a href="admin.html">Pesanan</a><a href="produk-admin.html">Produk</a><a href="pengguna.html">Pengguna</a><a href="admin-approval-pending.html">Approval Pending</a><a href="admin-keuangan.html">Keuangan</a><a href="mitra-usaha.html">Mitra Usaha</a><a href="daftar-mitra-usaha.html">Daftar Mitra Usaha</a><a href="index.html">Toko</a><button id="logoutBtn" class="dark">Keluar</button></nav></header>
+<main class="shell"><section class="panel"><h1>Dashboard pesanan</h1><p id="sessionLabel" class="muted">Memuat akun…</p><div id="notice" class="notice" hidden></div><div class="grid"><div class="stat">Menunggu mitra<b id="n-menunggu">—</b></div><div class="stat">Menunggu kurir<b id="n-menunggu-kurir">—</b></div><div class="stat">Dalam pengantaran<b id="n-dikirim">—</b></div><div class="stat">Selesai<b id="n-selesai">—</b></div></div></section>
+<section class="panel"><h2>Semua pesanan</h2><div class="table-wrap"><table><thead><tr><th>Invoice</th><th>Pelanggan</th><th>Total</th><th>Status pesanan</th><th>Mitra yang menyetujui</th><th>Kurir yang mengambil</th><th>Kontak pelanggan</th></tr></thead><tbody id="orders"><tr><td colspan="7">Memuat…</td></tr></tbody></table></div></section></main>
+<script type="module">
+import {db} from "./firebase-config.js";
+import {collection,getDocs,query,orderBy} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+import {requireRole,money,esc,notice} from "./common.js";
+
+let usersById = {};
+requireRole(["admin"], async () => { await load(); });
+
+function firstValue(obj, keys) {
+  for (const key of keys) {
+    const value = obj?.[key];
+    if (value !== undefined && value !== null && String(value).trim() !== "") return value;
+  }
+  return "";
+}
+function personLabel(order, keys, fallbackKeys) {
+  const direct = firstValue(order, keys);
+  if (direct && typeof direct === "string" && usersById[direct]) {
+    const u = usersById[direct];
+    return u.nama || u.name || u.namaUsaha || u.email || direct;
+  }
+  if (direct && typeof direct === "object") {
+    return direct.nama || direct.name || direct.namaUsaha || direct.email || "—";
+  }
+  if (direct) return direct;
+  const uid = firstValue(order, fallbackKeys);
+  if (uid && usersById[uid]) {
+    const u = usersById[uid];
+    return u.nama || u.name || u.namaUsaha || u.email || uid;
+  }
+  return "Belum ada";
+}
+function normalizeStatus(x) {
+  return String(x.status || "menunggu").toLowerCase();
+}
+function isWaitingMitra(x) {
+  const s = normalizeStatus(x);
+  return ["menunggu", "menunggu_mitra", "pending", "menunggu_persetujuan"].includes(s) &&
+    !firstValue(x, ["mitraUid","mitraUsahaUid","approvedByMitraUid","mitraId"]);
+}
+function isWaitingCourier(x) {
+  const s = normalizeStatus(x);
+  const courier = firstValue(x, ["kurirUid","courierUid","driverUid","kurirId","diambilOlehUid","pickedBy"]);
+  return ["disetujui","dikemas","menunggu_kurir","siap_diambil","siap_dikirim"].includes(s) && !courier;
+}
+async function load() {
+  const tb = document.querySelector("#orders");
+  try {
+    const [userSnap, orderSnap] = await Promise.all([
+      getDocs(collection(db, "users")),
+      getDocs(query(collection(db, "orders"), orderBy("createdAt", "desc")))
+    ]);
+    usersById = {};
+    userSnap.docs.forEach(d => usersById[d.id] = d.data() || {});
+    const orders = orderSnap.docs.map(d => ({id:d.id, data:d.data() || {}}));
+
+    document.querySelector("#n-menunggu").textContent = orders.filter(o => isWaitingMitra(o.data)).length;
+    document.querySelector("#n-menunggu-kurir").textContent = orders.filter(o => isWaitingCourier(o.data)).length;
+    document.querySelector("#n-dikirim").textContent = orders.filter(o => ["dikirim","diambil","dalam_pengantaran"].includes(normalizeStatus(o.data))).length;
+    document.querySelector("#n-selesai").textContent = orders.filter(o => normalizeStatus(o.data) === "selesai").length;
+
+    if (!orders.length) {
+      tb.innerHTML = '<tr><td colspan="7">Belum ada pesanan.</td></tr>';
+      return;
+    }
+    tb.innerHTML = orders.map(({id, data:x}) => {
+      const status = normalizeStatus(x);
+      const mitra = personLabel(x,
+        ["mitraNama","namaMitra","approvedByMitraName","mitraUsahaNama"],
+        ["mitraUid","mitraUsahaUid","approvedByMitraUid","mitraId"]);
+      const kurir = personLabel(x,
+        ["kurirNama","namaKurir","courierName","driverName","diambilOleh"],
+        ["kurirUid","courierUid","driverUid","kurirId","diambilOlehUid","pickedBy"]);
+      const phone = firstValue(x, ["noWA","whatsapp","telepon","phone","nomorHP"]);
+      let wa = "—";
+      if (phone) {
+        let digits = String(phone).replace(/\D/g, "");
+        if (digits.startsWith("0")) digits = "62" + digits.slice(1);
+        else if (digits.startsWith("8")) digits = "62" + digits;
+        if (digits) wa = `<a class="btn" href="https://wa.me/${esc(digits)}" target="_blank" rel="noopener noreferrer">WhatsApp</a>`;
+      }
+      return `<tr>
+        <td>${esc(x.nomorPesanan || x.invoice || id)}</td>
+        <td>${esc(x.nama || x.namaPembeli || x.ownerName || x.uid || "-")}</td>
+        <td>${money(x.total)}</td>
+        <td><span class="badge ${esc(status)}">${esc(status.replaceAll("_"," "))}</span></td>
+        <td>${esc(mitra)}</td>
+        <td>${esc(kurir)}</td>
+        <td>${wa}</td>
+      </tr>`;
+    }).join("");
+  } catch(e) {
+    notice("Gagal memuat pemantauan pesanan: " + (e.message || e), "error");
+    tb.innerHTML = `<tr><td colspan="7">Gagal memuat pesanan: ${esc(e.message || e)}</td></tr>`;
+  }
+}
+</script></body></html>
