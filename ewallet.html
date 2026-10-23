@@ -35,6 +35,12 @@ main{max-width:760px;margin:-30px auto 0;padding:0 14px 100px;position:relative}
 .hidden{display:none!important}.err{color:#b42318;font-size:13px;margin-top:10px;overflow-wrap:anywhere}
 label{display:block;font-size:14px;font-weight:750;margin:12px 0 5px}input{width:100%;border:1px solid #cbd1d6;border-radius:12px;padding:12px;background:white}
 .submit{margin-top:14px;width:100%;background:var(--yellow);border:0;border-radius:12px;padding:13px;font-weight:850;cursor:pointer}
+/* Dashboard: judul besar di panel dihilangkan; hanya label peran kecil yang dipertahankan. */
+#dashboard>.panel:first-child{padding:19px!important;border-radius:28px!important}
+#dashboardTitle{display:none!important}
+#dashboard>.panel:nth-child(2){background:transparent!important;box-shadow:none!important;border-radius:0!important;padding:20px 4px!important;margin-top:8px!important}
+#dashboard>.panel:nth-child(2) .section-title{margin-bottom:14px!important}
+#dashboard>.panel:nth-child(2) .menu-grid{row-gap:10px}
 @media(max-width:420px){.wallet{padding:15px}.balance{font-size:29px}.wallet-stat{padding:12px 10px}.wallet-stat strong{font-size:18px}}
 </style>
 </head>
@@ -101,7 +107,6 @@ function renderDashboard(user,p){
  $("loginPanel").classList.add("hidden");$("dashboard").classList.remove("hidden");$("logoutBtn").classList.remove("hidden");$("bottomNav").classList.remove("hidden");
  $("roleLabel").textContent=roleNames[currentRole].toUpperCase();
  const accountName=profile.nama||profile.namaUsaha||profile.name||profile.email||user.email||roleNames[currentRole];
- // Nama akun ditampilkan pada tulisan kuning header; judul dalam panel putih hanya menampilkan peran.
  $("brandName").textContent=accountName;
  $("dashboardTitle").textContent="DASHBOARD "+roleNames[currentRole].toUpperCase();
  $("roleMenu").textContent=roleNames[currentRole].toUpperCase();
