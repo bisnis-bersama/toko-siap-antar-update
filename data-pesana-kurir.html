@@ -23,7 +23,7 @@ ul{padding-left:20px}.order p{margin:7px 0}.order h3{margin:0;font-size:19px}
 <script type="module">
 import {auth,db} from "./firebase-config.js";
 import {onAuthStateChanged,signInWithEmailAndPassword,signOut} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
-import {collection,doc,getDoc,getDocs,query,where,updateDoc,runTransaction,serverTimestamp,arrayUnion} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+import {collection,doc,getDoc,getDocs,updateDoc,runTransaction,serverTimestamp,arrayUnion} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
 const $=id=>document.getElementById(id);let user=null,profile={},busy=false;
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const money=v=>"Rp "+Number(v||0).toLocaleString("id-ID");
@@ -63,10 +63,7 @@ function actionButtons(id,o){return `<div class="actions"><button data-action="t
 
 async function loadOrders(){
  try{
- // Ambil antrean saja; jangan meminta daftar seluruh orders karena Firestore Rules
- // seharusnya membatasi kurir pada pesanan yang memang tersedia.
- const q=query(collection(db,"orders"),where("status","in",["DISETUJUI","MENUNGGU_KURIR","SIAP_DIAMBIL","DIKEMAS"]));
- const snap=await getDocs(q);
+ const snap=await getDocs(collection(db,"orders"));
  const all=snap.docs.map(d=>({id:d.id,...d.data()})).filter(eligible);
  const mine=all.filter(o=>!Array.isArray(o.kurirDitolakUid)||!o.kurirDitolakUid.includes(user.uid));
  const sorted=sortByArea(mine,profile);
@@ -98,10 +95,8 @@ $("orders").addEventListener("click",e=>{const b=e.target.closest("button[data-a
 onAuthStateChanged(auth,async u=>{
  user=u;if(!u){$("login").classList.remove("hidden");$("dashboard").classList.add("hidden");$("logout").classList.add("hidden");return}
  try{const snap=await getDoc(doc(db,"users",u.uid));if(!snap.exists())throw Error("Profil users tidak ditemukan");profile=snap.data()||{};
- const role=String(profile.role??profile.peran??profile.jenisAkun??profile.tipeAkun??profile.userRole??"").trim().toLowerCase().replace(/[\s-]+/g,"_");
- if(!["kurir","courier","driver","pengantar","mitra_kurir","mitra_pengantaran"].includes(role))throw Error("Akses khusus role kurir. Role akun ini: "+(profile.role||profile.peran||"kosong"));
- const status=String(profile.status??profile.statusAkun??"aktif").trim().toLowerCase();
- if(["nonaktif","non-aktif","inactive","disabled","ditolak","pending","menunggu","suspended","blocked"].includes(status))throw Error("Akun belum aktif (status: "+status+")");
+ if(profile.role!=="kurir")throw Error("Akses khusus role kurir. Role akun ini: "+(profile.role||"kosong"));
+ if(profile.status&&profile.status!=="aktif")throw Error("Akun belum aktif");
  $("login").classList.add("hidden");$("dashboard").classList.remove("hidden");$("logout").classList.remove("hidden");
  $("welcome").textContent=(profile.nama||profile.namaUsaha||profile.name||profile.email||u.email)+" · Area terdekat";
  await loadOrders();
