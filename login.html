@@ -9,22 +9,7 @@
 <div class="role-guide"><div class="role-item"><b>🛍️ Pelanggan</b><small>Beranda / akun pelanggan</small></div><div class="role-item"><b>🏪 Mitra Usaha</b><small>Memeriksa stok dan mengisi harga mitra</small></div><div class="role-item"><b>🛵 Kurir</b><small>Mengambil dan mengantar pesanan</small></div><div class="role-item"><b>🧰 Admin</b><small>Mengelola seluruh sistem</small></div></div>
 <p class="muted" style="font-size:13px">Akses admin, mitra usaha, dan kurir hanya diberikan oleh admin melalui role pada dokumen <code>users/{UID}</code>. Pendaftaran publik hanya membuat akun pelanggan.</p></section></main>
 <script type="module">
-import { initializeApp, getApps } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
-import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
-
-// Samakan konfigurasi dengan halaman pendaftaran Toko Siap Antar.
-const firebaseConfig = {
-  apiKey: "AIzaSyBxqZhl6t3RwrXMwVdJeIkg0NzGfwvlweM",
-  authDomain: "toko-siap-antar-9a7bb.firebaseapp.com",
-  projectId: "toko-siap-antar-9a7bb",
-  storageBucket: "toko-siap-antar-9a7bb.firebasestorage.app",
-  messagingSenderId: "351335838712",
-  appId: "1:351335838712:web:14cc2c7b91bb0c9e1b5c0d"
-};
-const app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getFirestore(app);
+import {auth,db} from "./firebase-config.js";
 import {signInWithEmailAndPassword,onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
 import {doc,getDoc} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
 const form=document.querySelector("#loginForm"),btn=document.querySelector("#submitBtn"),noticeBox=document.querySelector("#notice");
@@ -41,14 +26,14 @@ const customerNextAllowed=new Set(["index.html","akun.html","checkout.html","ker
 async function routeUser(user){if(!user||routing)return;routing=true;btn.disabled=true;say("Login berhasil. Memeriksa role akun…","success");
  try{
   const snap=await getDoc(doc(db,"users",user.uid));
-  if(!snap.exists()){routing=false;btn.disabled=false;say("Profil tidak ditemukan pada proyek Firebase "+firebaseConfig.projectId+". Periksa apakah Document ID users sama persis dengan UID Authentication: "+user.uid+".");return;}
+  if(!snap.exists()){routing=false;btn.disabled=false;say("Profil Firestore untuk akun ini belum ditemukan. Minta admin memeriksa dokumen users/"+user.uid+".");return;}
   const profile=snap.data(),role=String(profile.role||"").toLowerCase().trim(),target=targetFor(role);
   if(!target){routing=false;btn.disabled=false;say("Role akun kosong atau tidak dikenal ("+(role||"belum diisi")+"). Admin perlu memperbaiki field role pada users/"+user.uid+".");return;}
   // next hanya dipakai pelanggan dan hanya untuk halaman pelanggan yang dikenal.
   const next=params.get("next")||"";
   const destination=role==="pelanggan"&&customerNextAllowed.has(next)?next:target;
   location.replace(destination);
- }catch(err){routing=false;btn.disabled=false;say("Gagal membaca profil pada proyek "+firebaseConfig.projectId+": "+err.message+". Periksa Rules baca users/{UID} dan pastikan dokumen ada pada proyek yang sama.");}
+ }catch(err){routing=false;btn.disabled=false;say("Gagal membaca role dari Firestore: "+err.message+". Periksa rules baca dokumen users/{UID}.");}
 }
 form.addEventListener("submit",async e=>{e.preventDefault();if(routing)return;btn.disabled=true;say("Sedang memverifikasi login…","success");try{const credential=await signInWithEmailAndPassword(auth,form.email.value.trim(),form.password.value);await routeUser(credential.user);}catch(err){btn.disabled=false;say(err.code==="auth/invalid-credential"||err.code==="auth/wrong-password"||err.code==="auth/user-not-found"?"Email atau password salah.":"Login gagal: "+err.message);}});
 onAuthStateChanged(auth,user=>{if(user&&!routing)routeUser(user);});
