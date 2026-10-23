@@ -5,132 +5,48 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>E-Wallet | Toko Siap Antar</title>
 <style>
-:root{--green:#00a86b;--green2:#008b5a;--yellow:#ffcc00;--ink:#173b32;--muted:#64756f;--bg:#f1fff7;--line:#d7eee3;--white:#fff}
-*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.45 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
+:root{--green:#00a86b;--green2:#008b5a;--yellow:#ffcc00;--ink:#173b32;--muted:#64756f;--bg:#f1f2f4;--line:#e6e7e8;--white:#fff}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:#171717;font:16px/1.45 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
 button,input{font:inherit}button,a{-webkit-tap-highlight-color:transparent}
-.top{background:linear-gradient(115deg,#008b5a,#00b894);color:white;padding:22px 18px 46px;border-bottom:6px solid var(--yellow);border-radius:0 0 30px 30px}
-.topline{display:flex;justify-content:space-between;align-items:center;gap:12px;max-width:1000px;margin:auto}
-.brand{font-weight:850;font-size:19px;letter-spacing:.2px}.sub{color:#cbd1d5;font-size:13px;margin-top:3px}
+.top{background:#111;color:#fff;padding:18px 16px 38px;border-radius:0 0 34px 34px}
+.topline{display:flex;justify-content:space-between;align-items:center;gap:12px;max-width:900px;margin:auto}
+.brand{font-weight:850;font-size:19px;letter-spacing:.2px;color:#ffd400}.sub{color:#d1d5db;font-size:13px;margin-top:3px}
 .logout{background:#292929;border:1px solid #444;color:white;border-radius:12px;padding:10px 13px;font-weight:700;cursor:pointer}
-main{max-width:1000px;margin:-24px auto 100px;padding:0 14px;position:relative}
-.panel{background:white;border:1px solid var(--line);border-radius:22px;padding:20px;margin-bottom:16px;box-shadow:0 9px 28px #17202a0a}
-.eyebrow{color:var(--muted);font-size:13px;font-weight:700}.title{font-size:30px;line-height:1.15;margin:5px 0 8px;font-weight:850;letter-spacing:-.6px}
-.muted{color:var(--muted)}.wallet{background:linear-gradient(130deg,#008b5a,#00b894);color:#fff;border-radius:20px;padding:20px;position:relative;overflow:hidden}
-.wallet:after{content:"";position:absolute;width:170px;height:170px;border:25px solid #ffffff13;border-radius:50%;right:-55px;top:-55px}
-.wallet-label{font-size:13px;color:#d8f5e8}.balance{font-size:34px;font-weight:850;margin:7px 0 15px;letter-spacing:.2px}
-.wallet-row{display:flex;gap:10px;flex-wrap:wrap;position:relative;z-index:1}.wallet-action{background:var(--yellow);color:#171717;border:0;border-radius:12px;padding:10px 14px;font-weight:800;cursor:pointer}.wallet-action.alt{background:#ffffff18;color:#fff;border:1px solid #ffffff60}
-.section-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:2px 2px 13px}.section-title h2{font-size:20px;margin:0}.section-title span{font-size:12px;color:var(--muted);font-weight:700}
-.menu-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.menu{min-height:112px;border:1px solid var(--line);background:#fff;border-radius:17px;padding:15px 12px;text-decoration:none;color:inherit;display:flex;flex-direction:column;align-items:flex-start;gap:10px;transition:transform .12s,border-color .12s}
-.menu:active{transform:scale(.98)}.menu-icon{width:43px;height:43px;background:linear-gradient(135deg,#008b5a,#00b894);color:#ffcc00;border-radius:14px;display:grid;place-items:center;font-size:23px}
-.menu b{font-size:15px}.menu small{color:var(--muted);font-size:12px}
-.summary-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.summary{border:1px solid var(--line);background:#fafbfc;border-radius:15px;padding:14px}.summary span{font-size:13px;color:var(--muted)}.summary b{display:block;font-size:23px;margin-top:4px}
+main{max-width:760px;margin:0 auto 100px;padding:0 14px;position:relative}
+.panel{background:#fff;border:0;border-radius:24px;padding:17px;margin-bottom:14px;box-shadow:0 8px 24px #0000000a}
+.eyebrow{color:var(--muted);font-size:11px;font-weight:700;letter-spacing:.4px}.title{font-size:clamp(24px,6vw,32px);line-height:1.15;margin:7px 0 12px;font-weight:850;letter-spacing:-.6px}
+.muted{color:var(--muted)}
+.wallet{background:#fff;color:#171717;border:1px solid #ececec;border-radius:22px;padding:17px;position:relative;overflow:hidden}
+.wallet-label{font-size:13px;color:#727b86;font-weight:700}.balance{font-size:30px;font-weight:850;margin:5px 0 12px;letter-spacing:.2px;color:#171717}
+.wallet-row{border-top:1px solid #e5e5e5;padding-top:13px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.wallet-stat{min-width:0;border:1px solid #e8e9e9;border-radius:15px;background:#f7f8f8;padding:13px 12px;display:flex;flex-direction:column;justify-content:center}
+.wallet-stat span{font-size:12px;color:#727b86;font-weight:700}
+.wallet-stat strong{font-size:clamp(16px,4.2vw,22px);line-height:1.25;margin-top:5px;color:#173b32;overflow-wrap:anywhere}
+.wallet-action{background:#ffc800;color:#171717;border:0;border-radius:12px;padding:10px 12px;font-weight:800;cursor:pointer}
+.wallet-action.alt{background:#e5f8f0;color:#008b5a;border:1px solid #bdebd8}
 .notice{background:#fff8d8;border:1px solid #f4df80;border-radius:12px;padding:11px 13px;font-size:13px;color:#5c4b00;margin-top:12px}
-#loginPanel{max-width:480px;margin:40px auto}label{display:block;font-size:14px;font-weight:750;margin:12px 0 5px}input{width:100%;border:1px solid #cbd1d6;border-radius:12px;padding:12px;background:white}
-.submit{margin-top:14px;width:100%;background:var(--yellow);border:0;border-radius:12px;padding:13px;font-weight:850;cursor:pointer}
-.bottom{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:3px solid var(--yellow);display:flex;justify-content:space-around;padding:9px 5px calc(9px + env(safe-area-inset-bottom));z-index:5}
-.bottom a{color:#64756f;text-decoration:none;text-align:center;font-size:11px;font-weight:750;min-width:54px}.bottom a:first-child{color:#008b5a}.bottom .ico{display:block;font-size:22px;margin-bottom:2px}
+.section-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:2px 2px 12px}
+.section-title h2{font-size:18px;margin:0}.section-title span{font-size:12px;color:var(--muted);font-weight:700}
+.menu-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px 2px}
+.menu{min-height:94px;padding:8px 2px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:7px;text-decoration:none;color:inherit;background:transparent;border:0}
+.menu-icon{width:56px;height:56px;border-radius:17px;background:#111;color:#ffd400;display:grid;place-items:center;font-size:25px}
+.menu b{font-size:12px;line-height:1.2;font-weight:700}.menu small{display:none}
+.bottom{position:fixed;bottom:0;left:0;right:0;background:#111;border-top:3px solid #ffd400;display:flex;justify-content:space-around;padding:9px 5px calc(9px + env(safe-area-inset-bottom));z-index:5}
+.bottom a{color:#ffd400;text-decoration:none;text-align:center;font-size:11px;font-weight:750;min-width:54px}.bottom .ico{display:block;font-size:22px;margin-bottom:2px}
 .hidden{display:none!important}.err{color:#b42318;font-size:13px;margin-top:10px;overflow-wrap:anywhere}
-@media(min-width:650px){.menu-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.summary-grid{grid-template-columns:repeat(4,minmax(0,1fr))}main{padding:0 20px}.top{padding-left:24px;padding-right:24px}.title{font-size:34px}}
-
-/* Panel layout aligned to the supplied dashboard reference */
-.hero{min-height:178px;padding:24px 24px 62px;border-radius:0 0 42px 42px;position:relative}
-.hero h1{font-size:clamp(1.35rem,4vw,1.8rem);margin:0 0 7px}
-.hero p{font-size:1rem;margin:0}
-.hero #logoutBtn{position:absolute;right:22px;top:28px;padding:12px 18px;border-radius:16px;background:#171717;color:#fff;border:1px solid #333;font-weight:700}
-main,.main,.container{max-width:900px}
-#dashboard{margin-top:-34px;position:relative;z-index:2}
-.panel,.card,.dashboard-card{border-radius:30px}
-#dashboard .welcome,.welcome-card,.summary-card{border-radius:28px}
-#menuGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px 12px}
-#menuGrid .menu{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;padding:14px 6px;background:transparent;border:0;box-shadow:none;min-height:112px}
-#menuGrid .menu-icon{width:68px;height:68px;border-radius:22px;background:#171717;color:#ffc800;display:grid;place-items:center;font-size:1.8rem}
-#menuGrid .menu b{font-size:.98rem;line-height:1.2}
-#menuGrid .menu small{font-size:.76rem;line-height:1.25}
-#bottomNav{background:#111!important;border-top:3px solid #ffc800!important;color:#ffc800!important}
-#bottomNav a,#bottomNav button{color:#ffc800!important}
-#bottomNav a.active,#bottomNav .active{color:#ffc800!important}
-@media(max-width:480px){
- .hero{padding:24px 22px 60px;min-height:178px}
- .hero #logoutBtn{right:18px;top:24px;padding:10px 14px;font-size:.9rem}
- #dashboard{margin-top:-34px}
- #menuGrid{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px 6px}
- #menuGrid .menu{padding:10px 2px;min-height:100px}
- #menuGrid .menu-icon{width:58px;height:58px;border-radius:19px;font-size:1.6rem}
- #menuGrid .menu b{font-size:.83rem}
- #menuGrid .menu small{font-size:.7rem}
-}
-
-
-/* Panel saldo: warna resmi Toko Siap Antar, bukan hitam seperti Fixzy */
-.wallet-card,.balance-card,.saldo-card,.wallet-panel,.balance-panel{
- background:linear-gradient(120deg,#008b5a 0%,#00b8a8 58%,#00c6a5 100%) !important;
- color:#fff !important;
- border:0 !important;
- box-shadow:0 12px 28px rgba(0,139,90,.16) !important;
-}
-.wallet-card h1,.wallet-card h2,.wallet-card h3,.wallet-card p,
-.balance-card h1,.balance-card h2,.balance-card h3,.balance-card p,
-.saldo-card h1,.saldo-card h2,.saldo-card h3,.saldo-card p,
-.wallet-panel h1,.wallet-panel h2,.wallet-panel h3,.wallet-panel p,
-.balance-panel h1,.balance-panel h2,.balance-panel h3,.balance-panel p{
- color:#fff !important;
-}
-.wallet-card button,.balance-card button,.saldo-card button,
-.wallet-panel button,.balance-panel button,
-#topupBtn{
- background:#ffc800 !important;
- color:#171717 !important;
- border:1px solid #ffc800 !important;
-}
-#withdrawBtn{
- background:rgba(255,255,255,.08) !important;
- color:#fff !important;
- border:1px solid rgba(255,255,255,.38) !important;
-}
-
-
-/* Tampilan ringkas: gaya dashboard bersih, tanpa deskripsi berulang */
-:root{--green:#00a85a;--cyan:#00c8d7;--yellow:#ffd400;--ink:#18221f;--muted:#727b78;--paper:#f1f2f4;--card:#fff;--line:#e6e7e8}
-body{background:#f1f2f4!important;color:#171717}
-.top{background:#111!important;border-bottom:0!important;padding:18px 16px 30px!important;border-radius:0 0 34px 34px}
-.brand{color:#ffd400!important;font-size:20px}.sub{color:#d1d5db!important}
-main{max-width:760px;margin:-2px auto 0;padding:0 14px 90px!important;position:relative}
-.panel{border:0!important;border-radius:24px!important;padding:17px!important;margin-bottom:14px!important;box-shadow:0 8px 24px #0000000a!important}
-#dashboard>.panel:first-child{margin-top:-2px!important}
-.eyebrow{font-size:11px!important;letter-spacing:.4px}
-.title{font-size:clamp(24px,6vw,32px)!important;line-height:1.15!important;margin:7px 0 12px!important}
-#roleDescription{display:none!important}
-.wallet{background:#fff!important;color:#171717!important;border:1px solid #ececec!important;border-radius:22px!important;padding:17px!important;box-shadow:none!important}
-.wallet:after{display:none!important}.wallet-label{color:#727b86!important;font-weight:700;font-size:13px!important}
-.balance{font-size:30px!important;margin:5px 0 12px!important;color:#171717!important}
-.wallet-row{border-top:1px solid #e5e5e5;padding-top:13px;display:grid!important;grid-template-columns:1fr 1fr;gap:8px!important}
-.wallet-action{border-radius:12px!important;padding:12px 8px!important;background:#111!important;color:#ffd400!important}
-.wallet-action.alt{background:#f2f3f4!important;color:#171717!important;border:1px solid #e5e5e5!important}
-#dashboard>.panel:nth-child(2){display:none!important}
-.section-title{margin:2px 2px 12px!important}.section-title h2{font-size:18px!important;margin:0}
-#menuGrid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:10px 4px!important}
-#menuGrid .menu{min-height:94px!important;padding:8px 2px!important;gap:7px!important}
-#menuGrid .menu-icon{width:56px!important;height:56px!important;border-radius:17px!important;background:#111!important;color:#ffd400!important;font-size:25px!important}
-#menuGrid .menu b{font-size:12px!important;line-height:1.2!important;font-weight:700!important}
-#menuGrid .menu small{display:none!important}
-#bottomNav{background:#111!important;border-top:2px solid #ffd400!important;box-shadow:0 -4px 15px #00000012!important}
-#bottomNav a,#bottomNav button{color:#ffd400!important;font-size:11px!important}
-@media(max-width:520px){.top{padding:17px 16px 28px!important}.brand{font-size:18px}.panel{padding:15px!important}#menuGrid{gap:8px 2px!important}#menuGrid .menu-icon{width:52px!important;height:52px!important}#menuGrid .menu b{font-size:11px!important}}
-
+label{display:block;font-size:14px;font-weight:750;margin:12px 0 5px}input{width:100%;border:1px solid #cbd1d6;border-radius:12px;padding:12px;background:white}
+.submit{margin-top:14px;width:100%;background:var(--yellow);border:0;border-radius:12px;padding:13px;font-weight:850;cursor:pointer}
+@media(max-width:380px){.wallet-row{gap:7px}.wallet-stat{padding:10px 8px}.wallet-stat span{font-size:11px}.wallet-stat strong{font-size:16px}}
 </style>
 </head>
 <body>
-<header class="top">
- <div class="topline">
-  <div><div class="brand">🛵 TOKO SIAP ANTAR</div><div class="sub">E-Wallet & Pusat Aktivitas</div></div>
-  <button id="logoutBtn" class="logout hidden" type="button">Keluar</button>
- </div>
-</header>
+<header class="top"><div class="topline">
+ <div><div class="brand">🛵 TOKO SIAP ANTAR</div><div class="sub">E-Wallet & Pusat Aktivitas</div></div>
+ <button id="logoutBtn" class="logout hidden" type="button">Keluar</button>
+</div></header>
 <main>
  <section id="loginPanel" class="panel">
   <div class="eyebrow">AKSES AKUN</div><h1 class="title">Masuk E-Wallet</h1>
-  <p class="muted">Gunakan akun Toko Siap Antar yang sudah terdaftar.</p>
   <form id="loginForm">
    <label for="email">Email</label><input id="email" type="email" autocomplete="username" required>
    <label for="password">Password</label><input id="password" type="password" autocomplete="current-password" required>
@@ -141,34 +57,18 @@ main{max-width:760px;margin:-2px auto 0;padding:0 14px 90px!important;position:r
   <div class="panel">
    <div class="eyebrow">DASHBOARD <span id="roleLabel">AKUN</span></div>
    <h1 class="title">Halo, <span id="userName">Pengguna</span></h1>
-   <p class="muted" id="roleDescription">Kelola aktivitas akun Anda dari satu tempat.</p>
    <div class="wallet">
-    <div class="wallet-label">Saldo E-Wallet</div>
+    <div class="wallet-label">Sisa Saldo</div>
     <div class="balance" id="balance">Rp 0</div>
     <div class="wallet-row">
-     <button class="wallet-action" id="topupBtn" type="button">＋ Isi Saldo</button>
-     <button class="wallet-action alt" id="withdrawBtn" type="button">↗ Tarik Saldo</button>
+     <div class="wallet-stat"><span>Total Pendapatan</span><strong id="totalIncome">Rp 0</strong></div>
+     <div class="wallet-stat"><span>Sudah Dicairkan</span><strong id="totalWithdrawn">Rp 0</strong></div>
     </div>
    </div>
-   <div class="notice" id="walletNotice">Saldo ditampilkan dari data akun yang tersedia. Pengajuan isi saldo atau penarikan akan mengikuti proses verifikasi sistem.</div>
   </div>
   <div class="panel">
-   <div class="section-title"><h2>Ringkasan</h2><span id="todayLabel"></span></div>
-   <div class="summary-grid">
-    <div class="summary"><span>Pesanan aktif</span><b id="activeOrders">—</b></div>
-    <div class="summary"><span>Tagihan</span><b id="bills">—</b></div>
-    <div class="summary"><span>Belanja</span><b id="shopping">—</b></div>
-    <div class="summary"><span>Riwayat transaksi</span><b id="history">—</b></div>
-   </div>
-  </div>
-  <div class="panel">
-   <div class="section-title"><h2>Menu Utama</h2><span id="roleMenu">MENU AKUN</span></div>
+   <div class="section-title"><h2>Menu Utama</h2><span id="roleMenu">AKUN</span></div>
    <div class="menu-grid" id="menuGrid"></div>
-  </div>
-  <div class="panel">
-   <div class="section-title"><h2>Transaksi Terbaru</h2><span>AKAN TERHUBUNG</span></div>
-   <p class="muted">Daftar riwayat akan ditampilkan setelah struktur transaksi e-wallet dihubungkan ke database.</p>
-   <div class="notice">Halaman ini adalah kerangka dashboard. Tombol dan ringkasan transaksi belum memproses uang atau mengubah saldo secara langsung.</div>
   </div>
  </section>
 </main>
@@ -183,119 +83,36 @@ main{max-width:760px;margin:-2px auto 0;padding:0 14px 90px!important;position:r
 import {auth,db} from "./firebase-config.js";
 import {onAuthStateChanged,signInWithEmailAndPassword,signOut} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
 import {doc,getDoc} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
-
 const $=id=>document.getElementById(id);
-let profile=null, currentRole="";
+let profile=null,currentRole="";
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const rupiah=v=>"Rp "+Number(v||0).toLocaleString("id-ID");
-
 const menusByRole={
- pelanggan:[
-  ["📦","Data Pesanan","Lihat status pesanan","data-pesanan.html"],
-  ["🛍️","Belanja","Cari produk dan buat pesanan","index.html"],
-  ["🧾","Tagihan","Lihat tagihan belanja","tagihan.html"],
-  ["↻","Riwayat","Riwayat pesanan dan transaksi","riwayat.html"],
-  ["💳","E-Wallet","Saldo dan transaksi dompet","ewallet.html"],
-  ["👤","Profil Akun","Data dan pengaturan akun","profil.html"]
- ],
- mitra_usaha:[
-  ["📦","Data Pesanan","Pesanan untuk toko Anda","mitra-usaha.html"],
-  ["🛍️","Belanja Stok","Kelola pembelian produk","belanja-mitra.html"],
-  ["🧾","Tagihan","Tagihan dan pembayaran mitra","tagihan-mitra.html"],
-  ["↻","Riwayat","Riwayat pesanan dan transaksi","riwayat-mitra.html"],
-  ["💰","Saldo & Penghasilan","Saldo usaha dan penghasilan","mitra-dompet.html"],
-  ["↗","Pencairan Saldo","Ajukan dan pantau pencairan","pencairan-saya.html"],
-  ["💳","E-Wallet","Saldo dan transaksi dompet","ewallet.html"],
-  ["👤","Profil Akun","Data dan pengaturan akun","profil.html"]
- ],
- kurir:[
-  ["📦","Data Pesanan","Pesanan yang tersedia untuk diambil","dashboard-mitra-pengantaran-pencarian-status.html"],
-  ["🛍️","Belanja","Layanan belanja dan kebutuhan","index.html"],
-  ["🧾","Tagihan","Tagihan akun kurir","tagihan-kurir.html"],
-  ["↻","Riwayat","Riwayat pengantaran dan transaksi","riwayat-kurir.html"],
-  ["💰","Penghasilan Kurir","Saldo dari pengantaran selesai","penghasilan-kurir.html"],
-  ["↗","Pencairan Saldo","Ajukan dan pantau pencairan","pencairan-saya.html"],
-  ["💳","E-Wallet","Saldo dan transaksi dompet","ewallet.html"],
-  ["👤","Profil Akun","Data dan pengaturan akun","profil.html"]
- ],
- admin:[
-  ["📦","Data Pesanan","Pantau semua pesanan","admin.html"],
-  ["🛍️","Belanja / Produk","Kelola produk dan katalog","produk-admin.html"],
-  ["🧾","Tagihan","Tagihan dan keuangan sistem","admin-keuangan.html"],
-  ["↻","Riwayat","Riwayat aktivitas dan transaksi","riwayat-admin.html"],
-  ["👥","Data Pengguna","Kelola data pengguna aktif","pengguna.html"],
-  ["✓","Approval","Persetujuan pendaftaran","admin-approval-pending.html"],
-  ["💳","E-Wallet","Kelola saldo dan transaksi","admin-ewallet.html"],
-  ["💸","Permintaan Pencairan","Tinjau permintaan mitra dan kurir","admin-pencairan.html"],
-  ["👤","Profil Akun","Data dan pengaturan akun","profil.html"]
- ]
+ pelanggan:[["📦","Data Pesanan","Lihat status pesanan","data-pesanan.html"],["🛍️","Belanja","Cari produk","index.html"],["🧾","Tagihan","Tagihan belanja","tagihan.html"],["↻","Riwayat","Riwayat transaksi","riwayat.html"],["💳","E-Wallet","Saldo dompet","ewallet.html"],["👤","Profil Akun","Pengaturan akun","profil.html"]],
+ mitra_usaha:[["📦","Data Pesanan","Pesanan toko","mitra-usaha.html"],["🛍️","Belanja Stok","Pembelian stok","belanja-mitra.html"],["🧾","Tagihan","Tagihan mitra","tagihan-mitra.html"],["↻","Riwayat","Riwayat transaksi","riwayat-mitra.html"],["💰","Saldo & Penghasilan","Penghasilan usaha","mitra-dompet.html"],["↗","Pencairan Saldo","Pengajuan pencairan","pencairan-saya.html"],["💳","E-Wallet","Saldo dompet","ewallet.html"],["👤","Profil Akun","Pengaturan akun","profil.html"]],
+ kurir:[["📦","Data Pesanan","Pesanan tersedia","dashboard-mitra-pengantaran-pencarian-status.html"],["🛍️","Belanja","Kebutuhan","index.html"],["🧾","Tagihan","Tagihan kurir","tagihan-kurir.html"],["↻","Riwayat","Riwayat pengantaran","riwayat-kurir.html"],["💰","Penghasilan Kurir","Penghasilan antar","penghasilan-kurir.html"],["↗","Pencairan Saldo","Pengajuan pencairan","pencairan-saya.html"],["💳","E-Wallet","Saldo dompet","ewallet.html"],["👤","Profil Akun","Pengaturan akun","profil.html"]],
+ admin:[["📦","Data Pesanan","Pantau pesanan","admin.html"],["🛍️","Belanja / Produk","Kelola katalog","produk-admin.html"],["🧾","Tagihan","Keuangan sistem","admin-keuangan.html"],["↻","Riwayat","Aktivitas sistem","riwayat-admin.html"],["👥","Data Pengguna","Pengguna","pengguna.html"],["✓","Approval","Persetujuan","admin-approval-pending.html"],["💳","E-Wallet","Saldo dompet","admin-ewallet.html"],["💸","Permintaan Pencairan","Pencairan mitra/kurir","admin-pencairan.html"],["👤","Profil Akun","Pengaturan akun","profil.html"]]
 };
 const roleNames={pelanggan:"Pelanggan",mitra_usaha:"Mitra Usaha",kurir:"Kurir",admin:"Admin"};
-const roleDescriptions={
- pelanggan:"Belanja, pantau pesanan, dan cek tagihan dari satu tempat.",
- mitra_usaha:"Kelola pesanan toko, belanja stok, tagihan, dan saldo usaha.",
- kurir:"Ambil pesanan yang tersedia, pantau pengantaran, dan cek saldo.",
- admin:"Pantau operasional, data pesanan, tagihan, pengguna, dan transaksi."
-};
-function showError(t){$("loginMsg").textContent=t;}
 function renderDashboard(user,p){
  profile=p||{};currentRole=profile.role||"";
  if(!menusByRole[currentRole])throw Error("Role akun belum didukung: "+(currentRole||"kosong"));
- // Akun admin tidak boleh terkunci hanya karena field status kosong/berbeda.
- // Untuk akun selain admin, status yang ada tetap diperiksa tanpa membedakan huruf besar-kecil.
- const statusAkun=String(profile.status??"").trim().toLowerCase();
- if(currentRole!=="admin" && statusAkun && !["aktif","active"].includes(statusAkun)){
-  throw Error("Akun belum aktif. Silakan hubungi admin.");
- }
+ const status=String(profile.status??"").trim().toLowerCase();
+ if(currentRole!=="admin"&&status&&!["aktif","active"].includes(status))throw Error("Akun belum aktif. Silakan hubungi admin.");
  $("loginPanel").classList.add("hidden");$("dashboard").classList.remove("hidden");$("logoutBtn").classList.remove("hidden");$("bottomNav").classList.remove("hidden");
  $("roleLabel").textContent=roleNames[currentRole].toUpperCase();
  $("userName").textContent=profile.nama||profile.namaUsaha||profile.name||profile.email||user.email||roleNames[currentRole];
- $("roleDescription").textContent=roleDescriptions[currentRole];$("roleMenu").textContent=roleNames[currentRole].toUpperCase();
+ $("roleMenu").textContent=roleNames[currentRole].toUpperCase();
  const bal=profile.saldoEwallet??profile.saldoWallet??profile.saldo??profile.walletBalance??0;
  $("balance").textContent=rupiah(bal);
- const menus=menusByRole[currentRole];
- $("menuGrid").innerHTML=menus.map(m=>`<a class="menu" href="${esc(m[3])}"><span class="menu-icon">${m[0]}</span><b>${esc(m[1])}</b><small>${esc(m[2])}</small></a>`).join("");
- $("todayLabel").textContent=new Date().toLocaleDateString("id-ID",{day:"2-digit",month:"short"});
- $("topupBtn").onclick=()=>{
-  if(currentRole==="pelanggan") {
-   alert("Fitur isi saldo akan diaktifkan setelah alur pembayaran dan pencatatan transaksi disambungkan.");
-   return;
-  }
-  location.href="pencairan-saya.html";
- };
- $("withdrawBtn").onclick=()=>{
-  if(currentRole==="pelanggan") {
-   alert("Akun pelanggan menggunakan saldo untuk transaksi dan tidak memiliki fitur pencairan penghasilan.");
-   return;
-  }
-  location.href="pencairan-saya.html";
- };
+ const income=profile.totalPendapatan??profile.totalPenghasilan??profile.pendapatanTotal??profile.penghasilanTotal??0;
+ const withdrawn=profile.totalDicairkan??profile.totalPenarikanBerhasil??profile.penghasilanDicairkan??0;
+ $("totalIncome").textContent=rupiah(income);$("totalWithdrawn").textContent=rupiah(withdrawn);
+ $("menuGrid").innerHTML=menusByRole[currentRole].map(m=>`<a class="menu" href="${esc(m[3])}"><span class="menu-icon">${m[0]}</span><b>${esc(m[1])}</b><small>${esc(m[2])}</small></a>`).join("");
 }
-$("loginForm").addEventListener("submit",async e=>{
- e.preventDefault();showError("Memeriksa akun…");
- try{await signInWithEmailAndPassword(auth,$("email").value.trim(),$("password").value);showError("");}
- catch(err){showError("Login gagal: "+err.message);}
-});
+$("loginForm").addEventListener("submit",async e=>{e.preventDefault();$("loginMsg").textContent="Memeriksa akun…";try{await signInWithEmailAndPassword(auth,$("email").value.trim(),$("password").value);$("loginMsg").textContent="";}catch(err){$("loginMsg").textContent="Login gagal: "+err.message;}});
 $("logoutBtn").onclick=()=>signOut(auth);
-$("bottomNav").addEventListener("click",e=>{
- const a=e.target.closest("a[data-menu]");if(!a)return;e.preventDefault();
- const key=a.dataset.menu;
- const map={
-  home:"#dashboard",
-  wallet:"ewallet.html",
-  orders:menusByRole[currentRole]?.find(m=>m[1]==="Data Pesanan")?.[3],
-  bills:menusByRole[currentRole]?.find(m=>m[1]==="Tagihan")?.[3],
-  history:menusByRole[currentRole]?.find(m=>m[1]==="Riwayat")?.[3]
- };
- if(key==="home")window.scrollTo({top:0,behavior:"smooth"});else if(map[key]&&map[key]!=="ewallet.html")location.href=map[key];else if(key==="wallet")window.scrollTo({top:0,behavior:"smooth"});
-});
-onAuthStateChanged(auth,async user=>{
- if(!user){$("loginPanel").classList.remove("hidden");$("dashboard").classList.add("hidden");$("logoutBtn").classList.add("hidden");$("bottomNav").classList.add("hidden");return;}
- try{
-  const snap=await getDoc(doc(db,"users",user.uid));
-  if(!snap.exists())throw Error("Profil pengguna tidak ditemukan di users.");
-  renderDashboard(user,snap.data());
- }catch(err){$("loginPanel").classList.remove("hidden");$("dashboard").classList.add("hidden");showError(err.message);await signOut(auth);}
-});
+$("bottomNav").addEventListener("click",e=>{const a=e.target.closest("a[data-menu]");if(!a)return;e.preventDefault();const key=a.dataset.menu;const map={orders:menusByRole[currentRole]?.find(m=>m[1]==="Data Pesanan")?.[3],bills:menusByRole[currentRole]?.find(m=>m[1]==="Tagihan")?.[3],history:menusByRole[currentRole]?.find(m=>m[1]==="Riwayat")?.[3]};if(key==="home"||key==="wallet")window.scrollTo({top:0,behavior:"smooth"});else if(map[key])location.href=map[key];});
+onAuthStateChanged(auth,async user=>{if(!user){$("loginPanel").classList.remove("hidden");$("dashboard").classList.add("hidden");$("logoutBtn").classList.add("hidden");$("bottomNav").classList.add("hidden");return;}try{const snap=await getDoc(doc(db,"users",user.uid));if(!snap.exists())throw Error("Profil pengguna tidak ditemukan di users.");renderDashboard(user,snap.data());}catch(err){$("loginPanel").classList.remove("hidden");$("dashboard").classList.add("hidden");$("loginMsg").textContent=err.message;await signOut(auth);}});
 </script>
 </body></html>
