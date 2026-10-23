@@ -23,7 +23,7 @@ ul{padding-left:20px}.order p{margin:7px 0}.order h3{margin:0;font-size:19px}
 <script type="module">
 import {auth,db} from "./firebase-config.js";
 import {onAuthStateChanged,signInWithEmailAndPassword,signOut} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
-import {collection,doc,getDoc,getDocs,updateDoc,runTransaction,serverTimestamp,arrayUnion} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+import {collection,doc,getDoc,getDocs,query,where,updateDoc,runTransaction,serverTimestamp,arrayUnion} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
 const $=id=>document.getElementById(id);let user=null,profile={},busy=false;
 const esc=v=>String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 const money=v=>"Rp "+Number(v||0).toLocaleString("id-ID");
