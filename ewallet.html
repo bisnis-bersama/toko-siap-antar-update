@@ -109,21 +109,28 @@ const menusByRole={
   ["🛍️","Belanja","Cari produk dan buat pesanan","index.html"],
   ["🧾","Tagihan","Lihat tagihan belanja","tagihan.html"],
   ["↻","Riwayat","Riwayat pesanan dan transaksi","riwayat.html"],
-  ["💳","E-Wallet","Saldo dan transaksi dompet","ewallet.html"]
+  ["💳","E-Wallet","Saldo dan transaksi dompet","ewallet.html"],
+  ["👤","Profil Akun","Data dan pengaturan akun","profil.html"]
  ],
  mitra_usaha:[
   ["📦","Data Pesanan","Pesanan untuk toko Anda","mitra-usaha.html"],
   ["🛍️","Belanja Stok","Kelola pembelian produk","belanja-mitra.html"],
   ["🧾","Tagihan","Tagihan dan pembayaran mitra","tagihan-mitra.html"],
   ["↻","Riwayat","Riwayat pesanan dan transaksi","riwayat-mitra.html"],
-  ["💳","E-Wallet","Saldo dan transaksi dompet","ewallet.html"]
+  ["💰","Saldo & Penghasilan","Saldo usaha dan penghasilan","mitra-dompet.html"],
+  ["↗","Pencairan Saldo","Ajukan dan pantau pencairan","pencairan-saya.html"],
+  ["💳","E-Wallet","Saldo dan transaksi dompet","ewallet.html"],
+  ["👤","Profil Akun","Data dan pengaturan akun","profil.html"]
  ],
  kurir:[
   ["📦","Data Pesanan","Pesanan yang tersedia untuk diambil","dashboard-mitra-pengantaran-pencarian-status.html"],
   ["🛍️","Belanja","Layanan belanja dan kebutuhan","index.html"],
   ["🧾","Tagihan","Tagihan akun kurir","tagihan-kurir.html"],
   ["↻","Riwayat","Riwayat pengantaran dan transaksi","riwayat-kurir.html"],
-  ["💳","E-Wallet","Saldo dan transaksi dompet","ewallet.html"]
+  ["💰","Penghasilan Kurir","Saldo dari pengantaran selesai","penghasilan-kurir.html"],
+  ["↗","Pencairan Saldo","Ajukan dan pantau pencairan","pencairan-saya.html"],
+  ["💳","E-Wallet","Saldo dan transaksi dompet","ewallet.html"],
+  ["👤","Profil Akun","Data dan pengaturan akun","profil.html"]
  ],
  admin:[
   ["📦","Data Pesanan","Pantau semua pesanan","admin.html"],
@@ -132,7 +139,9 @@ const menusByRole={
   ["↻","Riwayat","Riwayat aktivitas dan transaksi","riwayat-admin.html"],
   ["👥","Data Pengguna","Kelola data pengguna aktif","pengguna.html"],
   ["✓","Approval","Persetujuan pendaftaran","admin-approval-pending.html"],
-  ["💳","E-Wallet","Kelola saldo dan transaksi","admin-ewallet.html"]
+  ["💳","E-Wallet","Kelola saldo dan transaksi","admin-ewallet.html"],
+  ["💸","Permintaan Pencairan","Tinjau permintaan mitra dan kurir","admin-pencairan.html"],
+  ["👤","Profil Akun","Data dan pengaturan akun","profil.html"]
  ]
 };
 const roleNames={pelanggan:"Pelanggan",mitra_usaha:"Mitra Usaha",kurir:"Kurir",admin:"Admin"};
@@ -156,8 +165,20 @@ function renderDashboard(user,p){
  const menus=menusByRole[currentRole];
  $("menuGrid").innerHTML=menus.map(m=>`<a class="menu" href="${esc(m[3])}"><span class="menu-icon">${m[0]}</span><b>${esc(m[1])}</b><small>${esc(m[2])}</small></a>`).join("");
  $("todayLabel").textContent=new Date().toLocaleDateString("id-ID",{day:"2-digit",month:"short"});
- $("topupBtn").onclick=()=>alert("Pengajuan isi saldo akan dihubungkan ke alur top up setelah struktur transaksi e-wallet ditetapkan.");
- $("withdrawBtn").onclick=()=>alert("Pengajuan penarikan saldo akan dihubungkan ke alur penarikan setelah struktur transaksi e-wallet ditetapkan.");
+ $("topupBtn").onclick=()=>{
+  if(currentRole==="pelanggan") {
+   alert("Fitur isi saldo akan diaktifkan setelah alur pembayaran dan pencatatan transaksi disambungkan.");
+   return;
+  }
+  location.href="pencairan-saya.html";
+ };
+ $("withdrawBtn").onclick=()=>{
+  if(currentRole==="pelanggan") {
+   alert("Akun pelanggan menggunakan saldo untuk transaksi dan tidak memiliki fitur pencairan penghasilan.");
+   return;
+  }
+  location.href="pencairan-saya.html";
+ };
 }
 $("loginForm").addEventListener("submit",async e=>{
  e.preventDefault();showError("Memeriksa akun…");
@@ -168,7 +189,13 @@ $("logoutBtn").onclick=()=>signOut(auth);
 $("bottomNav").addEventListener("click",e=>{
  const a=e.target.closest("a[data-menu]");if(!a)return;e.preventDefault();
  const key=a.dataset.menu;
- const map={home:"#dashboard",wallet:"ewallet.html",orders:menusByRole[currentRole]?.[0]?.[3],bills:menusByRole[currentRole]?.find(m=>m[1]==="Tagihan")?.[3],history:menusByRole[currentRole]?.find(m=>m[1]==="Riwayat")?.[3]};
+ const map={
+  home:"#dashboard",
+  wallet:"ewallet.html",
+  orders:menusByRole[currentRole]?.find(m=>m[1]==="Data Pesanan")?.[3],
+  bills:menusByRole[currentRole]?.find(m=>m[1]==="Tagihan")?.[3],
+  history:menusByRole[currentRole]?.find(m=>m[1]==="Riwayat")?.[3]
+ };
  if(key==="home")window.scrollTo({top:0,behavior:"smooth"});else if(map[key]&&map[key]!=="ewallet.html")location.href=map[key];else if(key==="wallet")window.scrollTo({top:0,behavior:"smooth"});
 });
 onAuthStateChanged(auth,async user=>{
