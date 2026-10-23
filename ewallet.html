@@ -90,110 +90,33 @@ main,.main,.container{max-width:900px}
 }
 
 
-/* Saldo ringkas: nominal besar di kiri, aksi di kanan */
-.wallet-head,.balance-head,.saldo-head,.wallet-summary-head{
- display:flex!important;align-items:center!important;justify-content:space-between!important;
- gap:14px!important;flex-wrap:wrap!important;
-}
-.wallet-head .amount,.balance-head .amount,.saldo-head .amount,
-.wallet-summary-head .amount{font-size:clamp(1.8rem,6vw,2.5rem)!important;font-weight:800!important;line-height:1.15!important}
-.wallet-head .action,.balance-head .action,.saldo-head .action,
-.wallet-summary-head .action{margin-left:auto!important}
-.wallet-card,.balance-card,.saldo-card,.wallet-panel,.balance-panel{
- background:#fff!important;color:#173b32!important;border:1px solid #d9e9e3!important;
- box-shadow:0 14px 34px rgba(23,59,50,.07)!important;
-}
-.wallet-card h1,.wallet-card h2,.wallet-card h3,.wallet-card p,
-.balance-card h1,.balance-card h2,.balance-card h3,.balance-card p,
-.saldo-card h1,.saldo-card h2,.saldo-card h3,.saldo-card p,
-.wallet-panel h1,.wallet-panel h2,.wallet-panel h3,.wallet-panel p,
-.balance-panel h1,.balance-panel h2,.balance-panel h3,.balance-panel p{
- color:inherit!important;
-}
-#topupBtn{
- background:#ffc800!important;color:#173b32!important;border:1px solid #ffc800!important;
- border-radius:16px!important;font-weight:800!important;padding:13px 16px!important;
-}
-#withdrawBtn{
- background:#eaf8f2!important;color:#008b5a!important;border:1px solid #bfe8d7!important;
- border-radius:16px!important;font-weight:800!important;padding:13px 16px!important;
-}
-
-
-/* Panel saldo mengikuti struktur referensi: putih, nominal kiri, aksi kanan */
-.wallet.wallet-reference{
- display:block!important;
- background:#fff!important;
- color:#173b32!important;
- border:1px solid #d9e9e3!important;
- border-radius:28px!important;
- padding:22px!important;
- box-shadow:0 14px 32px rgba(23,59,50,.07)!important;
-}
-.wallet-reference .wallet-reference-top{
- display:flex!important;align-items:center!important;justify-content:space-between!important;
- gap:14px!important;flex-wrap:nowrap!important;
-}
-.wallet-reference .wallet-reference-amount{min-width:0;flex:1}
-.wallet-reference .wallet-label{color:#64756f!important;font-size:.95rem!important;font-weight:650!important;margin-bottom:7px!important}
-.wallet-reference .balance{color:#173b32!important;font-size:clamp(1.8rem,6vw,2.5rem)!important;font-weight:800!important;line-height:1.15!important;overflow-wrap:anywhere}
-.wallet-reference .wallet-reference-actions{display:flex!important;flex-direction:column!important;gap:8px!important;flex-shrink:0}
-.wallet-reference .wallet-action{
- background:#ffc800!important;color:#173b32!important;border:1px solid #ffc800!important;
- border-radius:16px!important;padding:12px 14px!important;font-weight:800!important;white-space:nowrap
-}
-.wallet-reference #withdrawBtn{background:#eaf8f2!important;color:#008b5a!important;border:1px solid #bfe8d7!important}
-.wallet-reference .wallet-reference-divider{height:1px;background:#e5e7eb;margin:20px 0 13px}
-.wallet-reference .wallet-reference-foot{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;color:#64756f;font-size:.8rem}
-.notice{margin-top:14px}
-@media(max-width:390px){
- .wallet.wallet-reference{padding:17px!important}
- .wallet-reference .wallet-reference-top{gap:8px!important}
- .wallet-reference .balance{font-size:1.65rem!important}
- .wallet-reference .wallet-action{padding:10px 9px!important;font-size:.82rem!important}
- .wallet-reference .wallet-reference-foot{font-size:.72rem}
-}
-
-
-/* Susunan panel mengikuti acuan Fixzy; warna tetap Toko Siap Antar */
-.wallet.wallet-reference{
- display:block!important;background:#fff!important;color:#173b32!important;
- border:1px solid #d9e9e3!important;border-radius:28px!important;
- padding:22px!important;box-shadow:0 14px 32px rgba(23,59,50,.07)!important;
-}
-.wallet-reference .wallet-reference-top{
- display:flex!important;align-items:center!important;justify-content:space-between!important;
- gap:12px!important;flex-wrap:nowrap!important;
-}
-.wallet-reference .wallet-reference-amount{min-width:0;flex:1}
-.wallet-reference .wallet-label{color:#64756f!important;font-size:.95rem!important;font-weight:650!important;margin-bottom:7px!important}
-.wallet-reference .balance{color:#173b32!important;font-size:clamp(1.8rem,6vw,2.5rem)!important;font-weight:800!important;line-height:1.15!important;overflow-wrap:anywhere}
-.wallet-reference .wallet-reference-actions{display:flex!important;flex-shrink:0!important}
-.wallet-reference .wallet-action{
- background:#ffc800!important;color:#173b32!important;border:1px solid #ffc800!important;
- border-radius:16px!important;padding:12px 14px!important;font-weight:800!important;white-space:nowrap!important
-}
-.wallet-reference .wallet-reference-divider{height:1px;background:#e5e7eb;margin:20px 0 16px}
-.wallet-reference-metrics{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.wallet-reference-metrics .wallet-metric{
- display:flex;flex-direction:column;gap:8px;background:#f7f8f8;border:1px solid #e8ebeb;
- border-radius:22px;padding:16px;min-width:0
-}
-.wallet-reference-metrics .wallet-metric span{font-size:.84rem;color:#647084;font-weight:650}
-.wallet-reference-metrics .wallet-metric b{font-size:1.12rem;color:#173b32;overflow-wrap:anywhere}
-.wallet-reference-withdraw{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px}
-.wallet-reference-withdraw>span{font-size:.82rem;color:#64756f}
-.wallet-reference #withdrawBtn{background:#eaf8f2!important;color:#008b5a!important;border:1px solid #bfe8d7!important}
-@media(max-width:390px){
- .wallet.wallet-reference{padding:17px!important}
- .wallet-reference .wallet-reference-top{gap:8px!important}
- .wallet-reference .balance{font-size:1.65rem!important}
- .wallet-reference .wallet-action{padding:10px 9px!important;font-size:.82rem!important}
- .wallet-reference-metrics{gap:8px}
- .wallet-reference-metrics .wallet-metric{padding:12px;border-radius:17px}
- .wallet-reference-metrics .wallet-metric span{font-size:.76rem}
- .wallet-reference-metrics .wallet-metric b{font-size:.95rem}
-}
+/* Tampilan ringkas: gaya dashboard bersih, tanpa deskripsi berulang */
+:root{--green:#00a85a;--cyan:#00c8d7;--yellow:#ffd400;--ink:#18221f;--muted:#727b78;--paper:#f1f2f4;--card:#fff;--line:#e6e7e8}
+body{background:#f1f2f4!important;color:#171717}
+.top{background:#111!important;border-bottom:0!important;padding:18px 16px 30px!important;border-radius:0 0 34px 34px}
+.brand{color:#ffd400!important;font-size:20px}.sub{color:#d1d5db!important}
+main{max-width:760px;margin:-2px auto 0;padding:0 14px 90px!important;position:relative}
+.panel{border:0!important;border-radius:24px!important;padding:17px!important;margin-bottom:14px!important;box-shadow:0 8px 24px #0000000a!important}
+#dashboard>.panel:first-child{margin-top:-2px!important}
+.eyebrow{font-size:11px!important;letter-spacing:.4px}
+.title{font-size:clamp(24px,6vw,32px)!important;line-height:1.15!important;margin:7px 0 12px!important}
+#roleDescription{display:none!important}
+.wallet{background:#fff!important;color:#171717!important;border:1px solid #ececec!important;border-radius:22px!important;padding:17px!important;box-shadow:none!important}
+.wallet:after{display:none!important}.wallet-label{color:#727b86!important;font-weight:700;font-size:13px!important}
+.balance{font-size:30px!important;margin:5px 0 12px!important;color:#171717!important}
+.wallet-row{border-top:1px solid #e5e5e5;padding-top:13px;display:grid!important;grid-template-columns:1fr 1fr;gap:8px!important}
+.wallet-action{border-radius:12px!important;padding:12px 8px!important;background:#111!important;color:#ffd400!important}
+.wallet-action.alt{background:#f2f3f4!important;color:#171717!important;border:1px solid #e5e5e5!important}
+#dashboard>.panel:nth-child(2){display:none!important}
+.section-title{margin:2px 2px 12px!important}.section-title h2{font-size:18px!important;margin:0}
+#menuGrid{grid-template-columns:repeat(3,minmax(0,1fr))!important;gap:10px 4px!important}
+#menuGrid .menu{min-height:94px!important;padding:8px 2px!important;gap:7px!important}
+#menuGrid .menu-icon{width:56px!important;height:56px!important;border-radius:17px!important;background:#111!important;color:#ffd400!important;font-size:25px!important}
+#menuGrid .menu b{font-size:12px!important;line-height:1.2!important;font-weight:700!important}
+#menuGrid .menu small{display:none!important}
+#bottomNav{background:#111!important;border-top:2px solid #ffd400!important;box-shadow:0 -4px 15px #00000012!important}
+#bottomNav a,#bottomNav button{color:#ffd400!important;font-size:11px!important}
+@media(max-width:520px){.top{padding:17px 16px 28px!important}.brand{font-size:18px}.panel{padding:15px!important}#menuGrid{gap:8px 2px!important}#menuGrid .menu-icon{width:52px!important;height:52px!important}#menuGrid .menu b{font-size:11px!important}}
 
 </style>
 </head>
@@ -219,27 +142,15 @@ main,.main,.container{max-width:900px}
    <div class="eyebrow">DASHBOARD <span id="roleLabel">AKUN</span></div>
    <h1 class="title">Halo, <span id="userName">Pengguna</span></h1>
    <p class="muted" id="roleDescription">Kelola aktivitas akun Anda dari satu tempat.</p>
-   <div class="wallet wallet-reference">
-    <div class="wallet-reference-top">
-     <div class="wallet-reference-amount">
-      <div class="wallet-label">Saldo E-Wallet</div>
-      <div class="balance" id="balance">Rp 0</div>
-     </div>
-     <div class="wallet-reference-actions">
-      <button class="wallet-action" id="topupBtn" type="button">＋ Isi Saldo</button>
-     </div>
-    </div>
-    <div class="wallet-reference-divider"></div>
-    <div class="wallet-reference-metrics">
-     <div class="wallet-metric"><span id="metricOneLabel">Saldo Tersedia</span><b id="metricOneValue">Rp 0</b></div>
-     <div class="wallet-metric"><span id="metricTwoLabel">Total Tagihan</span><b id="metricTwoValue">Rp 0</b></div>
-    </div>
-    <div class="wallet-reference-withdraw">
-     <span>Dompet Toko Siap Antar</span>
+   <div class="wallet">
+    <div class="wallet-label">Saldo E-Wallet</div>
+    <div class="balance" id="balance">Rp 0</div>
+    <div class="wallet-row">
+     <button class="wallet-action" id="topupBtn" type="button">＋ Isi Saldo</button>
      <button class="wallet-action alt" id="withdrawBtn" type="button">↗ Tarik Saldo</button>
     </div>
    </div>
-   <div class="notice" id="walletNotice">Pengajuan isi saldo atau penarikan akan mengikuti proses verifikasi sistem.</div>
+   <div class="notice" id="walletNotice">Saldo ditampilkan dari data akun yang tersedia. Pengajuan isi saldo atau penarikan akan mengikuti proses verifikasi sistem.</div>
   </div>
   <div class="panel">
    <div class="section-title"><h2>Ringkasan</h2><span id="todayLabel"></span></div>
