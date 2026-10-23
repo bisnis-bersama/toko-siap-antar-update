@@ -32,6 +32,35 @@ main{max-width:1000px;margin:-24px auto 100px;padding:0 14px;position:relative}
 .bottom a{color:#64756f;text-decoration:none;text-align:center;font-size:11px;font-weight:750;min-width:54px}.bottom a:first-child{color:#008b5a}.bottom .ico{display:block;font-size:22px;margin-bottom:2px}
 .hidden{display:none!important}.err{color:#b42318;font-size:13px;margin-top:10px;overflow-wrap:anywhere}
 @media(min-width:650px){.menu-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.summary-grid{grid-template-columns:repeat(4,minmax(0,1fr))}main{padding:0 20px}.top{padding-left:24px;padding-right:24px}.title{font-size:34px}}
+
+/* Panel layout aligned to the supplied dashboard reference */
+.hero{min-height:178px;padding:24px 24px 62px;border-radius:0 0 42px 42px;position:relative}
+.hero h1{font-size:clamp(1.35rem,4vw,1.8rem);margin:0 0 7px}
+.hero p{font-size:1rem;margin:0}
+.hero #logoutBtn{position:absolute;right:22px;top:28px;padding:12px 18px;border-radius:16px;background:#171717;color:#fff;border:1px solid #333;font-weight:700}
+main,.main,.container{max-width:900px}
+#dashboard{margin-top:-34px;position:relative;z-index:2}
+.panel,.card,.dashboard-card{border-radius:30px}
+#dashboard .welcome,.welcome-card,.summary-card{border-radius:28px}
+#menuGrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:18px 12px}
+#menuGrid .menu{display:flex;flex-direction:column;align-items:center;text-align:center;gap:8px;padding:14px 6px;background:transparent;border:0;box-shadow:none;min-height:112px}
+#menuGrid .menu-icon{width:68px;height:68px;border-radius:22px;background:#171717;color:#ffc800;display:grid;place-items:center;font-size:1.8rem}
+#menuGrid .menu b{font-size:.98rem;line-height:1.2}
+#menuGrid .menu small{font-size:.76rem;line-height:1.25}
+#bottomNav{background:#111!important;border-top:3px solid #ffc800!important;color:#ffc800!important}
+#bottomNav a,#bottomNav button{color:#ffc800!important}
+#bottomNav a.active,#bottomNav .active{color:#ffc800!important}
+@media(max-width:480px){
+ .hero{padding:24px 22px 60px;min-height:178px}
+ .hero #logoutBtn{right:18px;top:24px;padding:10px 14px;font-size:.9rem}
+ #dashboard{margin-top:-34px}
+ #menuGrid{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px 6px}
+ #menuGrid .menu{padding:10px 2px;min-height:100px}
+ #menuGrid .menu-icon{width:58px;height:58px;border-radius:19px;font-size:1.6rem}
+ #menuGrid .menu b{font-size:.83rem}
+ #menuGrid .menu small{font-size:.7rem}
+}
+
 </style>
 </head>
 <body>
@@ -155,7 +184,12 @@ function showError(t){$("loginMsg").textContent=t;}
 function renderDashboard(user,p){
  profile=p||{};currentRole=profile.role||"";
  if(!menusByRole[currentRole])throw Error("Role akun belum didukung: "+(currentRole||"kosong"));
- if(profile.status && profile.status!=="aktif")throw Error("Akun belum aktif.");
+ // Akun admin tidak boleh terkunci hanya karena field status kosong/berbeda.
+ // Untuk akun selain admin, status yang ada tetap diperiksa tanpa membedakan huruf besar-kecil.
+ const statusAkun=String(profile.status??"").trim().toLowerCase();
+ if(currentRole!=="admin" && statusAkun && !["aktif","active"].includes(statusAkun)){
+  throw Error("Akun belum aktif. Silakan hubungi admin.");
+ }
  $("loginPanel").classList.add("hidden");$("dashboard").classList.remove("hidden");$("logoutBtn").classList.remove("hidden");$("bottomNav").classList.remove("hidden");
  $("roleLabel").textContent=roleNames[currentRole].toUpperCase();
  $("userName").textContent=profile.nama||profile.namaUsaha||profile.name||profile.email||user.email||roleNames[currentRole];
