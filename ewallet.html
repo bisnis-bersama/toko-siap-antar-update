@@ -87,7 +87,7 @@ label{display:block;font-size:14px;font-weight:750;margin:12px 0 5px}input{width
 <script type="module">
 import {auth,db} from "./firebase-config.js";
 import {onAuthStateChanged,signInWithEmailAndPassword,signOut} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
-import {doc,getDoc} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+import {doc,getDoc,collection,query,where,getDocs,limit} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
 const $=id=>document.getElementById(id);
 let profile=null,currentRole="";
 const esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
@@ -99,11 +99,22 @@ const menusByRole={
  admin:[["📦","Data Pesanan","Pantau pesanan","admin.html"],["🛍️","Belanja / Produk","Kelola katalog","produk-admin.html"],["🧾","Tagihan","Keuangan sistem","admin-keuangan.html"],["↻","Riwayat","Aktivitas sistem","riwayat-admin.html"],["👥","Data Pengguna","Pengguna","pengguna.html"],["✓","Approval","Persetujuan","admin-approval-pending.html"],["💳","E-Wallet","Saldo dompet","admin-ewallet.html"],["💸","Permintaan Pencairan","Pencairan mitra/kurir","admin-pencairan.html"],["👤","Profil Akun","Pengaturan akun","profil.html"]]
 };
 const roleNames={pelanggan:"Pelanggan",mitra_usaha:"Mitra Usaha",kurir:"Kurir",admin:"Admin"};
+function normalizeRole(value){
+ const r=String(value??"").trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g,"").replace(/[\s-]+/g,"_");
+ const aliases={
+  pelanggan:"pelanggan",customer:"pelanggan",user:"pelanggan",pengguna:"pelanggan",pembeli:"pelanggan",
+  mitra:"mitra_usaha",mitrausaha:"mitra_usaha",mitra_usaha:"mitra_usaha",merchant:"mitra_usaha",seller:"mitra_usaha",
+  kurir:"kurir",courier:"kurir",driver:"kurir",pengantar:"kurir",mitra_kurir:"kurir",
+  admin:"admin",administrator:"admin",superadmin:"admin",super_admin:"admin"
+ };
+ return aliases[r]||"";
+}
 function renderDashboard(user,p){
- profile=p||{};currentRole=profile.role||"";
- if(!menusByRole[currentRole])throw Error("Role akun belum didukung: "+(currentRole||"kosong"));
- const status=String(profile.status??"").trim().toLowerCase();
- if(currentRole!=="admin"&&status&&!["aktif","active"].includes(status))throw Error("Akun belum aktif. Silakan hubungi admin.");
+ profile=p||{};currentRole=normalizeRole(profile.role??profile.peran??profile.jenisAkun??profile.tipeAkun??profile.userRole);
+ if(!menusByRole[currentRole])throw Error("Role akun belum dikenali. Nilai role pada profil: "+String(profile.role??profile.peran??profile.jenisAkun??"tidak tersedia")+". Periksa field role di dokumen users.");
+ const status=String(profile.status??profile.statusAkun??profile.accountStatus??"").trim().toLowerCase();
+ const inactive=["nonaktif","non-aktif","inactive","disabled","ditolak","pending","menunggu","belum aktif","suspended","blocked"];
+ if(status&&inactive.includes(status))throw Error("Akun berstatus '"+status+"'. Silakan hubungi admin.");
  $("loginPanel").classList.add("hidden");$("dashboard").classList.remove("hidden");$("logoutBtn").classList.remove("hidden");$("bottomNav").classList.remove("hidden");
  $("roleLabel").textContent=roleNames[currentRole].toUpperCase();
  const accountName=profile.nama||profile.namaUsaha||profile.name||profile.email||user.email||roleNames[currentRole];
@@ -120,6 +131,44 @@ function renderDashboard(user,p){
 $("loginForm").addEventListener("submit",async e=>{e.preventDefault();$("loginMsg").textContent="Memeriksa akun…";try{await signInWithEmailAndPassword(auth,$("email").value.trim(),$("password").value);$("loginMsg").textContent="";}catch(err){$("loginMsg").textContent="Login gagal: "+err.message;}});
 $("logoutBtn").onclick=()=>signOut(auth);
 $("bottomNav").addEventListener("click",e=>{const a=e.target.closest("a[data-menu]");if(!a)return;e.preventDefault();const key=a.dataset.menu;const map={orders:menusByRole[currentRole]?.find(m=>m[1]==="Data Pesanan")?.[3],bills:menusByRole[currentRole]?.find(m=>m[1]==="Tagihan")?.[3],history:menusByRole[currentRole]?.find(m=>m[1]==="Riwayat")?.[3]};if(key==="home"||key==="wallet")window.scrollTo({top:0,behavior:"smooth"});else if(map[key])location.href=map[key];});
-onAuthStateChanged(auth,async user=>{if(!user){$("loginPanel").classList.remove("hidden");$("dashboard").classList.add("hidden");$("logoutBtn").classList.add("hidden");$("bottomNav").classList.add("hidden");return;}try{const snap=await getDoc(doc(db,"users",user.uid));if(!snap.exists())throw Error("Profil pengguna tidak ditemukan di users.");renderDashboard(user,snap.data());}catch(err){$("loginPanel").classList.remove("hidden");$("dashboard").classList.add("hidden");$("loginMsg").textContent=err.message;await signOut(auth);}});
+let authCheckInProgress=false;
+onAuthStateChanged(auth,async user=>{
+ if(!user){
+  $("loginPanel").classList.remove("hidden");$("dashboard").classList.add("hidden");$("logoutBtn").classList.add("hidden");$("bottomNav").classList.add("hidden");
+  $("loginMsg").textContent="";return;
+ }
+ if(authCheckInProgress)return;authCheckInProgress=true;
+ try{
+  let profileData=null;
+  // Cara utama: dokumen users memakai UID sebagai ID dokumen.
+  const snap=await getDoc(doc(db,"users",user.uid));
+  if(snap.exists())profileData=snap.data();
+  // Cadangan 1: cari berdasarkan email persis (field email standar).
+  if(!profileData&&user.email){
+   const q=query(collection(db,"users"),where("email","==",user.email),limit(1));
+   const matches=await getDocs(q);
+   if(!matches.empty)profileData=matches.docs[0].data();
+  }
+  // Cadangan 2: baca dokumen users yang dapat diakses lalu cocokkan UID/email,
+  // termasuk variasi nama field yang umum dipakai proyek ini.
+  if(!profileData){
+   const allUsers=await getDocs(collection(db,"users"));
+   const emailLogin=String(user.email||"").trim().toLowerCase();
+   const found=allUsers.docs.find(d=>{
+    const x=d.data()||{};
+    const ids=[d.id,x.uid,x.userId,x.userID,x.authUid,x.firebaseUid].map(v=>String(v??"").trim());
+    const emails=[x.email,x.emailAddress,x.correo,x.gmail,x.userEmail].map(v=>String(v??"").trim().toLowerCase());
+    return ids.includes(user.uid)||(emailLogin&&emails.includes(emailLogin));
+   });
+   if(found)profileData=found.data();
+  }
+  if(!profileData)throw Error("Login Firebase berhasil, tetapi profil akun tidak ditemukan. Pastikan profil akun tersimpan di koleksi users, dengan UID dokumen atau field email yang cocok. Jika muncul permission-denied, periksa Firestore Rules agar pengguna dapat membaca profilnya sendiri.");
+  renderDashboard(user,profileData);$("loginMsg").textContent="";
+ }catch(err){
+  $("loginPanel").classList.remove("hidden");$("dashboard").classList.add("hidden");$("logoutBtn").classList.add("hidden");$("bottomNav").classList.add("hidden");
+  $("loginMsg").textContent="Akun berhasil terautentikasi, tetapi dashboard gagal dibuka: "+(err?.message||"Kesalahan tidak diketahui");
+  // Jangan signOut otomatis: tampilkan penyebabnya agar tidak membuat login gagal tanpa penjelasan.
+ }finally{authCheckInProgress=false;}
+});
 </script>
 </body></html>
