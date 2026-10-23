@@ -1,5 +1,191 @@
-<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#ffc107"><title>Daftar Mitra Pengantaran | Toko Siap Antar</title><style>
-:root{--y:#ffc107;--ink:#202020;--green:#008b4c;--bg:#f5f7f5;--line:#e2e8e4;--muted:#66736c;--red:#b42318}*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font:15px Arial,sans-serif}header{background:#202020;color:#fff;padding:15px;border-bottom:4px solid var(--y);position:sticky;top:0;z-index:5}header strong{font-size:19px}header small{display:block;color:#ddd;margin-top:4px}nav{display:flex;gap:8px;flex-wrap:wrap;padding:10px;background:#fff;border-bottom:1px solid var(--line)}nav a{color:var(--green);font-weight:bold;text-decoration:none;padding:7px}main{max-width:1100px;margin:auto;padding:14px}h1{font-size:24px}.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}.card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;margin:10px 0;box-shadow:0 2px 8px #00000008}.stat b{display:block;font-size:23px;margin-top:8px}.muted{color:var(--muted);font-size:13px}label{font-weight:bold;font-size:13px;display:block;margin-top:10px}input,select,textarea{width:100%;padding:11px;border:1px solid #ccd5cf;border-radius:9px;margin:5px 0;font:inherit}button,.btn{border:0;background:var(--y);color:#202020;padding:11px 14px;border-radius:9px;font-weight:bold;cursor:pointer;text-decoration:none;display:inline-block;margin:4px 4px 4px 0}button.secondary,.btn.secondary{background:#eef4ef}button.danger{background:#ffe9e6;color:var(--red)}.row{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}.badge{display:inline-block;padding:4px 8px;border-radius:20px;background:#fff1bd;font-size:12px;font-weight:bold}.notice{padding:10px;border-radius:9px;background:#edf5ff;margin:10px 0;overflow-wrap:anywhere}.notice.error{background:#fff0ed;color:var(--red)}.notice.success{background:#e7fff0;color:#087b45}.item{padding:10px 0;border-bottom:1px dashed var(--line)}.item:last-child{border-bottom:0}.hidden{display:none!important}.empty{padding:20px;text-align:center;color:var(--muted)}.actions{display:flex;gap:6px;flex-wrap:wrap}@media(max-width:520px){h1{font-size:21px}main{padding:10px}.card{padding:12px}}
-</style></head><body><header><strong>🟨 TOKO SIAP ANTAR</strong><small>Pendaftaran mitra kurir</small></header><nav><a href="index.html">Beranda</a><a href="mitra-usaha.html">Mitra Usaha</a><a href="mitra-dashboard.html">Mitra Pengantaran</a><a href="admin.html">Admin</a><a href="admin-approval-pending.html">Approval Pending</a><a href="admin-keuangan.html">Keuangan</a><a href="login.html">Login</a></nav><main><h1>Daftar Mitra Pengantaran</h1><p class="muted">Pendaftaran mitra baru</p><div id="notice" class="notice" hidden></div><section class="card"><h2>Formulir mitra pengantaran</h2><p>Isi data dengan benar. Akun akan berstatus <b>menunggu verifikasi</b> dan belum bisa menerima pesanan sampai disetujui admin.</p><form id="f"><label>Nama lengkap</label><input name="nama" required maxlength="100"><label>Nomor WhatsApp</label><input name="noWA" type="tel" required><label>Email</label><input name="email" type="email" required><label>Alamat lengkap</label><textarea name="alamat" required></textarea><label>Jenis kendaraan</label><select name="kendaraan" required><option value="">Pilih kendaraan</option><option>Motor</option><option>Mobil</option><option>Lainnya</option></select><label>Nomor rekening bank</label><input name="rekening" required><label>Nama bank</label><input name="bank" required><label>Nama pemilik rekening</label><input name="pemilikRekening" required><label>Link foto KTP privat (diunggah ke Drive dengan akses terbatas)</label><input name="ktpUrl" type="url" required placeholder="https://drive.google.com/..."><label>Password (minimal 6 karakter)</label><input name="password" type="password" minlength="6" required><button type="submit">Kirim pendaftaran</button></form><p class="muted">Jangan gunakan tautan KTP publik. Form ini tidak meminta role; status dan hak akses ditetapkan admin.</p></section></main><script type="module">import {auth,db} from "./firebase-config.js";import {onAuthStateChanged} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";import {doc,getDoc,collection,getDocs,query,where,addDoc,setDoc,updateDoc,serverTimestamp,runTransaction} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
-const $=s=>document.querySelector(s), esc=s=>String(s??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c])),money=n=>new Intl.NumberFormat('id-ID',{style:'currency',currency:'IDR',maximumFractionDigits:0}).format(Number(n||0));function msg(t,type=''){const e=$('#notice');e.hidden=false;e.className='notice '+type;e.textContent=t}function when(v){try{return v?.toDate?v.toDate().toLocaleString('id-ID'):''}catch{return ''}}
-import {createUserWithEmailAndPassword,updateProfile} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";$('#f').addEventListener('submit',async e=>{e.preventDefault();const f=new FormData(e.currentTarget),email=String(f.get('email')).trim(),password=String(f.get('password'));try{const c=await createUserWithEmailAndPassword(auth,email,password);await updateProfile(c.user,{displayName:String(f.get('nama')).trim()});await setDoc(doc(db,'users',c.user.uid),{uid:c.user.uid,nama:String(f.get('nama')).trim(),noWA:String(f.get('noWA')).trim(),telepon:String(f.get('noWA')).trim(),email,alamat:String(f.get('alamat')).trim(),kendaraan:String(f.get('kendaraan')),bank:String(f.get('bank')).trim(),rekening:String(f.get('rekening')).trim(),pemilikRekening:String(f.get('pemilikRekening')).trim(),ktpUrl:String(f.get('ktpUrl')).trim(),role:'kurir',status:'menunggu_verifikasi',aktif:false,createdAt:serverTimestamp()});msg('Pendaftaran tersimpan. Tunggu verifikasi admin sebelum menerima pesanan.','success');e.currentTarget.reset()}catch(err){msg('Pendaftaran gagal: '+err.message,'error')}});</script></body></html>
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#ffc107">
+<title>Pendaftaran Mitra Pengantaran | Toko Siap Antar</title>
+<style>
+:root{--y:#ffc107;--ink:#202020;--green:#008b4c;--bg:#f5f7f5;--line:#e2e8e4;--muted:#66736c;--red:#b42318}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px Arial,sans-serif}
+header{background:#202020;color:#fff;padding:18px 15px;border-bottom:5px solid var(--y);position:sticky;top:0;z-index:5}
+header strong{font-size:22px;display:block}header small{display:block;color:#ddd;margin-top:5px}
+nav{display:flex;gap:8px;flex-wrap:wrap;padding:10px;background:#fff;border-bottom:1px solid var(--line)}
+nav a{color:var(--green);font-weight:bold;text-decoration:none;padding:7px}
+main{max-width:900px;margin:auto;padding:16px}
+h1{font-size:26px;margin-bottom:8px}.muted{color:var(--muted);line-height:1.5}
+.card{background:#fff;border:1px solid var(--line);border-radius:16px;padding:20px;margin:14px 0;box-shadow:0 2px 8px #00000008}
+label{font-weight:bold;display:block;margin-top:14px}
+input,textarea,select{width:100%;padding:13px;border:1px solid #ccd5cf;border-radius:10px;margin:6px 0 0;font:inherit;background:#fff}
+button,.btn{border:0;background:var(--y);color:#202020;padding:13px 16px;border-radius:10px;font-weight:bold;cursor:pointer;text-decoration:none;display:inline-block;margin-top:18px;font:inherit;font-weight:bold}
+button:disabled{opacity:.6;cursor:wait}
+.notice{padding:12px;border-radius:10px;margin:12px 0;overflow-wrap:anywhere;line-height:1.45}
+.notice.error{background:#fff0ed;color:var(--red)}.notice.success{background:#e7fff0;color:#087b45}.notice.info{background:#edf5ff;color:#174c7e}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:0 14px}
+.small{font-size:13px}
+@media(max-width:600px){main{padding:12px}h1{font-size:23px}.card{padding:14px}.grid{grid-template-columns:1fr}header strong{font-size:20px}}
+</style>
+</head>
+<body>
+<header>
+  <strong>🟨 TOKO SIAP ANTAR</strong>
+  <small>Pendaftaran mitra kurir / pengantaran</small>
+</header>
+<nav>
+  <a href="index.html">Beranda</a>
+  <a href="mitra-usaha.html">Mitra Usaha</a>
+  <a href="daftar-kurir.html">Daftar Kurir</a>
+  <a href="admin.html">Admin</a>
+  <a href="admin-approval-pending.html">Approval Pending</a>
+  <a href="login.html">Login</a>
+</nav>
+<main>
+  <h1>Daftar Mitra Pengantaran</h1>
+  <p class="muted">Daftarkan diri untuk menerima tugas pengantaran pesanan Toko Siap Antar. Akun akan berstatus <b>menunggu verifikasi</b> dan belum bisa menerima tugas sampai disetujui admin.</p>
+  <div id="notice" class="notice info" hidden role="status" aria-live="polite"></div>
+  <section class="card">
+    <h2>Formulir mitra pengantaran</h2>
+    <form id="registerForm">
+      <label for="nama">Nama lengkap</label>
+      <input id="nama" name="nama" autocomplete="name" required maxlength="100">
+
+      <div class="grid">
+        <div>
+          <label for="noWA">Nomor WhatsApp</label>
+          <input id="noWA" name="noWA" type="tel" autocomplete="tel" required maxlength="25">
+        </div>
+        <div>
+          <label for="email">Email login</label>
+          <input id="email" name="email" type="email" autocomplete="email" required maxlength="160">
+        </div>
+      </div>
+
+      <label for="alamat">Alamat lengkap</label>
+      <textarea id="alamat" name="alamat" rows="3" autocomplete="street-address" required maxlength="500"></textarea>
+
+      <div class="grid">
+        <div>
+          <label for="kendaraan">Jenis kendaraan</label>
+          <select id="kendaraan" name="kendaraan" required>
+            <option value="">Pilih kendaraan</option>
+            <option value="Motor">Motor</option>
+            <option value="Mobil">Mobil</option>
+            <option value="Sepeda">Sepeda</option>
+            <option value="Lainnya">Lainnya</option>
+          </select>
+        </div>
+        <div>
+          <label for="platNomor">Nomor polisi (opsional)</label>
+          <input id="platNomor" name="platNomor" maxlength="20" placeholder="Contoh: E 1234 XX">
+        </div>
+      </div>
+
+      <label for="mapsUrl">Link lokasi Google Maps (opsional)</label>
+      <input id="mapsUrl" name="mapsUrl" type="url" placeholder="https://maps.google.com/...">
+
+      <label for="password">Password (minimal 6 karakter)</label>
+      <input id="password" name="password" type="password" autocomplete="new-password" minlength="6" required>
+
+      <button id="submitBtn" type="submit">Daftar Mitra Pengantaran</button>
+    </form>
+    <p class="muted small">Role ditetapkan otomatis oleh sistem. Pendaftar tidak dapat memilih role admin atau mengaktifkan akunnya sendiri.</p>
+  </section>
+</main>
+<script type="module">
+import { auth, db } from "./firebase-config.js";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  updateProfile
+} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-auth.js";
+import {
+  doc, getDoc, setDoc, serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+
+const form = document.getElementById("registerForm");
+const notice = document.getElementById("notice");
+const submitBtn = document.getElementById("submitBtn");
+
+function showMessage(message, type = "info") {
+  notice.hidden = false;
+  notice.className = "notice " + type;
+  notice.textContent = message;
+}
+
+function value(data, key) {
+  return String(data.get(key) ?? "").trim();
+}
+
+function friendlyError(error) {
+  const code = error?.code || "";
+  if (code === "auth/email-already-in-use") {
+    return "Email ini sudah memiliki akun Authentication. Masuk melalui halaman Login dengan email dan password yang sama, lalu minta admin memulihkan profil kurir. Jangan daftar ulang dengan email ini.";
+  }
+  if (code === "auth/invalid-email") return "Format email tidak valid.";
+  if (code === "auth/weak-password") return "Password terlalu lemah. Gunakan minimal 6 karakter.";
+  if (code === "auth/network-request-failed") return "Koneksi internet bermasalah. Periksa jaringan lalu coba lagi.";
+  if (code === "permission-denied" || /permission/i.test(error?.message || "")) {
+    return "Akun Authentication mungkin sudah dibuat, tetapi Firestore menolak penyimpanan profil. Periksa Rules users/{uid} agar mengizinkan role kurir dengan status menunggu_verifikasi.";
+  }
+  return (error?.message || "Terjadi kesalahan.") + (code ? " (" + code + ")" : "");
+}
+
+form.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  if (!form.reportValidity()) return;
+
+  const data = new FormData(form);
+  const email = value(data, "email").toLowerCase();
+  const password = value(data, "password");
+  const nama = value(data, "nama");
+  submitBtn.disabled = true;
+  submitBtn.textContent = "Memproses pendaftaran...";
+  notice.hidden = true;
+
+  let credential = null;
+  try {
+    credential = await createUserWithEmailAndPassword(auth, email, password);
+    await updateProfile(credential.user, { displayName: nama });
+
+    const uid = credential.user.uid;
+    const profileRef = doc(db, "users", uid);
+    const existing = await getDoc(profileRef);
+
+    if (existing.exists()) {
+      const existingData = existing.data();
+      if (existingData.role === "kurir" && existingData.uid === uid) {
+        showMessage("Profil kurir untuk akun ini sudah ada. Status saat ini: " + (existingData.status || "belum ditentukan") + ". Silakan login atau hubungi admin.", "success");
+        return;
+      }
+      throw new Error("Dokumen profil untuk akun ini sudah ada dengan role berbeda. Demi keamanan, data tidak ditimpa. Hubungi admin.");
+    }
+
+    await setDoc(profileRef, {
+      uid,
+      nama,
+      noWA: value(data, "noWA"),
+      email,
+      alamat: value(data, "alamat"),
+      kendaraan: value(data, "kendaraan"),
+      platNomor: value(data, "platNomor"),
+      mapsUrl: value(data, "mapsUrl"),
+      role: "kurir",
+      status: "menunggu_verifikasi",
+      aktif: false,
+      createdAt: serverTimestamp()
+    });
+
+    showMessage("Pendaftaran berhasil tersimpan. Akun Anda menunggu verifikasi admin dan belum bisa menerima tugas pengantaran.", "success");
+    form.reset();
+  } catch (error) {
+    console.error("Pendaftaran kurir gagal:", error);
+    showMessage("Pendaftaran gagal: " + friendlyError(error), "error");
+  } finally {
+    submitBtn.disabled = false;
+    submitBtn.textContent = "Daftar Mitra Pengantaran";
+  }
+});
+</script>
+</body>
+</html>
