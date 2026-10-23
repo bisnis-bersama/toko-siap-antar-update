@@ -95,247 +95,48 @@ header::before{top:0}header::after{bottom:0}
 .product-zoom-actions button:disabled{opacity:.7;cursor:default}
 @media(max-width:520px){.product-zoom{padding:62px 16px 24px}.product-zoom-content{max-width:100%}.product-zoom img{max-height:55vh}.product-zoom-name{font-size:17px}.product-zoom-actions{grid-template-columns:54px 54px minmax(0,1fr)}}
 
-/* TEMA NAVY • BIRU NEON • UNGU */
-:root{
-  --green:#00d4ff;
-  --cyan:#8b5cf6;
-  --yellow:#a78bfa;
-  --ink:#f1f5ff;
-  --muted:#a8b5d1;
-  --paper:#070b19;
-  --card:#10172b;
-  --line:#263658;
+/* MODE GELAP: biru neon, mode terang tetap hijau seperti semula */
+body[data-theme="dark"]{
+  --ink:#eaf7ff;--muted:#9eb8d0;--paper:#07111f;--card:#0c1b2e;--line:#173b5b;
+  background:#07111f!important;color:#eaf7ff!important;
 }
-
-body{
-  background:
-    radial-gradient(ellipse at top,#15264b 0%,#080d20 48%,#050711 100%);
-  color:var(--ink);
-}
-
-header{
-  background:linear-gradient(110deg,#050711,#111b3b,#201044);
-  border:0;
-  box-shadow:0 3px 22px #00c8ff20;
-  position:sticky;
-  isolation:isolate;
-}
-
-header::before,
-header::after{
-  content:"";
-  position:absolute;
-  left:0;
-  right:0;
-  height:2px;
-  background:linear-gradient(90deg,#00d4ff,#6366f1,#d946ef,#00d4ff);
-  pointer-events:none;
-}
-header::before{top:0}
-header::after{bottom:0}
-
-.brand{
-  color:#fff;
-  text-shadow:0 0 12px #00c8ff45;
-}
-
-.brand img{
-  border:1px solid #00d4ff;
-  border-radius:12px;
-  background:#080d20;
-  padding:3px;
-  box-shadow:0 0 14px #00d4ff35;
-}
-
-.welcome-text strong{
-  color:#67e8f9;
-  text-shadow:0 0 12px #00d4ff35;
-}
-
-.welcome-text span{
-  color:#c3cee8;
-  text-shadow:none;
-}
-
-.head-actions button{
-  color:#67e8f9;
-  background:#111b35;
-  border:1px solid #344a77;
-}
-
-.promo{
-  background:linear-gradient(90deg,#00d4ff,#6366f1,#d946ef);
-  border-block:2px solid #00d4ff;
-}
-
-.promo-window{
-  background:#080d20;
-}
-
-.promo-track img{
-  background:#080d20;
-}
-
-.quick-wrap{
-  background:#080d20;
-  border-bottom:1px solid #263658;
-  box-shadow:0 5px 18px #0005;
-}
-
-.cat{
-  background:#141d35;
-  color:#d5def5;
-  border:1px solid #293b60;
-}
-
-.cat.active{
-  background:linear-gradient(110deg,#087bce,#6547e8);
-  color:#fff;
-  border-color:#55dfff;
-  box-shadow:0 0 12px #168bff35;
-}
-
-.cat.menu{
-  background:linear-gradient(110deg,#6547e8,#b43ce5);
-  color:#fff;
-  border:0;
-}
-
-.search{
-  background:#10172b;
-  border:1.5px solid #3973b8;
-  box-shadow:0 0 12px #00c8ff12;
-}
-
-.search input{
-  color:#fff;
-}
-
-.search input::placeholder{
-  color:#91a2c4;
-}
-
-.product{
-  background:linear-gradient(160deg,#131d36,#0b1123);
-  border:1px solid #293c63;
-  box-shadow:0 5px 18px #0004,0 0 8px #00c8ff08;
-}
-
-.product-photo{
-  background:radial-gradient(ellipse at center,#1d3154,#10172b 75%);
-}
-
-.product-info{
-  background:transparent;
-}
-
-.product-name{
-  color:#f1f5ff;
-}
-
-.product-desc{
-  color:#a8b5d1;
-}
-
-.price{
-  color:#67e8f9;
-  text-shadow:0 0 10px #00d4ff20;
-}
-
-.wa{
-  background:#123c3a;
-  color:#6ee7b7;
-}
-
-.cart{
-  background:#28204d;
-  color:#c4b5fd;
-}
-
-.buy{
-  background:linear-gradient(110deg,#087bce,#6547e8);
-  color:#fff;
-  box-shadow:0 0 10px #5265ff25;
-}
-
-.notice{
-  background:#10172b;
-  color:#bdc9e4;
-  border:1px solid #293c63;
-}
-
-footer{
-  background:#0a1022;
-  border:1px solid #263658;
-  color:#d5def5;
-}
-
-footer h3{
-  color:#67e8f9;
-}
-
-.socials a{
-  color:#c4b5fd;
-}
-
-.bottom-nav{
-  background:#070a14;
-  border-top:1px solid #34446b;
-  box-shadow:0 -4px 20px #0006;
-}
-
-.bottom-nav button{
-  color:#8f9fbe;
-}
-
-.bottom-nav button:first-child{
-  color:#67e8f9;
-}
-
-.product-zoom{
-  background:rgba(3,6,17,.94);
-}
-
-.product-zoom-image-wrap{
-  background:#10172b;
-  border:1px solid #34446b;
-}
-
-.product-zoom-name{
-  color:#fff;
-}
-
-.product-zoom-price{
-  color:#67e8f9;
-}
-
-.product-zoom-actions .zoom-wa{
-  background:#123c3a;
-  color:#6ee7b7;
-}
-
-.product-zoom-actions .zoom-cart{
-  background:#28204d;
-  color:#c4b5fd;
-}
-
-.product-zoom-actions .zoom-buy{
-  background:linear-gradient(110deg,#087bce,#6547e8);
-  color:#fff;
-}
-
-.product-zoom-close{
-  background:#111b35;
-  color:#67e8f9;
-  border:1px solid #3973b8;
-}
-
-@media(max-width:520px){
-  .quick-wrap{
-    top:58px;
-    background:#080d20;
-  }
-}
+body[data-theme="dark"] header{background:#09182a!important;box-shadow:0 2px 14px #00b7ff20!important}
+body[data-theme="dark"] header::before,
+body[data-theme="dark"] header::after{background:linear-gradient(90deg,#00e5ff,#1677ff,#00e5ff)!important}
+body[data-theme="dark"] .brand img{background:linear-gradient(#09182a,#09182a) padding-box,linear-gradient(135deg,#00e5ff,#1677ff) border-box!important}
+body[data-theme="dark"] .welcome-text strong{color:#00e5ff!important}
+body[data-theme="dark"] .welcome-text span{color:#b9dcf4!important}
+body[data-theme="dark"] .head-actions button{background:#0b2740!important;color:#00e5ff!important;border-color:#087ca8!important}
+body[data-theme="dark"] .promo{background:linear-gradient(90deg,#00e5ff,#1677ff,#00e5ff)!important;border-color:#00e5ff!important}
+body[data-theme="dark"] .quick-wrap{background:#07111f!important;border-color:#164267!important}
+body[data-theme="dark"] .cat{background:#102943;color:#c7e7ff}
+body[data-theme="dark"] .cat.active{background:linear-gradient(100deg,#0077ff,#00e5ff);color:#00111e;box-shadow:0 0 12px #00c8ff55}
+body[data-theme="dark"] .cat.menu{background:#00dfff;color:#00111e}
+body[data-theme="dark"] .search{background:#0c1b2e;border-color:#008ec4;box-shadow:0 0 10px #00b7ff12}
+body[data-theme="dark"] .search input{color:#eaf7ff}
+body[data-theme="dark"] .product{background:#0c1b2e!important;border-color:#174466;box-shadow:0 3px 12px #0006}
+body[data-theme="dark"] .product-photo{background:linear-gradient(135deg,#102943,#09182a)}
+body[data-theme="dark"] .price{color:#00e5ff}
+body[data-theme="dark"] .notice{background:#0c1b2e;color:#b9d5e8;border-color:#174466}
+body[data-theme="dark"] footer,
+body[data-theme="dark"] .bottom-nav{background:#09182a;color:#d9efff;border-color:#174466}
+body[data-theme="dark"] footer h3,
+body[data-theme="dark"] .bottom-nav button:first-child{color:#00e5ff}
+body[data-theme="dark"] .socials a{color:#c9e8ff}
+body[data-theme="dark"] .bottom-nav button{color:#8aa9c3}
+body[data-theme="dark"] .wa{background:#103e4c;color:#9ff6ff}
+body[data-theme="dark"] .cart{background:#4a3d12;color:#ffe66b}
+body[data-theme="dark"] .buy{background:#00dfff;color:#00111e}
+body[data-theme="dark"] .product-zoom-image-wrap{background:#0c1b2e}
+body[data-theme="dark"] .product-zoom-close{background:#0c1b2e;color:#00e5ff;border:1px solid #00bfff}
+body[data-theme="dark"] .product-zoom-actions .zoom-wa{background:#103e4c;color:#9ff6ff}
+body[data-theme="dark"] .product-zoom-actions .zoom-cart{background:#4a3d12;color:#ffe66b}
+body[data-theme="dark"] .product-zoom-actions .zoom-buy{background:#00dfff;color:#00111e}
+body[data-theme="dark"] .product-zoom-price{color:#00e5ff}
+body[data-theme="dark"] .partner-section{background:#0c1b2e!important;border-color:#174466!important}
+body[data-theme="dark"] .partner-section h3{color:#00e5ff}
+body[data-theme="dark"] .partner-section p{color:#9eb8d0!important}
+body[data-theme="dark"] .partner-dashboard{background:#102943!important;color:#d9efff!important}
 
 </style>
 </head>
@@ -500,10 +301,6 @@ document.getElementById('whatsapp').onclick=e=>{e.preventDefault();window.open('
 document.getElementById('theme').onclick=()=>{
   const dark=document.body.dataset.theme!=='dark';
   document.body.dataset.theme=dark?'dark':'light';
-  document.body.style.background=dark?'#1d1d1d':'var(--paper)';
-  document.body.style.color=dark?'#f4f4f4':'var(--ink)';
-  document.querySelectorAll('.quick-wrap').forEach(el=>el.style.background=dark?'#1d1d1d':'var(--paper)');
-  document.querySelectorAll('.product').forEach(el=>el.style.background=dark?'#292929':'var(--card)');
   document.getElementById('theme').textContent=dark?'☀':'☾';
 };
 function parseGviz(raw) {
@@ -605,6 +402,6 @@ document.addEventListener('keydown', function(e) {
 });
 </script>
 
-<section style="max-width:1000px;margin:18px auto;padding:14px;background:#fff;border:1px solid #e2e8e4;border-radius:14px"><h3>Gabung Mitra Toko Siap Antar</h3><p style="font-size:13px;color:#66736c">Pendaftaran mitra menunggu verifikasi admin.</p><a href="daftar-mitra-pengantaran.html" style="display:inline-block;margin:4px;padding:10px 12px;background:#ffc107;color:#202020;border-radius:8px;text-decoration:none;font-weight:bold">Daftar Mitra Pengantaran</a><a href="daftar-mitra-usaha.html" style="display:inline-block;margin:4px;padding:10px 12px;background:#ffc107;color:#202020;border-radius:8px;text-decoration:none;font-weight:bold">Daftar Mitra Usaha</a><a href="mitra-usaha.html" style="display:inline-block;margin:4px;padding:10px 12px;background:#eee;color:#202020;border-radius:8px;text-decoration:none;font-weight:bold">Dashboard Mitra Usaha</a></section>
+<section class="partner-section" style="max-width:1000px;margin:18px auto;padding:14px;background:#fff;border:1px solid #e2e8e4;border-radius:14px"><h3>Gabung Mitra Toko Siap Antar</h3><p style="font-size:13px;color:#66736c">Pendaftaran mitra menunggu verifikasi admin.</p><a href="daftar-mitra-pengantaran.html" style="display:inline-block;margin:4px;padding:10px 12px;background:#ffc107;color:#202020;border-radius:8px;text-decoration:none;font-weight:bold">Daftar Mitra Pengantaran</a><a href="daftar-mitra-usaha.html" style="display:inline-block;margin:4px;padding:10px 12px;background:#ffc107;color:#202020;border-radius:8px;text-decoration:none;font-weight:bold">Daftar Mitra Usaha</a><a href="mitra-usaha.html" class="partner-dashboard" style="display:inline-block;margin:4px;padding:10px 12px;background:#eee;color:#202020;border-radius:8px;text-decoration:none;font-weight:bold">Dashboard Mitra Usaha</a></section>
 </body>
 </html>
