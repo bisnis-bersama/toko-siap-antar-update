@@ -154,6 +154,47 @@ main,.main,.container{max-width:900px}
  .wallet-reference .wallet-reference-foot{font-size:.72rem}
 }
 
+
+/* Susunan panel mengikuti acuan Fixzy; warna tetap Toko Siap Antar */
+.wallet.wallet-reference{
+ display:block!important;background:#fff!important;color:#173b32!important;
+ border:1px solid #d9e9e3!important;border-radius:28px!important;
+ padding:22px!important;box-shadow:0 14px 32px rgba(23,59,50,.07)!important;
+}
+.wallet-reference .wallet-reference-top{
+ display:flex!important;align-items:center!important;justify-content:space-between!important;
+ gap:12px!important;flex-wrap:nowrap!important;
+}
+.wallet-reference .wallet-reference-amount{min-width:0;flex:1}
+.wallet-reference .wallet-label{color:#64756f!important;font-size:.95rem!important;font-weight:650!important;margin-bottom:7px!important}
+.wallet-reference .balance{color:#173b32!important;font-size:clamp(1.8rem,6vw,2.5rem)!important;font-weight:800!important;line-height:1.15!important;overflow-wrap:anywhere}
+.wallet-reference .wallet-reference-actions{display:flex!important;flex-shrink:0!important}
+.wallet-reference .wallet-action{
+ background:#ffc800!important;color:#173b32!important;border:1px solid #ffc800!important;
+ border-radius:16px!important;padding:12px 14px!important;font-weight:800!important;white-space:nowrap!important
+}
+.wallet-reference .wallet-reference-divider{height:1px;background:#e5e7eb;margin:20px 0 16px}
+.wallet-reference-metrics{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.wallet-reference-metrics .wallet-metric{
+ display:flex;flex-direction:column;gap:8px;background:#f7f8f8;border:1px solid #e8ebeb;
+ border-radius:22px;padding:16px;min-width:0
+}
+.wallet-reference-metrics .wallet-metric span{font-size:.84rem;color:#647084;font-weight:650}
+.wallet-reference-metrics .wallet-metric b{font-size:1.12rem;color:#173b32;overflow-wrap:anywhere}
+.wallet-reference-withdraw{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px}
+.wallet-reference-withdraw>span{font-size:.82rem;color:#64756f}
+.wallet-reference #withdrawBtn{background:#eaf8f2!important;color:#008b5a!important;border:1px solid #bfe8d7!important}
+@media(max-width:390px){
+ .wallet.wallet-reference{padding:17px!important}
+ .wallet-reference .wallet-reference-top{gap:8px!important}
+ .wallet-reference .balance{font-size:1.65rem!important}
+ .wallet-reference .wallet-action{padding:10px 9px!important;font-size:.82rem!important}
+ .wallet-reference-metrics{gap:8px}
+ .wallet-reference-metrics .wallet-metric{padding:12px;border-radius:17px}
+ .wallet-reference-metrics .wallet-metric span{font-size:.76rem}
+ .wallet-reference-metrics .wallet-metric b{font-size:.95rem}
+}
+
 </style>
 </head>
 <body>
@@ -186,13 +227,16 @@ main,.main,.container{max-width:900px}
      </div>
      <div class="wallet-reference-actions">
       <button class="wallet-action" id="topupBtn" type="button">＋ Isi Saldo</button>
-      <button class="wallet-action alt" id="withdrawBtn" type="button">↗ Tarik Saldo</button>
      </div>
     </div>
     <div class="wallet-reference-divider"></div>
-    <div class="wallet-reference-foot">
+    <div class="wallet-reference-metrics">
+     <div class="wallet-metric"><span id="metricOneLabel">Saldo Tersedia</span><b id="metricOneValue">Rp 0</b></div>
+     <div class="wallet-metric"><span id="metricTwoLabel">Total Tagihan</span><b id="metricTwoValue">Rp 0</b></div>
+    </div>
+    <div class="wallet-reference-withdraw">
      <span>Dompet Toko Siap Antar</span>
-     <span>Saldo mengikuti data akun</span>
+     <button class="wallet-action alt" id="withdrawBtn" type="button">↗ Tarik Saldo</button>
     </div>
    </div>
    <div class="notice" id="walletNotice">Pengajuan isi saldo atau penarikan akan mengikuti proses verifikasi sistem.</div>
