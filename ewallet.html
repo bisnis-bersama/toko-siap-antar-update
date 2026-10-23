@@ -61,6 +61,64 @@ main,.main,.container{max-width:900px}
  #menuGrid .menu small{font-size:.7rem}
 }
 
+
+/* Panel saldo: warna resmi Toko Siap Antar, bukan hitam seperti Fixzy */
+.wallet-card,.balance-card,.saldo-card,.wallet-panel,.balance-panel{
+ background:linear-gradient(120deg,#008b5a 0%,#00b8a8 58%,#00c6a5 100%) !important;
+ color:#fff !important;
+ border:0 !important;
+ box-shadow:0 12px 28px rgba(0,139,90,.16) !important;
+}
+.wallet-card h1,.wallet-card h2,.wallet-card h3,.wallet-card p,
+.balance-card h1,.balance-card h2,.balance-card h3,.balance-card p,
+.saldo-card h1,.saldo-card h2,.saldo-card h3,.saldo-card p,
+.wallet-panel h1,.wallet-panel h2,.wallet-panel h3,.wallet-panel p,
+.balance-panel h1,.balance-panel h2,.balance-panel h3,.balance-panel p{
+ color:#fff !important;
+}
+.wallet-card button,.balance-card button,.saldo-card button,
+.wallet-panel button,.balance-panel button,
+#topupBtn{
+ background:#ffc800 !important;
+ color:#171717 !important;
+ border:1px solid #ffc800 !important;
+}
+#withdrawBtn{
+ background:rgba(255,255,255,.08) !important;
+ color:#fff !important;
+ border:1px solid rgba(255,255,255,.38) !important;
+}
+
+
+/* Saldo ringkas: nominal besar di kiri, aksi di kanan */
+.wallet-head,.balance-head,.saldo-head,.wallet-summary-head{
+ display:flex!important;align-items:center!important;justify-content:space-between!important;
+ gap:14px!important;flex-wrap:wrap!important;
+}
+.wallet-head .amount,.balance-head .amount,.saldo-head .amount,
+.wallet-summary-head .amount{font-size:clamp(1.8rem,6vw,2.5rem)!important;font-weight:800!important;line-height:1.15!important}
+.wallet-head .action,.balance-head .action,.saldo-head .action,
+.wallet-summary-head .action{margin-left:auto!important}
+.wallet-card,.balance-card,.saldo-card,.wallet-panel,.balance-panel{
+ background:#fff!important;color:#173b32!important;border:1px solid #d9e9e3!important;
+ box-shadow:0 14px 34px rgba(23,59,50,.07)!important;
+}
+.wallet-card h1,.wallet-card h2,.wallet-card h3,.wallet-card p,
+.balance-card h1,.balance-card h2,.balance-card h3,.balance-card p,
+.saldo-card h1,.saldo-card h2,.saldo-card h3,.saldo-card p,
+.wallet-panel h1,.wallet-panel h2,.wallet-panel h3,.wallet-panel p,
+.balance-panel h1,.balance-panel h2,.balance-panel h3,.balance-panel p{
+ color:inherit!important;
+}
+#topupBtn{
+ background:#ffc800!important;color:#173b32!important;border:1px solid #ffc800!important;
+ border-radius:16px!important;font-weight:800!important;padding:13px 16px!important;
+}
+#withdrawBtn{
+ background:#eaf8f2!important;color:#008b5a!important;border:1px solid #bfe8d7!important;
+ border-radius:16px!important;font-weight:800!important;padding:13px 16px!important;
+}
+
 </style>
 </head>
 <body>
