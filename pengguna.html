@@ -1,111 +1,41 @@
-<!doctype html>
-<html lang="id">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Kelola Pengguna | Toko Siap Antar</title>
-<link rel="stylesheet" href="style.css">
-</head>
-<body>
-<header>
-  <strong>TOKO SIAP ANTAR · PENGGUNA</strong>
-  <nav>
-    <a href="admin.html">Pesanan</a>
-    <a href="produk-admin.html">Produk</a>
-    <a href="index.html">Toko</a>
-    <button id="logoutBtn" class="dark">Keluar</button>
-  </nav>
-</header>
-<main class="shell">
-  <section class="panel">
-    <h1>Kelola pengguna &amp; role</h1>
-    <p class="muted">Admin dapat mengelola role pengguna. Role resmi hanya admin, pelanggan, mitra_usaha, dan kurir.</p>
-    <div id="notice" class="notice" hidden></div>
-    <div class="table-wrap">
-      <table>
-        <thead><tr><th>Nama</th><th>Email</th><th>Role saat ini</th><th>Ubah role</th><th>Aksi</th></tr></thead>
-        <tbody id="users"><tr><td colspan="5">Memuat…</td></tr></tbody>
-      </table>
-    </div>
-  </section>
-</main>
+<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Data Pengguna | Toko Siap Antar</title><link rel="stylesheet" href="style.css"></head><body>
+<header><strong>TOKO SIAP ANTAR · PENGGUNA</strong><nav><a href="admin.html">Pesanan</a><a href="produk-admin.html">Produk</a><a href="index.html">Toko</a><button id="logoutBtn" class="dark">Keluar</button></nav></header><main class="shell"><section class="panel"><h1>Data Pengguna Aktif</h1><p class="muted">Halaman ini hanya menampilkan pengguna yang sudah aktif. Persetujuan pendaftaran dilakukan di halaman Approval Pending.</p><div id="notice" class="notice" hidden></div><div class="table-wrap"><table><thead><tr><th>Nama</th><th>Email</th><th>Nomor WhatsApp</th><th>Role</th><th>Status</th></tr></thead><tbody id="users"><tr><td colspan="5">Memuat pengguna aktif…</td></tr></tbody></table></div></section></main>
 <script type="module">
 import {db} from "./firebase-config.js";
-import {collection,getDocs,doc,updateDoc,getDoc} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
+import {collection,getDocs} from "https://www.gstatic.com/firebasejs/12.4.0/firebase-firestore.js";
 import {requireRole,esc,notice} from "./common.js";
 
-const roles = ["pelanggan", "mitra_usaha", "kurir", "admin"];
-const tbody = document.querySelector("#users");
-
-async function loadUsers() {
-  tbody.innerHTML = '<tr><td colspan="5">Memuat pengguna…</td></tr>';
+requireRole(["admin"], async () => {
+  const tb = document.querySelector("#users");
   try {
     const snap = await getDocs(collection(db, "users"));
-    if (snap.empty) {
-      tbody.innerHTML = '<tr><td colspan="5">Belum ada pengguna.</td></tr>';
+    const activeUsers = snap.docs.filter(d => {
+      const u = d.data() || {};
+      return u.status === "aktif" && u.aktif !== false;
+    });
+    if (!activeUsers.length) {
+      tb.innerHTML = '<tr><td colspan="5">Belum ada pengguna aktif.</td></tr>';
       return;
     }
-    tbody.innerHTML = snap.docs.map(d => {
+    tb.innerHTML = activeUsers.map(d => {
       const u = d.data() || {};
-      const options = roles.map(r => `<option value="${r}" ${r === u.role ? "selected" : ""}>${r}</option>`).join("");
-      return `<tr data-user-row="${esc(d.id)}">
+      const phone = String(u.nomorWhatsApp || u.noWhatsApp || u.whatsapp || u.nomorHP || u.noHP || u.telepon || u.phone || "").replace(/\D/g, "");
+      const wa = phone ? (phone.startsWith("0") ? "62" + phone.slice(1) : phone.startsWith("62") ? phone : "62" + phone) : "";
+      const waButton = wa
+        ? `<a class="btn" href="https://wa.me/${esc(wa)}" target="_blank" rel="noopener noreferrer">Chat WhatsApp</a>`
+        : '<span class="muted">Nomor belum tersedia</span>';
+      return `<tr>
         <td>${esc(u.nama || u.name || "-")}</td>
         <td>${esc(u.email || "-")}</td>
-        <td data-current-role>${esc(u.role || "-")}</td>
-        <td><select data-role>${options}</select></td>
-        <td><button type="button" data-save="${esc(d.id)}">Simpan</button></td>
+        <td>${waButton}</td>
+        <td>${esc(u.role || "-")}</td>
+        <td>Aktif</td>
       </tr>`;
     }).join("");
-
-    tbody.querySelectorAll("[data-save]").forEach(button => {
-      button.addEventListener("click", async () => {
-        const id = button.dataset.save;
-        const row = button.closest("tr");
-        const select = row.querySelector("[data-role]");
-        const newRole = select.value;
-        const oldRole = row.querySelector("[data-current-role]").textContent.trim();
-        if (!roles.includes(newRole)) {
-          notice("Role tidak valid.", "error");
-          return;
-        }
-        if (newRole === oldRole) {
-          notice("Role tidak berubah. Pilih role baru terlebih dahulu.", "info");
-          return;
-        }
-        if (!confirm(`Ubah role akun ${row.cells[1].textContent} dari ${oldRole} menjadi ${newRole}?`)) return;
-
-        button.disabled = true;
-        button.textContent = "Menyimpan…";
-        try {
-          await updateDoc(doc(db, "users", id), { role: newRole });
-          // Baca ulang dokumen untuk memastikan perubahan benar-benar tersimpan.
-          const verify = await getDoc(doc(db, "users", id));
-          if (!verify.exists() || verify.data().role !== newRole) {
-            throw new Error("Penyimpanan belum terverifikasi. Muat ulang data dan periksa Firestore.");
-          }
-          row.querySelector("[data-current-role]").textContent = newRole;
-          select.value = newRole;
-          notice(`Berhasil: role ${row.cells[1].textContent} sekarang ${newRole}.`, "success");
-        } catch (e) {
-          console.error("Gagal menyimpan role pengguna:", e);
-          const code = e?.code ? ` [${e.code}]` : "";
-          notice(`Gagal menyimpan role${code}: ${e?.message || e}. Periksa Firestore Rules: hanya admin yang boleh mengubah field role.`, "error");
-        } finally {
-          button.disabled = false;
-          button.textContent = "Simpan";
-        }
-      });
-    });
   } catch (e) {
-    console.error("Gagal memuat pengguna:", e);
-    tbody.innerHTML = `<tr><td colspan="5">Gagal memuat pengguna: ${esc(e?.message || e)}</td></tr>`;
-    notice(`Data pengguna gagal dimuat${e?.code ? ` [${e.code}]` : ""}: ${e?.message || e}`, "error");
+    console.error("Gagal memuat pengguna aktif:", e);
+    tb.innerHTML = `<tr><td colspan="5">Gagal memuat data: ${esc(e?.message || e)}</td></tr>`;
+    notice("Gagal memuat pengguna aktif: " + (e?.message || e), "error");
   }
-}
-
-requireRole(["admin"], async () => {
-  await loadUsers();
 });
-</script>
-</body>
-</html>
+</script></body></html>
