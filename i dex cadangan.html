@@ -17,7 +17,6 @@ header{position:sticky;top:0;z-index:20;background:linear-gradient(100deg,#009b4
 .welcome-text strong{font-size:clamp(12px,2vw,17px);line-height:1.25;color:#fff}
 .welcome-text span{font-size:clamp(9px,1.35vw,12px);line-height:1.35;color:#f2fff8;text-shadow:none}
 @media(max-width:520px){header{padding:8px 10px;gap:6px}.brand{gap:7px}.brand img{width:48px;height:46px}.welcome-text{max-width:calc(100vw - 160px)}.welcome-text strong{font-size:11px}.welcome-text span{font-size:9px}.head-actions{gap:5px}.head-actions button{padding:7px 8px;font-size:17px}}
-
 .head-actions{display:flex;gap:8px}
 .head-actions button{border:1px solid #ffffff80;background:#ffffff20;color:#fff;border-radius:12px;padding:8px 11px;font-size:20px}
 .promo{margin:8px 0 0;border-block:2px solid var(--yellow);background:linear-gradient(90deg,#00a85a,#00c8d7,#d8e500);padding:4px 0}
@@ -62,34 +61,13 @@ footer h3{margin:0 0 16px;color:#009c54}
 @media(max-width:600px){.promo-window{min-height:145px;padding:6px 0}.promo-track img{height:133px;margin-top:0;margin-bottom:0}}
 @media(max-width:360px){.products{grid-template-columns:repeat(2,minmax(0,1fr))}.product-photo{height:105px}.cat{padding:9px 11px;font-size:13px}}
 
-/* Perbaikan terarah: header putih dengan garis pelangi tipis; warna halaman tetap hijau-krem */
+/* Header putih dengan garis pelangi tipis */
 body{background:#f4fff7;color:var(--ink)}
-header{
-  position:sticky;top:0;z-index:20;
-  background:#fff;
-  border:0;
-  box-shadow:0 2px 7px rgba(0,80,40,.08);
-  isolation:isolate;
-}
-header::before,header::after{
-  content:"";position:absolute;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,#ffd400 0%,#00a85a 28%,#00c8d7 52%,#a9d900 76%,#ffd400 100%);
-  pointer-events:none;z-index:1;
-}
+header{position:sticky;top:0;z-index:20;background:#fff;border:0;box-shadow:0 2px 7px rgba(0,80,40,.08);isolation:isolate}
+header::before,header::after{content:"";position:absolute;left:0;right:0;height:2px;background:linear-gradient(90deg,#ffd400 0%,#00a85a 28%,#00c8d7 52%,#a9d900 76%,#ffd400 100%);pointer-events:none;z-index:1}
 header::before{top:0}header::after{bottom:0}
 .brand{color:#18312b;text-shadow:none;min-width:0}
-/* Bingkai logo header: sudut membulat, latar putih, garis pelangi tipis */
-.brand img{
-  background:#fff;
-  object-fit:contain;
-  border:1.5px solid transparent;
-  border-radius:12px;
-  padding:3px;
-  background:
-    linear-gradient(#fff,#fff) padding-box,
-    linear-gradient(135deg,#ffd400 0%,#00a85a 30%,#00c8d7 58%,#a9d900 80%,#ffd400 100%) border-box;
-  box-shadow:0 1px 4px rgba(0,120,65,.10);
-}
+.brand img{background:#fff;object-fit:contain;border:1.5px solid transparent;border-radius:12px;padding:3px;background:linear-gradient(#fff,#fff) padding-box,linear-gradient(135deg,#ffd400 0%,#00a85a 30%,#00c8d7 58%,#a9d900 80%,#ffd400 100%) border-box;box-shadow:0 1px 4px rgba(0,120,65,.10)}
 .welcome-text strong{color:#008b4c;text-shadow:none}
 .welcome-text span{color:#52635b;text-shadow:none}
 .head-actions button{color:#008b4c;background:#f3fff7;border:1px solid #b9e5ce}
@@ -98,6 +76,24 @@ header::before{top:0}header::after{bottom:0}
 .product-photo{background:linear-gradient(135deg,#d9ffed,#f4ffe2)}
 @media(max-width:520px){header{padding:8px 10px}.brand img{width:48px;height:46px}.welcome-text{max-width:calc(100vw - 160px)}}
 
+/* Popup detail produk: foto, nama, harga, dan tombol aksi seragam dengan kartu produk */
+.product-photo{cursor:zoom-in}
+.product-zoom{position:fixed;inset:0;z-index:9999;display:none;align-items:center;justify-content:center;padding:64px 16px 24px;background:rgba(0,0,0,.84);overflow-y:auto}
+.product-zoom.show{display:flex}
+.product-zoom-close{position:fixed;top:max(14px,env(safe-area-inset-top));right:16px;z-index:2;width:48px;height:48px;border:0;border-radius:50%;background:#fff;color:#173b32;font-size:30px;cursor:pointer;box-shadow:0 2px 10px #0003}
+.product-zoom-content{width:100%;max-width:650px;display:flex;flex-direction:column;align-items:stretch;gap:12px;margin:auto}
+.product-zoom-image-wrap{width:100%;display:flex;align-items:center;justify-content:center;background:#fff;border-radius:18px;overflow:hidden}
+.product-zoom img{display:block;width:100%;max-height:61vh;object-fit:contain;background:#fff}
+.product-zoom-name{color:#fff;text-align:center;font-size:18px;font-weight:800;line-height:1.4;overflow-wrap:anywhere}
+.product-zoom-price{color:#ffd400;text-align:center;font-size:20px;font-weight:800}
+.product-zoom-actions{display:grid;grid-template-columns:54px 54px minmax(0,1fr);gap:8px;width:100%}
+.product-zoom-actions button{min-height:50px;border:0;border-radius:12px;font-size:20px;cursor:pointer}
+.product-zoom-actions .zoom-wa{background:#d9ffeb}
+.product-zoom-actions .zoom-cart{background:#fff3bd}
+.product-zoom-actions .zoom-buy{background:#ffc400;color:#171717;font-size:17px;font-weight:800}
+.product-zoom-actions button:active{transform:scale(.97)}
+.product-zoom-actions button:disabled{opacity:.7;cursor:default}
+@media(max-width:520px){.product-zoom{padding:62px 16px 24px}.product-zoom-content{max-width:100%}.product-zoom img{max-height:55vh}.product-zoom-name{font-size:17px}.product-zoom-actions{grid-template-columns:54px 54px minmax(0,1fr)}}
 </style>
 </head>
 <body>
@@ -136,13 +132,36 @@ header::before{top:0}header::after{bottom:0}
 <nav class="bottom-nav" aria-label="Navigasi bawah">
   <button id="homeBtn"><span class="ico">⌂</span>Home</button><button id="historyBtn"><span class="ico">▤</span>Riwayat</button><button id="cartBtn"><span class="ico">🛒 <sup id="cartCount">0</sup></span>Keranjang</button><button id="profileBtn"><span class="ico">👤</span>Profil</button>
 </nav>
+
+<div id="productZoom" class="product-zoom" role="dialog" aria-modal="true" aria-label="Detail produk">
+  <button type="button" id="productZoomClose" class="product-zoom-close" aria-label="Tutup popup">×</button>
+  <div class="product-zoom-content">
+    <div class="product-zoom-image-wrap">
+      <img id="productZoomImage" src="" alt="Foto produk">
+    </div>
+    <div id="productZoomName" class="product-zoom-name"></div>
+    <div id="productZoomPrice" class="product-zoom-price"></div>
+    <div class="product-zoom-actions">
+      <button type="button" class="zoom-wa" data-zoom-action="wa" aria-label="Tanya melalui WhatsApp">☏</button>
+      <button type="button" class="zoom-cart" data-zoom-action="cart" aria-label="Tambah ke keranjang">🛒</button>
+      <button type="button" class="zoom-buy" data-zoom-action="buy">Beli</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const SHEET_URL = 'https://docs.google.com/spreadsheets/d/1H23wsTKmR1grQgSAqULbUCM9wQdfx5u6RHJwrrbROG0/gviz/tq?sheet=MEMBER';
 const productsEl = document.getElementById('products');
 const searchInput = document.getElementById('searchInput');
 let allProducts = [];
 let activeCategory = 'Semua';
-let cart = JSON.parse(localStorage.getItem('tsa_cart') || '[]');
+let cart = [];
+try {
+  const savedCart = JSON.parse(localStorage.getItem('tsa_cart') || '[]');
+  cart = Array.isArray(savedCart) ? savedCart : [];
+} catch (error) {
+  cart = [];
+}
 const formatPrice = value => {
   const n = Number(String(value ?? '').replace(/[^\d,-]/g,'').replace(/\./g,'').replace(',','.'));
   return Number.isFinite(n) && n ? 'Rp ' + n.toLocaleString('id-ID') : (value ? String(value) : 'Hubungi kami');
@@ -153,6 +172,9 @@ function convertImage(url) {
   const id = s.match(/(?:id=|\/d\/)([A-Za-z0-9_-]{15,})/);
   if (id && /drive\.google\.com/.test(s)) return 'https://drive.google.com/thumbnail?id=' + id[1] + '&sz=w600';
   return s;
+}
+function escapeHtml(value) {
+  return String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 }
 function renderProducts() {
   const q = searchInput.value.trim().toLowerCase();
@@ -167,31 +189,35 @@ function renderProducts() {
     return;
   }
   productsEl.innerHTML = filtered.map(p => `
-    <article class="product">
+    <article class="product" data-product-id="${escapeHtml(p.id)}">
       <div class="product-photo">${p.image ? `<img loading="lazy" src="${escapeHtml(p.image)}" alt="${escapeHtml(p.name)}" onerror="this.style.display='none'">` : '<span>📦</span>'}</div>
       <div class="product-info">
         <div class="product-name">${escapeHtml(p.name)}</div>
         <div class="product-desc">${escapeHtml(p.description || 'Pesanan Anda siap kami antar ke rumah dalam waktu sekitar ±1 jam setelah pembayaran dikonfirmasi.')}</div>
         <div class="price">${escapeHtml(formatPrice(p.price))}</div>
         <div class="actions">
-          <button class="wa" data-action="wa" data-id="${p.id}" aria-label="Tanya WhatsApp">☏</button>
-          <button class="cart" data-action="cart" data-id="${p.id}" aria-label="Tambah keranjang">🛒</button>
-          <button class="buy" data-action="buy" data-id="${p.id}">Beli</button>
+          <button class="wa" data-action="wa" data-id="${escapeHtml(p.id)}" aria-label="Tanya WhatsApp">☏</button>
+          <button class="cart" data-action="cart" data-id="${escapeHtml(p.id)}" aria-label="Tambah keranjang">🛒</button>
+          <button class="buy" data-action="buy" data-id="${escapeHtml(p.id)}">Beli</button>
         </div>
       </div>
     </article>`).join('');
 }
-function escapeHtml(value) {
-  return String(value ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-}
 function updateCart() {
-  document.getElementById('cartCount').textContent = cart.reduce((sum,item)=>sum+item.qty,0);
-  localStorage.setItem('tsa_cart', JSON.stringify(cart));
+  document.getElementById('cartCount').textContent = cart.reduce((sum,item)=>sum+(Number(item.qty)||0),0);
+  try { localStorage.setItem('tsa_cart', JSON.stringify(cart)); } catch (error) {}
+}
+function addProductToCart(p) {
+  const existing = cart.find(item => item.id === p.id);
+  if (existing) existing.qty = (Number(existing.qty) || 0) + 1;
+  else cart.push({id:p.id,name:p.name,price:p.price,qty:1});
+  updateCart();
 }
 function openWhatsApp(p, intro='Halo, saya ingin pesan: ') {
   const message = intro + p.name + ' — ' + formatPrice(p.price);
-  window.open('https://wa.me/?text=' + encodeURIComponent(message), '_blank');
+  window.open('https://wa.me/?text=' + encodeURIComponent(message), '_blank', 'noopener');
 }
+
 productsEl.addEventListener('click', e => {
   const btn = e.target.closest('button[data-action]');
   if (!btn) return;
@@ -199,18 +225,12 @@ productsEl.addEventListener('click', e => {
   if (!p) return;
   if (btn.dataset.action === 'wa') openWhatsApp(p, 'Halo, saya mau tanya produk: ');
   if (btn.dataset.action === 'buy') {
-    const existing = cart.find(item=>item.id===p.id);
-    if (existing) existing.qty++;
-    else cart.push({id:p.id,name:p.name,price:p.price,qty:1});
-    updateCart();
+    addProductToCart(p);
     location.href = 'keranjang.html';
     return;
   }
   if (btn.dataset.action === 'cart') {
-    const existing = cart.find(item=>item.id===p.id);
-    if (existing) existing.qty++;
-    else cart.push({id:p.id,name:p.name,price:p.price,qty:1});
-    updateCart();
+    addProductToCart(p);
     btn.textContent = '✓';
     setTimeout(()=>{if(btn.isConnected)btn.textContent='🛒'},700);
   }
@@ -230,10 +250,10 @@ document.getElementById('cartBtn').onclick=()=>{
   location.href='keranjang.html';
 };
 document.getElementById('historyBtn').onclick=()=>{location.href='login.html?next=riwayat.html';};
-document.getElementById('profileBtn').onclick=()=>{location.href='login.html?next=profil.html';};
+document.getElementById('profileBtn').onclick=()=>{location.href='profil.html';};
 document.getElementById('facebook').onclick=e=>{e.preventDefault();alert('Tambahkan tautan Facebook toko pada HTML.');};
 document.getElementById('instagram').onclick=e=>{e.preventDefault();alert('Tambahkan tautan Instagram toko pada HTML.');};
-document.getElementById('whatsapp').onclick=e=>{e.preventDefault();window.open('https://wa.me/','_blank');};
+document.getElementById('whatsapp').onclick=e=>{e.preventDefault();window.open('https://wa.me/','_blank','noopener');};
 document.getElementById('theme').onclick=()=>{
   const dark=document.body.dataset.theme!=='dark';
   document.body.dataset.theme=dark?'dark':'light';
@@ -269,6 +289,79 @@ fetch(SHEET_URL, {cache:'no-store'})
   productsEl.innerHTML='<div class="notice" style="grid-column:1/-1;color:#b42318">Produk gagal dimuat: '+escapeHtml(err.message)+'. Pastikan tab spreadsheet yang dipakai benar dan aksesnya publik.</div>';
 });
 updateCart();
+
+/* Popup foto produk: ID diambil langsung dari kartu, aman untuk nama produk duplikat */
+const productZoom = document.getElementById('productZoom');
+const productZoomImage = document.getElementById('productZoomImage');
+const productZoomName = document.getElementById('productZoomName');
+const productZoomPrice = document.getElementById('productZoomPrice');
+let zoomProductId = null;
+
+function closeProductZoom() {
+  productZoom.classList.remove('show');
+  productZoomImage.src = '';
+  zoomProductId = null;
+  document.body.style.overflow = '';
+}
+
+productsEl.addEventListener('click', function(e) {
+  if (e.target.closest('button')) return;
+  const img = e.target.closest('.product-photo img');
+  if (!img || !img.src) return;
+  const card = img.closest('.product');
+  const id = card?.dataset.productId;
+  const p = allProducts.find(item => item.id === id);
+  if (!p) return;
+
+  zoomProductId = p.id;
+  productZoomImage.src = img.src;
+  productZoomImage.alt = p.name;
+  productZoomName.textContent = p.name;
+  productZoomPrice.textContent = formatPrice(p.price);
+  productZoom.classList.add('show');
+  document.body.style.overflow = 'hidden';
+});
+
+productZoom.addEventListener('click', function(e) {
+  if (e.target === productZoom) {
+    closeProductZoom();
+    return;
+  }
+
+  const btn = e.target.closest('[data-zoom-action]');
+  if (!btn) return;
+  const p = allProducts.find(item => item.id === zoomProductId);
+  if (!p) return;
+
+  const action = btn.dataset.zoomAction;
+  if (action === 'wa') {
+    openWhatsApp(p, 'Halo, saya mau tanya produk: ');
+    return;
+  }
+
+  if (action === 'cart' || action === 'buy') {
+    addProductToCart(p);
+    if (action === 'buy') {
+      location.href = 'keranjang.html';
+      return;
+    }
+    btn.textContent = '✓';
+    btn.disabled = true;
+    setTimeout(() => {
+      if (btn.isConnected) {
+        btn.textContent = '🛒';
+        btn.disabled = false;
+      }
+    }, 700);
+  }
+});
+
+document.getElementById('productZoomClose').addEventListener('click', closeProductZoom);
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') closeProductZoom();
+});
 </script>
+
+<section style="max-width:1000px;margin:18px auto;padding:14px;background:#fff;border:1px solid #e2e8e4;border-radius:14px"><h3>Gabung Mitra Toko Siap Antar</h3><p style="font-size:13px;color:#66736c">Pendaftaran mitra menunggu verifikasi admin.</p><a href="daftar-mitra-pengantaran.html" style="display:inline-block;margin:4px;padding:10px 12px;background:#ffc107;color:#202020;border-radius:8px;text-decoration:none;font-weight:bold">Daftar Mitra Pengantaran</a><a href="daftar-mitra-usaha.html" style="display:inline-block;margin:4px;padding:10px 12px;background:#ffc107;color:#202020;border-radius:8px;text-decoration:none;font-weight:bold">Daftar Mitra Usaha</a><a href="mitra-usaha.html" style="display:inline-block;margin:4px;padding:10px 12px;background:#eee;color:#202020;border-radius:8px;text-decoration:none;font-weight:bold">Dashboard Mitra Usaha</a></section>
 </body>
 </html>
