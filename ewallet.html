@@ -8,20 +8,20 @@
 :root{--green:#00a86b;--green2:#008b5a;--yellow:#ffcc00;--ink:#173b32;--muted:#64756f;--bg:#f1f2f4;--line:#e6e7e8;--white:#fff}
 *{box-sizing:border-box}body{margin:0;background:var(--bg);color:#171717;font:16px/1.45 system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
 button,input{font:inherit}button,a{-webkit-tap-highlight-color:transparent}
-.top{background:#111;color:#fff;padding:18px 16px 38px;border-radius:0 0 34px 34px}
+.top{background:linear-gradient(115deg,#008b5a,#00b894);color:#fff;padding:22px 16px 42px;border-bottom:5px solid #ffcc00;border-radius:0 0 34px 34px}
 .topline{display:flex;justify-content:space-between;align-items:center;gap:12px;max-width:900px;margin:auto}
-.brand{font-weight:850;font-size:19px;letter-spacing:.2px;color:#ffd400}.sub{color:#d1d5db;font-size:13px;margin-top:3px}
-.logout{background:#292929;border:1px solid #444;color:white;border-radius:12px;padding:10px 13px;font-weight:700;cursor:pointer}
-main{max-width:760px;margin:0 auto 100px;padding:0 14px;position:relative}
-.panel{background:#fff;border:0;border-radius:24px;padding:17px;margin-bottom:14px;box-shadow:0 8px 24px #0000000a}
+.brand{font-weight:850;font-size:19px;letter-spacing:.2px;color:#fff}.sub{color:#d8f5e8;font-size:13px;margin-top:3px}
+.logout{background:#202020;border:1px solid #444;color:white;border-radius:14px;padding:11px 15px;font-weight:700;cursor:pointer}
+main{max-width:760px;margin:-20px auto 100px;padding:0 14px;position:relative}
+.panel{background:#fff;border:0;border-radius:28px;padding:19px;margin-bottom:14px;box-shadow:0 8px 24px #00000008}
 .eyebrow{color:var(--muted);font-size:11px;font-weight:700;letter-spacing:.4px}.title{font-size:clamp(24px,6vw,32px);line-height:1.15;margin:7px 0 12px;font-weight:850;letter-spacing:-.6px}
 .muted{color:var(--muted)}
-.wallet{background:#fff;color:#171717;border:1px solid #ececec;border-radius:22px;padding:17px;position:relative;overflow:hidden}
+.wallet{background:#fff;color:#171717;border:1px solid #e5eee9;border-radius:24px;padding:18px;position:relative;overflow:hidden}
 .wallet-label{font-size:13px;color:#727b86;font-weight:700}.balance{font-size:30px;font-weight:850;margin:5px 0 12px;letter-spacing:.2px;color:#171717}
 .wallet-row{border-top:1px solid #e5e5e5;padding-top:13px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .wallet-stat{min-width:0;border:1px solid #e8e9e9;border-radius:15px;background:#f7f8f8;padding:13px 12px;display:flex;flex-direction:column;justify-content:center}
 .wallet-stat span{font-size:12px;color:#727b86;font-weight:700}
-.wallet-stat strong{font-size:clamp(16px,4.2vw,22px);line-height:1.25;margin-top:5px;color:#173b32;overflow-wrap:anywhere}
+.wallet-stat strong{font-size:clamp(16px,4.2vw,22px);line-height:1.25;margin-top:5px;color:#008b5a;overflow-wrap:anywhere}
 .wallet-action{background:#ffc800;color:#171717;border:0;border-radius:12px;padding:10px 12px;font-weight:800;cursor:pointer}
 .wallet-action.alt{background:#e5f8f0;color:#008b5a;border:1px solid #bdebd8}
 .notice{background:#fff8d8;border:1px solid #f4df80;border-radius:12px;padding:11px 13px;font-size:13px;color:#5c4b00;margin-top:12px}
@@ -29,14 +29,41 @@ main{max-width:760px;margin:0 auto 100px;padding:0 14px;position:relative}
 .section-title h2{font-size:18px;margin:0}.section-title span{font-size:12px;color:var(--muted);font-weight:700}
 .menu-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px 2px}
 .menu{min-height:94px;padding:8px 2px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:7px;text-decoration:none;color:inherit;background:transparent;border:0}
-.menu-icon{width:56px;height:56px;border-radius:17px;background:#111;color:#ffd400;display:grid;place-items:center;font-size:25px}
+.menu-icon{width:56px;height:56px;border-radius:17px;background:linear-gradient(135deg,#008b5a,#00b894);color:#ffcc00;display:grid;place-items:center;font-size:25px}
 .menu b{font-size:12px;line-height:1.2;font-weight:700}.menu small{display:none}
-.bottom{position:fixed;bottom:0;left:0;right:0;background:#111;border-top:3px solid #ffd400;display:flex;justify-content:space-around;padding:9px 5px calc(9px + env(safe-area-inset-bottom));z-index:5}
-.bottom a{color:#ffd400;text-decoration:none;text-align:center;font-size:11px;font-weight:750;min-width:54px}.bottom .ico{display:block;font-size:22px;margin-bottom:2px}
+.bottom{position:fixed;bottom:0;left:0;right:0;background:#111;border-top:3px solid #ffcc00;display:flex;justify-content:space-around;padding:9px 5px calc(9px + env(safe-area-inset-bottom));z-index:5}
+.bottom a{color:#ffcc00;text-decoration:none;text-align:center;font-size:11px;font-weight:750;min-width:54px}.bottom .ico{display:block;font-size:22px;margin-bottom:2px}
 .hidden{display:none!important}.err{color:#b42318;font-size:13px;margin-top:10px;overflow-wrap:anywhere}
 label{display:block;font-size:14px;font-weight:750;margin:12px 0 5px}input{width:100%;border:1px solid #cbd1d6;border-radius:12px;padding:12px;background:white}
 .submit{margin-top:14px;width:100%;background:var(--yellow);border:0;border-radius:12px;padding:13px;font-weight:850;cursor:pointer}
 @media(max-width:380px){.wallet-row{gap:7px}.wallet-stat{padding:10px 8px}.wallet-stat span{font-size:11px}.wallet-stat strong{font-size:16px}}
+
+/* Komposisi panel saldo disamakan dengan referensi Fixzy, warna tetap Toko Siap Antar */
+.top{background:#111!important;border-bottom:0!important;padding:20px 16px 58px!important;border-radius:0 0 38px 38px!important}
+.brand{color:#ffc800!important;font-size:20px!important}
+.sub{color:#c7cbd0!important}
+main{max-width:760px!important;margin:-30px auto 0!important;padding:0 14px 100px!important}
+#dashboard>.panel:first-child{position:relative;margin-top:0!important;padding:20px!important;border-radius:28px!important}
+#dashboard>.panel:first-child .title{margin-bottom:16px!important}
+.wallet{background:#fff!important;color:#171717!important;border:1px solid #e8e8e8!important;border-radius:24px!important;padding:18px!important;box-shadow:none!important}
+.wallet:after{display:none!important}
+.wallet-label{color:#737d8b!important;font-size:13px!important;font-weight:700}
+.balance{color:#171717!important;font-size:32px!important;margin:4px 0 16px!important;white-space:nowrap}
+.wallet-row{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important;border-top:1px solid #e5e5e5!important;padding-top:16px!important}
+.wallet-stat{background:#f7f8f8!important;border:1px solid #e8e8e8!important;border-radius:19px!important;padding:14px!important;min-width:0}
+.wallet-stat span{display:block;font-size:12px!important;font-weight:650!important;color:#737d8b!important}
+.wallet-stat strong{display:block;font-size:20px!important;color:#173b32!important;margin-top:5px!important;overflow-wrap:anywhere}
+#dashboard>.panel:nth-child(2){display:none!important}
+#dashboard>.panel:nth-child(3){border-radius:26px!important;padding:20px!important}
+#menuGrid .menu-icon{background:#111!important;color:#ffc800!important}
+#bottomNav{background:#111!important;border-top:3px solid #ffc800!important}
+@media(max-width:420px){
+ .wallet{padding:15px!important}
+ .balance{font-size:29px!important}
+ .wallet-stat{padding:12px 10px!important}
+ .wallet-stat strong{font-size:18px!important}
+}
+
 </style>
 </head>
 <body>
