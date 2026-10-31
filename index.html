@@ -150,6 +150,21 @@ body.dark-mode .menu-item:active{background:#294a37}
 </style>
 </head>
 <body>
+<script>
+/* Muat ulang satu kali saat halaman pertama kali dibuka dalam satu sesi tab.
+   Penanda disimpan sebelum reload agar tidak terjadi refresh berulang. */
+(function () {
+  const refreshKey = 'tsa_index_initial_refresh_v1';
+  try {
+    if (!sessionStorage.getItem(refreshKey)) {
+      sessionStorage.setItem(refreshKey, '1');
+      window.location.reload();
+    }
+  } catch (error) {
+    // Jika sessionStorage tidak tersedia, halaman tetap berjalan normal.
+  }
+})();
+</script>
 <header>
   <div class="brand">
     <img class="brand-logo-left" src="logo2.png" alt="Logo Toko Siap Antar">
